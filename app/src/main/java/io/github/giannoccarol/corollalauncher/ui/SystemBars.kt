@@ -6,15 +6,20 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import io.github.giannoccarol.corollalauncher.R
 import io.github.giannoccarol.corollalauncher.theme.ThemeManager
 
-/** Keeps the system bars the same color as the app so the theme stays uniform edge to edge. */
+/**
+ * The launcher draws its own status bar, so the system bars are hidden while it is in front.
+ * When they do appear (a swipe from the edge, a dialog), they take the app's colors so the
+ * theme stays uniform.
+ */
 object SystemBars {
 
     /**
-     * Draws behind the system bars, colors them like the background, and pads [root] so content
-     * never sits under them. With [includeIme] the padding also follows the on-screen keyboard.
+     * Goes full screen and pads [root] by whatever insets remain (a display cutout, bars shown
+     * temporarily and, with [includeIme], the on-screen keyboard).
      */
     fun apply(activity: Activity, root: View, includeIme: Boolean = false) {
         val window = activity.window
@@ -38,6 +43,17 @@ object SystemBars {
             val bars = insets.getInsets(types)
             view.setPadding(bars.left, bars.top, bars.right, bars.bottom)
             insets
+        }
+
+        hide(activity)
+    }
+
+    /** Hides the status and navigation bars; a swipe from the edge shows them briefly. */
+    fun hide(activity: Activity) {
+        val window = activity.window
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            hide(WindowInsetsCompat.Type.systemBars())
         }
     }
 }

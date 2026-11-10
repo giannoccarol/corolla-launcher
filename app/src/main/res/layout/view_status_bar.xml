@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The launcher's own status bar, included at the top of every screen. Driven by
+     StatusBarController. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/statusBar"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/status_bar_height"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="36dp"
+    android:paddingEnd="30dp">
+
+    <TextClock
+        android:id="@+id/statusTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-medium"
+        android:format12Hour="h:mm"
+        android:format24Hour="H:mm"
+        android:textColor="@color/text_primary"
+        android:textSize="15sp"
+        tools:text="15:47" />
+
+    <TextClock
+        android:id="@+id/statusDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:textColor="@color/text_secondary"
+        android:textSize="15sp"
+        tools:text="Tue 10 Nov" />
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <ImageView
+        android:id="@+id/statusGps"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_gps"
+        app:tint="@color/text_primary" />
+
+    <ImageView
+        android:id="@+id/statusBluetooth"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="16dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_bluetooth"
+        app:tint="@color/text_primary" />
+
+    <ImageView
+        android:id="@+id/statusNetwork"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="16dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_wifi"
+        app:tint="@color/text_primary" />
+</LinearLayout>

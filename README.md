@@ -13,7 +13,12 @@ it should run on any landscape Android head unit.
 
 ## What it does
 
-- **Home screen** with a large clock and date, navigation shortcuts, a media player and a dock.
+- **Home screen** with a large clock, navigation shortcuts, a media player and a dock.
+- **Full screen, with its own status bar.** The system bars are hidden while the launcher is in
+  front. A slim bar in the app's style shows time, date and whether GPS, Bluetooth and the
+  network are on.
+- **System keys in the dock**: Back, Home and Recent apps sit bottom left, where the hidden
+  system bar would have had them.
 - **Media player** that follows whatever is playing. Every app with an active media session
   (Spotify, YouTube Music, a podcast app...) appears as a chip; tap one to switch source.
   Shows title, artist, cover and progress; play/pause/next/previous always work.
@@ -79,12 +84,26 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
    ```
 
    Drop `.debug` from the package name for release builds.
+5. To make the **Recent apps** key work, enable *Corolla Launcher* under the system
+   Accessibility settings (the app explains this the first time you tap the key), or over adb:
+
+   ```bash
+   adb shell settings put secure enabled_accessibility_services \
+     io.github.giannoccarol.corollalauncher.debug/io.github.giannoccarol.corollalauncher.keys.NavKeyService
+   adb shell settings put secure accessibility_enabled 1
+   ```
+
+   The adb command replaces any accessibility service already enabled on the device. The
+   service only sends Back, Home and Recents: it subscribes to no events and cannot read
+   screen content.
 
 ## Using it
 
 | Action | How |
 | --- | --- |
-| Open an app | Tap its icon in the dock or in **All apps** (grid button, bottom left) |
+| Open an app | Tap its icon in the dock or in **All apps** (grid button, left of the icons) |
+| See recent apps | Square key, bottom left (needs the accessibility service, see above) |
+| Show the system bars | Swipe in from the top or bottom edge; they hide again by themselves |
 | Pin or unpin a dock app | Long press the icon |
 | Switch media source | Tap the app chip at the top of the player |
 | Set Home / Work address | Long press the button, or *Settings → Navigation* |
@@ -104,6 +123,13 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
   unit's own controller instead of Android's volume.
 - **Notification access can be unavailable** on low-RAM Android 8 builds. The player then
   stays in its fallback mode.
+- **Back and Home do nothing on the home screen itself.** There is nowhere to go back to and
+  you are already home. They are there so the keys keep their place; Recent apps is the one
+  that acts.
+- **The Bluetooth icon means "Bluetooth is on"**, not "a phone is connected". Showing the
+  connection would need a runtime permission the app currently avoids.
+- **Hiding the system bar is untested on the unit.** Some firmwares draw their bar as an
+  overlay that an app cannot hide.
 - **Animation smoothness is unmeasured on real hardware.** They are built to be cheap, but if
   they stutter on the unit, turn them off in Settings.
 - **The unit may still beep on touch.** The app's own click sounds are off, but many head
@@ -117,10 +143,12 @@ app/src/main/java/.../corollalauncher/
   home/                   the home screen
   apps/                   app list, dock selection, icons, app drawer
   media/                  media session tracking and media key fallback
+  status/                 the launcher's own status bar
+  keys/                   accessibility service behind the dock's system keys
   nav/                    navigation intents
   settings/               preferences, languages, settings screen
   theme/                  light/dark handling
-  ui/                     shared helpers (system bars, text dialog, motion)
+  ui/                     base activity, full-screen handling, text dialog, motion
 app/src/main/res/
   values/ values-night/   light and dark colors (same names in both)
   values-xx/              translations

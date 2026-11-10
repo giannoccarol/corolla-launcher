@@ -8,19 +8,19 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
 import io.github.giannoccarol.corollalauncher.BuildConfig
 import io.github.giannoccarol.corollalauncher.R
 import io.github.giannoccarol.corollalauncher.databinding.ActivitySettingsBinding
+import io.github.giannoccarol.corollalauncher.keys.NavKeyService
 import io.github.giannoccarol.corollalauncher.theme.ThemeManager
 import io.github.giannoccarol.corollalauncher.theme.ThemeMode
+import io.github.giannoccarol.corollalauncher.ui.LauncherActivity
 import io.github.giannoccarol.corollalauncher.ui.Motion
-import io.github.giannoccarol.corollalauncher.ui.SystemBars
 import io.github.giannoccarol.corollalauncher.ui.TextPrompt
 
 /** A plain list of rows, rebuilt on every resume so summaries always show the current value. */
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : LauncherActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
     private lateinit var prefs: Prefs
@@ -29,7 +29,7 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        SystemBars.apply(this, binding.root)
+        setUpWindow(binding.root)
         prefs = Prefs(this)
         binding.backButton.setOnClickListener { finish() }
     }
@@ -81,6 +81,13 @@ class SettingsActivity : AppCompatActivity() {
                 else R.string.settings_media_access_off,
             ),
         ) { open(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS) }
+        row(
+            R.string.settings_nav_keys,
+            getString(
+                if (NavKeyService.isEnabled) R.string.settings_nav_keys_on
+                else R.string.settings_nav_keys_off,
+            ),
+        ) { open(Settings.ACTION_ACCESSIBILITY_SETTINGS) }
         row(
             R.string.settings_default_launcher,
             getString(R.string.settings_default_launcher_summary),

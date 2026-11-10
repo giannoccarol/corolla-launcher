@@ -42,6 +42,17 @@
     <string name="nav_go">Los</string>
     <string name="nav_no_app">Keine Navigations-App installiert</string>
 
+    <!-- System keys in the dock -->
+    <string name="nav_key_home">Startbildschirm</string>
+    <string name="nav_key_recents">Letzte Apps</string>
+    <string name="nav_keys_enable_title">Navigationstasten aktivieren</string>
+    <string name="nav_keys_enable_message">Um die letzten Apps zu öffnen, aktiviere %1$s in den Einstellungen für Bedienungshilfen. Der Dienst sendet nur Zurück, Startbildschirm und Letzte Apps und liest den Bildschirm nicht.</string>
+    <string name="nav_keys_open_settings">Einstellungen öffnen</string>
+    <string name="settings_nav_keys">Navigationstasten</string>
+    <string name="settings_nav_keys_on">Aktiv</string>
+    <string name="settings_nav_keys_off">Nicht aktiv. Tippe, um die Bedienungshilfen zu öffnen.</string>
+    <string name="nav_keys_service_description">Lässt die Tasten Zurück, Startbildschirm und Letzte Apps im Dock funktionieren. Liest nicht, was auf dem Bildschirm steht.</string>
+
     <!-- Settings -->
     <string name="settings_title">Einstellungen</string>
     <string name="settings_section_appearance">Darstellung</string>

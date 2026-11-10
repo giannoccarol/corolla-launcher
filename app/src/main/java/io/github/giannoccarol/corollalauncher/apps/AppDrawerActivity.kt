@@ -4,16 +4,15 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.GridLayoutManager
 import io.github.giannoccarol.corollalauncher.R
 import io.github.giannoccarol.corollalauncher.databinding.ActivityAppDrawerBinding
+import io.github.giannoccarol.corollalauncher.ui.LauncherActivity
 import io.github.giannoccarol.corollalauncher.ui.Motion
-import io.github.giannoccarol.corollalauncher.ui.SystemBars
 
 /** Every installed app in a searchable grid. */
-class AppDrawerActivity : AppCompatActivity() {
+class AppDrawerActivity : LauncherActivity() {
 
     private lateinit var binding: ActivityAppDrawerBinding
     private lateinit var adapter: AppGridAdapter
@@ -23,7 +22,7 @@ class AppDrawerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAppDrawerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        SystemBars.apply(this, binding.root, includeIme = true)
+        setUpWindow(binding.root, includeIme = true)
 
         adapter = AppGridAdapter(
             onClick = ::launch,

@@ -41,6 +41,16 @@ adb -e shell cmd notification allow_listener \
 adb -e shell am start -n $PKG/io.github.giannoccarol.corollalauncher.home.HomeActivity
 ```
 
+To make the dock's Recent apps key work (this replaces any accessibility service already
+enabled, so on the real unit check `adb shell settings get secure enabled_accessibility_services`
+first and ask the user):
+
+```bash
+adb -e shell settings put secure enabled_accessibility_services \
+  $PKG/io.github.giannoccarol.corollalauncher.keys.NavKeyService
+adb -e shell settings put secure accessibility_enabled 1
+```
+
 To make it the default home screen on Android 10+:
 
 ```bash

@@ -46,6 +46,17 @@
     <string name="nav_go">Go</string>
     <string name="nav_no_app">No navigation app installed</string>
 
+    <!-- System keys in the dock -->
+    <string name="nav_key_home">Home screen</string>
+    <string name="nav_key_recents">Recent apps</string>
+    <string name="nav_keys_enable_title">Turn on the navigation buttons</string>
+    <string name="nav_keys_enable_message">To open recent apps, enable %1$s in the Accessibility settings. The service only sends Back, Home and Recents: it does not read the screen.</string>
+    <string name="nav_keys_open_settings">Open settings</string>
+    <string name="settings_nav_keys">Navigation buttons</string>
+    <string name="settings_nav_keys_on">Enabled</string>
+    <string name="settings_nav_keys_off">Not enabled. Tap to open the accessibility settings.</string>
+    <string name="nav_keys_service_description">Makes the Back, Home and Recent apps buttons in the dock work. It does not read what is on screen.</string>
+
     <!-- Settings -->
     <string name="settings_title">Settings</string>
     <string name="settings_section_appearance">Appearance</string>

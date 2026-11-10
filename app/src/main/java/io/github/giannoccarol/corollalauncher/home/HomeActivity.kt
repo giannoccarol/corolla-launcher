@@ -1,5 +1,6 @@
 package io.github.giannoccarol.corollalauncher.home
 
+import android.accessibilityservice.AccessibilityService
 import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -16,7 +17,6 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.provider.Settings
-import android.text.format.DateFormat
 import android.text.format.DateUtils
 import android.view.KeyEvent
 import android.view.View
@@ -25,7 +25,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import io.github.giannoccarol.corollalauncher.R
@@ -33,22 +33,24 @@ import io.github.giannoccarol.corollalauncher.apps.AppActions
 import io.github.giannoccarol.corollalauncher.apps.AppDrawerActivity
 import io.github.giannoccarol.corollalauncher.apps.AppRepository
 import io.github.giannoccarol.corollalauncher.databinding.ActivityHomeBinding
+import io.github.giannoccarol.corollalauncher.keys.NavKeyService
 import io.github.giannoccarol.corollalauncher.media.MediaKeys
 import io.github.giannoccarol.corollalauncher.media.MediaSessionMonitor
 import io.github.giannoccarol.corollalauncher.nav.NavigationShortcuts
 import io.github.giannoccarol.corollalauncher.settings.Prefs
 import io.github.giannoccarol.corollalauncher.settings.SettingsActivity
 import io.github.giannoccarol.corollalauncher.theme.ThemeManager
+import io.github.giannoccarol.corollalauncher.ui.LauncherActivity
 import io.github.giannoccarol.corollalauncher.ui.Motion
-import io.github.giannoccarol.corollalauncher.ui.SystemBars
 import io.github.giannoccarol.corollalauncher.ui.TextPrompt
 import java.util.Locale
 
 /**
- * The home screen: clock and navigation shortcuts on the left, the media player on the right,
- * and a dock with the most used apps and the volume at the bottom.
+ * The home screen: the launcher's status bar on top, clock and navigation shortcuts on the
+ * left, the media player on the right, and at the bottom a dock with the system keys, the
+ * most used apps and the volume.
  */
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : LauncherActivity() {
 
     private lateinit var binding: ActivityHomeBinding
     private lateinit var prefs: Prefs
@@ -88,7 +90,7 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        SystemBars.apply(this, binding.root)
+        setUpWindow(binding.root)
 
         prefs = Prefs(this)
         audio = getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -99,7 +101,6 @@ class HomeActivity : AppCompatActivity() {
             override fun handleOnBackPressed() = Unit
         })
 
-        setUpClock()
         setUpNavigation()
         setUpPlayer()
         setUpDock()
@@ -135,16 +136,6 @@ class HomeActivity : AppCompatActivity() {
         AppRepository.removeListener(appsListener)
         super.onDestroy()
     }
-
-    // region Clock
-
-    private fun setUpClock() {
-        val datePattern = DateFormat.getBestDateTimePattern(Locale.getDefault(), "EEEEdMMMM")
-        binding.date.format12Hour = datePattern
-        binding.date.format24Hour = datePattern
-    }
-
-    // endregion
 
     // region Navigation shortcuts
 
@@ -365,9 +356,41 @@ class HomeActivity : AppCompatActivity() {
         binding.allAppsButton.setOnClickListener {
             Motion.open(this, Intent(this, AppDrawerActivity::class.java))
         }
-        Motion.pressable(binding.allAppsButton, binding.volumeDown, binding.volumeUp)
+        // On the home screen itself Back and Home have nothing to do; they are here so the
+        // system keys keep their usual place while the system bar is hidden.
+        binding.keyBack.setOnClickListener {
+            NavKeyService.perform(AccessibilityService.GLOBAL_ACTION_BACK)
+        }
+        binding.keyHome.setOnClickListener {
+            NavKeyService.perform(AccessibilityService.GLOBAL_ACTION_HOME)
+        }
+        binding.keyRecents.setOnClickListener {
+            if (!NavKeyService.perform(AccessibilityService.GLOBAL_ACTION_RECENTS)) {
+                explainNavKeys()
+            }
+        }
+        Motion.pressable(
+            binding.keyBack, binding.keyHome, binding.keyRecents,
+            binding.allAppsButton, binding.volumeDown, binding.volumeUp,
+        )
         binding.volumeDown.setOnClickListener { adjustVolume(AudioManager.ADJUST_LOWER) }
         binding.volumeUp.setOnClickListener { adjustVolume(AudioManager.ADJUST_RAISE) }
+    }
+
+    /** Recents needs the accessibility service; say so and offer the way to turn it on. */
+    private fun explainNavKeys() {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.nav_keys_enable_title)
+            .setMessage(getString(R.string.nav_keys_enable_message, getString(R.string.app_name)))
+            .setPositiveButton(R.string.nav_keys_open_settings) { _, _ ->
+                try {
+                    startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+                } catch (e: ActivityNotFoundException) {
+                    toast(R.string.settings_screen_unavailable)
+                }
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
 
     private fun renderDock() {

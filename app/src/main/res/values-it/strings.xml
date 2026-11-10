@@ -42,6 +42,17 @@
     <string name="nav_go">Vai</string>
     <string name="nav_no_app">Nessuna app di navigazione installata</string>
 
+    <!-- System keys in the dock -->
+    <string name="nav_key_home">Schermata Home</string>
+    <string name="nav_key_recents">App recenti</string>
+    <string name="nav_keys_enable_title">Attiva i tasti di navigazione</string>
+    <string name="nav_keys_enable_message">Per aprire le app recenti, attiva %1$s nelle impostazioni di Accessibilità. Il servizio invia solo Indietro, Home e App recenti: non legge lo schermo.</string>
+    <string name="nav_keys_open_settings">Apri impostazioni</string>
+    <string name="settings_nav_keys">Tasti di navigazione</string>
+    <string name="settings_nav_keys_on">Attivi</string>
+    <string name="settings_nav_keys_off">Non attivi. Tocca per aprire le impostazioni di accessibilità.</string>
+    <string name="nav_keys_service_description">Fa funzionare i tasti Indietro, Home e App recenti nella dock. Non legge ciò che appare sullo schermo.</string>
+
     <!-- Settings -->
     <string name="settings_title">Impostazioni</string>
     <string name="settings_section_appearance">Aspetto</string>

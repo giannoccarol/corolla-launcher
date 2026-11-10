@@ -34,6 +34,9 @@ reachable over adb, and record the answers here.
 - [ ] Does Android's music stream volume change the actual loudness?
 - [ ] What do the hardware buttons (NAVI, BT, MOD) launch, and can they be remapped?
 - [ ] Is there a broadcast for headlights on/off (often called ILL), to switch theme with it?
+- [ ] Does full screen really hide the unit's top bar, or is that bar an overlay?
+- [ ] With the bar hidden, do the panel's hardware BACK and MENU buttons cover navigation?
+- [ ] Can the accessibility service for the Recent apps key be enabled on this firmware?
 - [ ] Are the animations smooth on the unit, or should they ship off by default?
 - [ ] Does the unit beep on every touch by itself, and where is that turned off?
 

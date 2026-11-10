@@ -42,6 +42,17 @@
     <string name="nav_go">Y aller</string>
     <string name="nav_no_app">Aucune appli de navigation installée</string>
 
+    <!-- System keys in the dock -->
+    <string name="nav_key_home">Écran d\'accueil</string>
+    <string name="nav_key_recents">Applis récentes</string>
+    <string name="nav_keys_enable_title">Activer les boutons de navigation</string>
+    <string name="nav_keys_enable_message">Pour ouvrir les applis récentes, activez %1$s dans les réglages d\'accessibilité. Le service envoie seulement Retour, Accueil et Récents : il ne lit pas l\'écran.</string>
+    <string name="nav_keys_open_settings">Ouvrir les réglages</string>
+    <string name="settings_nav_keys">Boutons de navigation</string>
+    <string name="settings_nav_keys_on">Activés</string>
+    <string name="settings_nav_keys_off">Désactivés. Touchez pour ouvrir les réglages d\'accessibilité.</string>
+    <string name="nav_keys_service_description">Fait fonctionner les boutons Retour, Accueil et Applis récentes du dock. Ne lit pas ce qui s\'affiche à l\'écran.</string>
+
     <!-- Settings -->
     <string name="settings_title">Réglages</string>
     <string name="settings_section_appearance">Apparence</string>

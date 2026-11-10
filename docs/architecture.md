@@ -12,6 +12,9 @@ between the screens and the platform APIs.
 | `apps/AppDrawerActivity` | Searchable grid of every installed app. |
 | `settings/SettingsActivity` | Theme, language, addresses, system shortcuts. |
 
+All three extend `ui/LauncherActivity`, which makes the window full screen (system bars
+hidden, re-hidden whenever the window regains focus) and starts and stops the status bar.
+
 `HomeActivity` is the root of the task. Pressing Home from the drawer or settings brings it
 back and clears whatever was above it; pressing Back on it does nothing, on purpose.
 
@@ -50,6 +53,19 @@ AudioManager ──────────────────────�
 - When there is no session (no access granted, or the playing app has none), the transport
   buttons fall back to `MediaKeys`, which dispatches media button events through `AudioManager`.
 
+### Status bar and system keys
+
+- `status/StatusBarController` drives `view_status_bar.xml`, which each screen includes. Time
+  and date are `TextClock`s. GPS and Bluetooth state come from two protected system
+  broadcasts, the network from a default-network callback; all are registered in `onStart`
+  and released in `onStop`.
+- It needs two install-time permissions, `ACCESS_NETWORK_STATE` and (up to Android 11)
+  `BLUETOOTH`. Nothing is requested at runtime.
+- `keys/NavKeyService` is an accessibility service, because that is the only way Android lets
+  an app trigger Back, Home and Recents. It subscribes to no event types and cannot retrieve
+  window content; it only calls `performGlobalAction`. It is off until the user enables it,
+  and `HomeActivity` explains how when Recents is tapped without it.
+
 ### Theme
 
 - `Theme.Launcher` extends `Theme.AppCompat.DayNight.NoActionBar`. Colors are defined twice
@@ -57,8 +73,8 @@ AudioManager ──────────────────────�
 - `ThemeManager.apply()` maps the saved `ThemeMode` to an AppCompat night mode. It is called at
   process start, on every home screen start, and on each minute tick so the time-based mode
   switches on its own. AppCompat recreates the activities when the mode actually changes.
-- `SystemBars.apply()` draws edge to edge, colors the system bars like the background and pads
-  the root view by the insets, so the uniform theme reaches the screen edges.
+- `SystemBars.apply()` hides the system bars, and colors them like the background for the
+  moments they do appear (an edge swipe, a dialog), so the uniform theme is never broken.
 
 ### Motion and sound
 
@@ -97,5 +113,6 @@ Two `SharedPreferences` files, wrapped by `settings/Prefs`:
 
 - **Compose**: startup and scrolling cost too much on a Cortex-A7 class device.
 - **Wallpaper and app widgets**: the home is a designed surface with a uniform background.
-- **Runtime permissions**: the app requests none. Media access is a special system grant.
+- **Runtime permissions**: the app requests none. Media access and the system keys are
+  special grants the user turns on in system settings.
 - **A bundled font**: the system Roboto in light and medium weights keeps the APK small.

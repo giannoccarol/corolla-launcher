@@ -62,7 +62,10 @@ visible change has been looked at on the emulator in **both themes**.
 - Kotlin official style, 4 spaces, 100 columns. Comments explain *why*, not what.
 - Logic that can be pure (no Android types) lives in its own object and gets a unit test;
   see `DockSelector`.
-- One activity per screen, each in its feature package. Shared helpers go in `ui/`.
+- One activity per screen, each in its feature package, extending `ui/LauncherActivity` and
+  including `view_status_bar` at the top of its layout. Shared helpers go in `ui/`.
+- No runtime permission prompts: they are unusable while driving. If a feature needs one,
+  raise it with the owner first.
 - New dependencies need a reason written in the pull request; prefer the platform and AndroidX.
 - All repository content is in English: code, comments, docs, commit messages.
 
@@ -81,5 +84,6 @@ visible change has been looked at on the emulator in **both themes**.
 | New language | follow `.claude/skills/add-language/SKILL.md` |
 | New icon | vector drawable in `res/drawable/`, white fill, tinted in the layout |
 | New color | both `values/colors.xml` and `values-night/colors.xml` |
+| New status bar icon | `view_status_bar.xml` and `status/StatusBarController.kt` |
 | New animation | a function in `ui/Motion.kt`, or an XML in `res/anim/` used from it |
 | Device finding | `docs/head-unit.md` |

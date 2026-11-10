@@ -21,19 +21,30 @@ weights, so other landscape sizes stretch rather than break. Screens shorter tha
 usable height get a smaller clock and cover (`values/dimens.xml` vs `values-h500dp/`).
 
 ```
-┌───────────────────────────────┬──────────────────────────────────────────┐
-│ date                          │                        [settings] [theme] │
-│ CLOCK                         │ ┌──────────────────────────────────────┐ │
+┌──────────────────────────────────────────────────────────────────────────┐
+│ time  date                                            gps  bt  network    │  36 dp
+├───────────────────────────────┬──────────────────────────────────────────┤
+│ CLOCK                         │                        [settings] [theme] │
+│                               │ ┌──────────────────────────────────────┐ │
 │                               │ │ [source chips]                       │ │
 │                               │ │ cover   title / artist / progress    │ │
 │ NAVIGATION                    │ │                                      │ │
 │ [ Where to?                 ] │ │        ⏮      ▶      ⏭              │ │
 │ [ Home ]        [ Work ]      │ └──────────────────────────────────────┘ │
 ├───────────────────────────────┴──────────────────────────────────────────┤
-│ [all apps]            app app app app app app              ‹ volume ›     │
+│ ◁  ○  □        [all apps] app app app app app app          ‹ volume ›     │  88 dp
 └──────────────────────────────────────────────────────────────────────────┘
-        40 %                                   60 %              dock: 88 dp
+        40 %                                   60 %
 ```
+
+The launcher is **full screen**: the system status and navigation bars are hidden while it is
+in front, and replaced by the two strips above.
+
+- **Status bar** (top, every screen): small time and date on the left; GPS, Bluetooth and
+  network icons on the right. An icon dims to 28 % when its radio is off instead of
+  disappearing, so the bar never shifts. It is information only, with nothing to tap.
+- **System keys** (dock, bottom left, home screen only): Back, Home, Recent apps, drawn as
+  outlines so they read as system controls and not as apps.
 
 ## Colors
 
