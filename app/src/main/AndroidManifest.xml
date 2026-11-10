@@ -6,15 +6,22 @@
          newer Android versions the tiles open the system panel instead of switching directly. -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission
-        android:name="android.permission.CHANGE_WIFI_STATE"
-        android:maxSdkVersion="28" />
+    <!-- Switching Wi-Fi (Android 9 and below) and scanning for networks (all versions). -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission
         android:name="android.permission.BLUETOOTH"
         android:maxSdkVersion="30" />
     <uses-permission
         android:name="android.permission.BLUETOOTH_ADMIN"
         android:maxSdkVersion="30" />
+    <!-- Android 12+: listing paired phones in the Bluetooth panel, asked from a tap. -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_CONNECT"
+        tools:targetApi="31" />
+    <!-- Brightness slider in the display panel; a special grant the driver gives once. -->
+    <uses-permission
+        android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
 
     <!-- Speed, heading and the trip computer. Location is asked for only when the driver taps
          the speed or car card; the foreground service keeps fixes coming while another app is

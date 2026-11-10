@@ -24,7 +24,10 @@ it should run on any landscape Android head unit.
   - **Most used**: the four apps you launch most, with their real icons.
   - **Car card**: a photo of the Corolla and a **trip computer** (distance, duration, average
     speed) measured from GPS. A trip ends after 20 minutes standing still.
-  - **Quick settings**: theme, Wi-Fi, Bluetooth, display, audio (equalizer) and Settings.
+  - **Quick settings**: theme, plus Wi-Fi, Bluetooth, display and audio tiles that open the
+    launcher's own panels instead of system settings: Wi-Fi switch and nearby networks,
+    Bluetooth switch and paired phones, brightness and theme, and volume per stream. Sliders are
+    thick and flanked by large minus and plus buttons for use while driving.
   - **Bottom bar**: Back, Home and Recent apps on the left, four docked apps around the All apps
     button, volume on the right.
 - **All apps** grid with search. Long press an app to pin it to the bottom bar or open its
@@ -139,8 +142,14 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
   arrives. The trip restarts if the app process is restarted.
 - **A small notification stays while location is on** ("Trip computer on"). Android requires
   it for apps that read GPS in the background; it is silent and low priority.
-- **Wi-Fi and Bluetooth tiles switch directly only on Android 9 and 11 or below**
-  respectively. On newer versions Android forbids it, and the tile opens the system panel.
+- **Wi-Fi and Bluetooth switch directly only on Android 9 and 11 or below** respectively, and
+  the Wi-Fi panel can join a network only on Android 9 and below. Newer versions reserve both
+  to the system, so there the panel hands over to the system Wi-Fi or Bluetooth screen.
+- **The Bluetooth panel lists paired phones but cannot connect them**: Android has no public
+  API for that. Many head units also run Bluetooth on a separate module that Android does not
+  see at all; then the panel shows nothing useful and the unit's own Bluetooth app is the way.
+- **The brightness slider needs a one-time grant** ("modify system settings"), and may do
+  nothing on units whose backlight is driven by their own controller.
 - **The Audio tile opens the system equalizer**, which head units often replace with their own
   DSP app; that app's package is still unknown (see [docs/head-unit.md](docs/head-unit.md)).
 - **Hiding the system bar is untested on the unit.** Some firmwares draw their bar as an
@@ -160,6 +169,7 @@ app/src/main/java/.../corollalauncher/
   media/                  media session tracking and media key fallback
   status/                 the launcher's own status bar
   trip/                   GPS speed, heading and trip computer, foreground service
+  panels/                 the launcher's own Wi-Fi, Bluetooth, display and audio panels
   keys/                   accessibility service behind the dock's system keys
   nav/                    navigation intents, recent destinations
   settings/               preferences, languages, settings screen

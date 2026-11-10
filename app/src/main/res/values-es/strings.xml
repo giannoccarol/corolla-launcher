@@ -91,6 +91,44 @@
     <string name="settings_location_on">Permitida: se miden la velocidad y el viaje</string>
     <string name="settings_location_off">No permitida. Toca para abrir los ajustes de la app.</string>
 
+    <!-- Panels -->
+    <string name="close">Cerrar</string>
+    <string name="state_on">Activado</string>
+    <string name="state_off">Desactivado</string>
+    <string name="wifi_not_connected">Sin conexión</string>
+    <string name="wifi_connected_to">Conectado a %1$s</string>
+    <string name="wifi_networks">Redes</string>
+    <string name="wifi_searching">Buscando redes…</string>
+    <string name="wifi_location_needed">Permite la ubicación para ver las redes</string>
+    <string name="wifi_location_needed_summary">Android solo muestra las redes cercanas a las apps con acceso a la ubicación.</string>
+    <string name="wifi_connected">Conectado</string>
+    <string name="wifi_secured">Protegida</string>
+    <string name="wifi_open">Abierta</string>
+    <string name="wifi_password_title">Contraseña de %1$s</string>
+    <string name="wifi_password_hint">Contraseña</string>
+    <string name="wifi_connect">Conectar</string>
+    <string name="wifi_connecting">Conectando a %1$s…</string>
+    <string name="wifi_join_failed">No se ha podido guardar esta red</string>
+    <string name="wifi_system_settings">Ajustes de Wi-Fi</string>
+    <string name="bt_paired">Dispositivos vinculados</string>
+    <string name="bt_none_paired">No hay dispositivos vinculados</string>
+    <string name="bt_permission_needed">Permite dispositivos cercanos para ver los teléfonos vinculados</string>
+    <string name="bt_kind_phone">Teléfono</string>
+    <string name="bt_kind_audio">Audio</string>
+    <string name="bt_system_settings">Ajustes de Bluetooth</string>
+    <string name="display_brightness">Brillo</string>
+    <string name="display_auto_brightness">Brillo automático</string>
+    <string name="display_allow_title">Permitir el control del brillo</string>
+    <string name="display_allow_summary">Android lo pide una vez antes de que una app pueda cambiar el brillo.</string>
+    <string name="display_theme">Tema</string>
+    <string name="display_system_settings">Ajustes de pantalla</string>
+    <string name="audio_media">Multimedia</string>
+    <string name="audio_calls">Llamadas</string>
+    <string name="audio_notifications">Notificaciones</string>
+    <string name="audio_equalizer">Ecualizador</string>
+    <string name="slider_less">Menos</string>
+    <string name="slider_more">Más</string>
+
     <!-- Settings -->
     <string name="settings_title">Ajustes</string>
     <string name="settings_section_appearance">Apariencia</string>

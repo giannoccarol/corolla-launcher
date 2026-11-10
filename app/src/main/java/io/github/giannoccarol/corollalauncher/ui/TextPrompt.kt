@@ -2,6 +2,7 @@ package io.github.giannoccarol.corollalauncher.ui
 
 import android.content.Context
 import android.content.DialogInterface
+import android.text.InputType
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.WindowManager
@@ -21,15 +22,29 @@ object TextPrompt {
         initial: String?,
         @StringRes positiveRes: Int,
         onResult: (String) -> Unit,
+    ) = show(context, context.getString(titleRes), hintRes, initial, positiveRes, password = false, onResult)
+
+    /** [password] hides the typed text, for Wi-Fi passwords. */
+    fun show(
+        context: Context,
+        title: CharSequence,
+        @StringRes hintRes: Int,
+        initial: String?,
+        @StringRes positiveRes: Int,
+        password: Boolean,
+        onResult: (String) -> Unit,
     ) {
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_text_prompt, null)
         val input = view.findViewById<EditText>(R.id.input)
+        if (password) {
+            input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        }
         input.setHint(hintRes)
         input.setText(initial.orEmpty())
         input.setSelection(input.text.length)
 
         val dialog = AlertDialog.Builder(context)
-            .setTitle(titleRes)
+            .setTitle(title)
             .setView(view)
             .setPositiveButton(positiveRes) { _, _ -> onResult(input.text.toString().trim()) }
             .setNegativeButton(R.string.cancel, null)

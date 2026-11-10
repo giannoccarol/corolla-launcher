@@ -105,6 +105,44 @@
     <string name="qs_wifi" translatable="false">Wi-Fi</string>
     <string name="qs_bluetooth" translatable="false">Bluetooth</string>
 
+    <!-- Panels -->
+    <string name="close">Close</string>
+    <string name="state_on">On</string>
+    <string name="state_off">Off</string>
+    <string name="wifi_not_connected">Not connected</string>
+    <string name="wifi_connected_to">Connected to %1$s</string>
+    <string name="wifi_networks">Networks</string>
+    <string name="wifi_searching">Looking for networks…</string>
+    <string name="wifi_location_needed">Allow location to see networks</string>
+    <string name="wifi_location_needed_summary">Android shows nearby networks only to apps with location access.</string>
+    <string name="wifi_connected">Connected</string>
+    <string name="wifi_secured">Secured</string>
+    <string name="wifi_open">Open</string>
+    <string name="wifi_password_title">Password for %1$s</string>
+    <string name="wifi_password_hint">Password</string>
+    <string name="wifi_connect">Connect</string>
+    <string name="wifi_connecting">Connecting to %1$s…</string>
+    <string name="wifi_join_failed">Couldn\'t save this network</string>
+    <string name="wifi_system_settings">Wi-Fi settings</string>
+    <string name="bt_paired">Paired devices</string>
+    <string name="bt_none_paired">No paired devices</string>
+    <string name="bt_permission_needed">Allow nearby devices to list paired phones</string>
+    <string name="bt_kind_phone">Phone</string>
+    <string name="bt_kind_audio">Audio</string>
+    <string name="bt_system_settings">Bluetooth settings</string>
+    <string name="display_brightness">Brightness</string>
+    <string name="display_auto_brightness">Automatic brightness</string>
+    <string name="display_allow_title">Allow brightness control</string>
+    <string name="display_allow_summary">Android asks once before an app can change the screen brightness.</string>
+    <string name="display_theme">Theme</string>
+    <string name="display_system_settings">Display settings</string>
+    <string name="audio_media">Media</string>
+    <string name="audio_calls">Calls</string>
+    <string name="audio_notifications">Notifications</string>
+    <string name="audio_equalizer">Equalizer</string>
+    <string name="slider_less">Less</string>
+    <string name="slider_more">More</string>
+
     <!-- Settings -->
     <string name="settings_title">Settings</string>
     <string name="settings_section_appearance">Appearance</string>

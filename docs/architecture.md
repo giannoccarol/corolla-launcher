@@ -76,6 +76,23 @@ do that, it opens the system panel or settings screen. Display opens the display
 Audio the registered equalizer, falling back to the sound settings. Tile state follows the
 `WIFI_STATE_CHANGED` and Bluetooth `ACTION_STATE_CHANGED` broadcasts.
 
+### Panels
+
+`panels/Sheet` is a themed dialog (rounded card over the dimmed home, system bars kept hidden)
+with helpers for switch rows, sliders with minus and plus buttons, list rows and buttons. Each
+panel rebuilds its rows in `build()` and registers its receivers between `onShown()` and
+`onDismissed()`. Runtime permissions a panel needs (location for Wi-Fi scan results, nearby
+devices for paired phones on Android 12+) are asked through `PermissionAsker`, which
+`HomeActivity` implements; it re-renders the open panel when a permission or a system screen
+comes back.
+
+| Panel | Can do itself | Hands over to the system |
+| --- | --- | --- |
+| Wi-Fi | switch, scan list, join (Android 9 and below) | join on Android 10+ |
+| Bluetooth | switch (Android 11 and below), list paired devices | pairing, connecting |
+| Display | brightness and automatic mode (after the WRITE_SETTINGS grant), theme | the grant itself |
+| Audio | media, call and notification volume | equalizer |
+
 ### Refresh cost
 
 The home screen ticks once a second (media progress and trip). `TextView.update()` in

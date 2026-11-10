@@ -23,4 +23,17 @@
         <item name="android:textColorSecondary">@color/text_secondary</item>
         <item name="android:textColorHint">@color/text_secondary</item>
     </style>
+
+    <!-- The launcher's own panels: transparent window around a rounded card, dimmed home. -->
+    <style name="Theme.Launcher.Sheet" parent="Theme.AppCompat.DayNight.Dialog">
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimAmount">0.55</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="colorControlActivated">@color/accent</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="alertDialogTheme">@style/Theme.Launcher.Dialog</item>
+        <item name="android:soundEffectsEnabled">false</item>
+    </style>
 </resources>

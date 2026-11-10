@@ -16,6 +16,7 @@ import android.media.session.MediaController
 import android.media.session.PlaybackState
 import android.net.Uri
 import android.net.wifi.WifiManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -50,6 +51,12 @@ import io.github.giannoccarol.corollalauncher.keys.NavKeyService
 import io.github.giannoccarol.corollalauncher.media.MediaKeys
 import io.github.giannoccarol.corollalauncher.media.MediaSessionMonitor
 import io.github.giannoccarol.corollalauncher.nav.NavigationShortcuts
+import io.github.giannoccarol.corollalauncher.panels.AudioPanel
+import io.github.giannoccarol.corollalauncher.panels.BluetoothPanel
+import io.github.giannoccarol.corollalauncher.panels.DisplayPanel
+import io.github.giannoccarol.corollalauncher.panels.PermissionAsker
+import io.github.giannoccarol.corollalauncher.panels.Sheet
+import io.github.giannoccarol.corollalauncher.panels.WifiPanel
 import io.github.giannoccarol.corollalauncher.nav.RecentDestinations
 import io.github.giannoccarol.corollalauncher.settings.Prefs
 import io.github.giannoccarol.corollalauncher.settings.SettingsActivity
@@ -67,7 +74,7 @@ import java.util.Locale
  * (navigation and speed, media and most used apps, the car and quick settings); and a bottom
  * bar with the system keys, the docked apps and the volume.
  */
-class HomeActivity : LauncherActivity() {
+class HomeActivity : LauncherActivity(), PermissionAsker {
 
     private lateinit var binding: ActivityHomeBinding
     private lateinit var prefs: Prefs
@@ -85,6 +92,9 @@ class HomeActivity : LauncherActivity() {
     private var shownTrack: String? = null
     private var shownPlaying: Boolean? = null
 
+    /** The panel currently open, refreshed when a permission or a system screen comes back. */
+    private var panel: Sheet? = null
+
     private val locationRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
     ) { result ->
@@ -99,7 +109,12 @@ class HomeActivity : LauncherActivity() {
             openAppDetails()
         }
         renderTrip()
+        refreshPanel()
     }
+
+    private val nearbyRequest = registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { refreshPanel() }
 
     private val progressTicker = object : Runnable {
         override fun run() {
@@ -174,6 +189,11 @@ class HomeActivity : LauncherActivity() {
         renderTrip()
     }
 
+    override fun onResume() {
+        super.onResume()
+        refreshPanel()
+    }
+
     override fun onStop() {
         unregisterReceiver(systemReceiver)
         unregisterReceiver(radiosReceiver)
@@ -183,6 +203,7 @@ class HomeActivity : LauncherActivity() {
     }
 
     override fun onDestroy() {
+        panel?.dismiss()
         AppRepository.removeListener(appsListener)
         TripTracker.removeListener(tripListener)
         super.onDestroy()
@@ -334,12 +355,28 @@ class HomeActivity : LauncherActivity() {
         }
     }
 
+    override fun askForNearbyDevices() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            nearbyRequest.launch(Manifest.permission.BLUETOOTH_CONNECT)
+        }
+    }
+
+    private fun openPanel(sheet: Sheet) {
+        panel?.dismiss()
+        panel = sheet
+        sheet.show()
+    }
+
+    private fun refreshPanel() {
+        panel?.takeIf { it.isShowing }?.render()
+    }
+
     private fun labelStat(stat: ItemTripStatBinding, @StringRes label: Int) {
         stat.label.setText(label)
     }
 
-    /** Asked only when the driver taps the speed or car card, never on its own. */
-    private fun askForLocation() {
+    /** Asked only when the driver taps the speed or car card or a panel row, never on its own. */
+    override fun askForLocation() {
         locationRequest.launch(
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
         )
@@ -561,14 +598,14 @@ class HomeActivity : LauncherActivity() {
     // region Quick settings
 
     private fun setUpQuickSettings() {
-        tile(binding.qsWifi, R.drawable.ic_wifi, R.string.qs_wifi) { toggles.toggleWifi() }
+        tile(binding.qsWifi, R.drawable.ic_wifi, R.string.qs_wifi) { openPanel(WifiPanel(this, this)) }
         tile(binding.qsBluetooth, R.drawable.ic_bluetooth, R.string.qs_bluetooth) {
-            toggles.toggleBluetooth()
+            openPanel(BluetoothPanel(this, this))
         }
         tile(binding.qsDisplay, R.drawable.ic_brightness, R.string.qs_display) {
-            toggles.openDisplaySettings()
+            openPanel(DisplayPanel(this))
         }
-        tile(binding.qsAudio, R.drawable.ic_equalizer, R.string.qs_audio) { toggles.openAudio() }
+        tile(binding.qsAudio, R.drawable.ic_equalizer, R.string.qs_audio) { openPanel(AudioPanel(this)) }
         tile(binding.qsMore, R.drawable.ic_settings, R.string.qs_more) {
             Motion.open(this, Intent(this, SettingsActivity::class.java))
         }

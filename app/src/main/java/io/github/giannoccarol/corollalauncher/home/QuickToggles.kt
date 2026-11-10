@@ -73,6 +73,14 @@ class QuickToggles(private val context: Context) {
 
     fun openDisplaySettings() = open(Settings.ACTION_DISPLAY_SETTINGS)
 
+    fun openWifiSettings() = open(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) Settings.Panel.ACTION_WIFI
+        else Settings.ACTION_WIFI_SETTINGS,
+        Settings.ACTION_WIFI_SETTINGS,
+    )
+
+    fun openBluetoothSettings() = open(Settings.ACTION_BLUETOOTH_SETTINGS)
+
     /** The system or head unit equalizer when one is registered, else the sound settings. */
     fun openAudio() {
         val equalizer = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)

@@ -91,6 +91,44 @@
     <string name="settings_location_on">Erlaubt: Geschwindigkeit und Fahrt werden gemessen</string>
     <string name="settings_location_off">Nicht erlaubt. Tippe, um die App-Einstellungen zu öffnen.</string>
 
+    <!-- Panels -->
+    <string name="close">Schließen</string>
+    <string name="state_on">An</string>
+    <string name="state_off">Aus</string>
+    <string name="wifi_not_connected">Nicht verbunden</string>
+    <string name="wifi_connected_to">Verbunden mit %1$s</string>
+    <string name="wifi_networks">Netzwerke</string>
+    <string name="wifi_searching">Suche nach Netzwerken…</string>
+    <string name="wifi_location_needed">Standort erlauben, um Netzwerke zu sehen</string>
+    <string name="wifi_location_needed_summary">Android zeigt Netzwerke in der Nähe nur Apps mit Standortzugriff.</string>
+    <string name="wifi_connected">Verbunden</string>
+    <string name="wifi_secured">Gesichert</string>
+    <string name="wifi_open">Offen</string>
+    <string name="wifi_password_title">Passwort für %1$s</string>
+    <string name="wifi_password_hint">Passwort</string>
+    <string name="wifi_connect">Verbinden</string>
+    <string name="wifi_connecting">Verbindung mit %1$s…</string>
+    <string name="wifi_join_failed">Dieses Netzwerk konnte nicht gespeichert werden</string>
+    <string name="wifi_system_settings">WLAN-Einstellungen</string>
+    <string name="bt_paired">Gekoppelte Geräte</string>
+    <string name="bt_none_paired">Keine gekoppelten Geräte</string>
+    <string name="bt_permission_needed">Geräte in der Nähe erlauben, um gekoppelte Telefone zu sehen</string>
+    <string name="bt_kind_phone">Telefon</string>
+    <string name="bt_kind_audio">Audio</string>
+    <string name="bt_system_settings">Bluetooth-Einstellungen</string>
+    <string name="display_brightness">Helligkeit</string>
+    <string name="display_auto_brightness">Automatische Helligkeit</string>
+    <string name="display_allow_title">Helligkeitssteuerung erlauben</string>
+    <string name="display_allow_summary">Android fragt einmal, bevor eine App die Helligkeit ändern darf.</string>
+    <string name="display_theme">Design</string>
+    <string name="display_system_settings">Display-Einstellungen</string>
+    <string name="audio_media">Medien</string>
+    <string name="audio_calls">Anrufe</string>
+    <string name="audio_notifications">Benachrichtigungen</string>
+    <string name="audio_equalizer">Equalizer</string>
+    <string name="slider_less">Weniger</string>
+    <string name="slider_more">Mehr</string>
+
     <!-- Settings -->
     <string name="settings_title">Einstellungen</string>
     <string name="settings_section_appearance">Darstellung</string>

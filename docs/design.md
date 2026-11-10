@@ -121,6 +121,13 @@ device setting outside the app.
 Vector drawables in `res/drawable/ic_*.xml`, 24-unit viewport, solid white shapes, tinted in
 layouts with `app:tint`. Filled style, rounded joins. No emoji, no bitmap icons.
 
+## Panels
+
+Rounded card (24dp) over the home, 62 % of the screen width up to 640dp, at most 74 % of the
+height before it scrolls. Rows are at least 64dp, switch rows 76dp, buttons 60dp. Switches are
+68x38dp with a 30dp knob; sliders have a 16dp track, a 34dp knob and 56dp minus and plus
+buttons, because a finger in a moving car cannot hit a thin line.
+
 ## Car photo
 
 `art/corolla-e120.png` is the source (transparent background). The app ships it pre-scaled

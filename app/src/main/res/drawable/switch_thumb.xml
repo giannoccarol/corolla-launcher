@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 30dp knob inset by 4dp inside the 38dp track. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:bottom="4dp"
+        android:left="4dp"
+        android:right="4dp"
+        android:top="4dp">
+        <shape android:shape="oval">
+            <solid android:color="#FFFFFFFF" />
+            <size
+                android:width="30dp"
+                android:height="30dp" />
+        </shape>
+    </item>
+</layer-list>
