@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The layout was designed on a 1024x600 dp screen (7" head unit at 160 dpi). -->
+<resources>
+    <!-- Compact default for short screens; values-h540dp restores the designed sizes. -->
+    <dimen name="clock_text">84sp</dimen>
+    <dimen name="cover_size">112dp</dimen>
+
+    <dimen name="dock_height">88dp</dimen>
+    <dimen name="dock_icon">56dp</dimen>
+    <dimen name="drawer_icon">72dp</dimen>
+
+    <!-- Pixel size app icons are rendered at once, large enough for the drawer tiles. -->
+    <dimen name="app_icon_bitmap">72dp</dimen>
+</resources>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Home screen -->
+    <string name="home_navigation">Navegación</string>
+    <string name="home_where_to">¿Adónde vamos?</string>
+    <string name="home_home">Casa</string>
+    <string name="home_work">Trabajo</string>
+    <string name="home_all_apps">Todas las apps</string>
+    <string name="home_settings">Ajustes</string>
+    <string name="home_toggle_theme">Cambiar entre tema claro y oscuro</string>
+
+    <!-- Media player -->
+    <string name="media_previous">Pista anterior</string>
+    <string name="media_play_pause">Reproducir o pausar</string>
+    <string name="media_next">Pista siguiente</string>
+    <string name="media_nothing_playing">No hay nada en reproducción</string>
+    <string name="media_nothing_playing_hint">Pon música en cualquier app y aparecerá aquí.</string>
+    <string name="media_access_needed">Mira lo que está sonando</string>
+    <string name="media_access_hint">Permite el acceso a las notificaciones para que el launcher muestre la pista y cambie entre apps.</string>
+    <string name="media_allow">Permitir acceso</string>
+    <string name="media_unknown_title">Pista desconocida</string>
+    <string name="media_live">En directo</string>
+    <string name="media_cover">Carátula del álbum</string>
+
+    <!-- Volume -->
+    <string name="volume_down">Bajar el volumen</string>
+    <string name="volume_up">Subir el volumen</string>
+
+    <!-- App drawer and app actions -->
+    <string name="drawer_title">Todas las apps</string>
+    <string name="drawer_search">Buscar</string>
+    <string name="drawer_empty">No se ha encontrado ninguna app</string>
+    <string name="app_pin">Fijar en el dock</string>
+    <string name="app_unpin">Quitar del dock</string>
+    <string name="app_info">Información de la app</string>
+    <string name="app_launch_failed">No se ha podido abrir %1$s</string>
+
+    <!-- Navigation dialogs -->
+    <string name="nav_destination_title">¿Adónde vamos?</string>
+    <string name="nav_destination_hint">Dirección o lugar</string>
+    <string name="nav_address_hint">Calle, ciudad</string>
+    <string name="nav_go">Ir</string>
+    <string name="nav_no_app">No hay ninguna app de navegación instalada</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_section_appearance">Apariencia</string>
+    <string name="settings_theme">Tema</string>
+    <string name="theme_dark">Oscuro</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_system">Igual que el sistema</string>
+    <string name="theme_auto_time">Automático (oscuro de 18:00 a 07:00)</string>
+    <string name="settings_language">Idioma</string>
+    <string name="language_system">Predeterminado del sistema</string>
+    <string name="settings_section_navigation">Navegación</string>
+    <string name="settings_home_address">Dirección de casa</string>
+    <string name="settings_work_address">Dirección del trabajo</string>
+    <string name="settings_not_set">Sin definir</string>
+    <string name="settings_section_system">Sistema</string>
+    <string name="settings_media_access">Acceso multimedia</string>
+    <string name="settings_media_access_on">Permitido</string>
+    <string name="settings_media_access_off">No permitido. Toca para abrir los ajustes del sistema.</string>
+    <string name="settings_default_launcher">Launcher predeterminado</string>
+    <string name="settings_default_launcher_summary">Elige esta app como pantalla de inicio</string>
+    <string name="settings_reset_usage">Restablecer las apps más usadas</string>
+    <string name="settings_reset_usage_summary">Borra los contadores de uso que llenan el dock</string>
+    <string name="settings_reset_done">Contadores de uso borrados</string>
+    <string name="settings_screen_unavailable">Este dispositivo no ofrece esa pantalla de ajustes</string>
+    <string name="settings_section_about">Acerca de</string>
+    <string name="settings_version">Versión %1$s</string>
+
+    <!-- Common -->
+    <string name="back">Atrás</string>
+    <string name="cancel">Cancelar</string>
+    <string name="save">Guardar</string>
+</resources>

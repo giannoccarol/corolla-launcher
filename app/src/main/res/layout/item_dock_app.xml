@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/dock_icon"
+    android:layout_height="@dimen/dock_icon"
+    android:layout_marginStart="9dp"
+    android:layout_marginEnd="9dp"
+    android:background="@drawable/bg_touch"
+    android:clickable="true"
+    android:focusable="true"
+    android:scaleType="fitCenter" />

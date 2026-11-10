@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Home screen -->
+    <string name="home_navigation">Navigatore</string>
+    <string name="home_where_to">Dove andiamo?</string>
+    <string name="home_home">Casa</string>
+    <string name="home_work">Lavoro</string>
+    <string name="home_all_apps">Tutte le app</string>
+    <string name="home_settings">Impostazioni</string>
+    <string name="home_toggle_theme">Passa dal tema chiaro a quello scuro</string>
+
+    <!-- Media player -->
+    <string name="media_previous">Brano precedente</string>
+    <string name="media_play_pause">Riproduci o metti in pausa</string>
+    <string name="media_next">Brano successivo</string>
+    <string name="media_nothing_playing">Nessuna riproduzione</string>
+    <string name="media_nothing_playing_hint">Avvia la musica in qualsiasi app e comparirà qui.</string>
+    <string name="media_access_needed">Vedi cosa stai ascoltando</string>
+    <string name="media_access_hint">Consenti l\'accesso alle notifiche: il launcher potrà mostrare il brano e passare da un\'app all\'altra.</string>
+    <string name="media_allow">Consenti accesso</string>
+    <string name="media_unknown_title">Brano sconosciuto</string>
+    <string name="media_live">In diretta</string>
+    <string name="media_cover">Copertina dell\'album</string>
+
+    <!-- Volume -->
+    <string name="volume_down">Abbassa il volume</string>
+    <string name="volume_up">Alza il volume</string>
+
+    <!-- App drawer and app actions -->
+    <string name="drawer_title">Tutte le app</string>
+    <string name="drawer_search">Cerca</string>
+    <string name="drawer_empty">Nessuna app trovata</string>
+    <string name="app_pin">Fissa nella dock</string>
+    <string name="app_unpin">Rimuovi dalla dock</string>
+    <string name="app_info">Informazioni app</string>
+    <string name="app_launch_failed">Impossibile aprire %1$s</string>
+
+    <!-- Navigation dialogs -->
+    <string name="nav_destination_title">Dove andiamo?</string>
+    <string name="nav_destination_hint">Indirizzo o luogo</string>
+    <string name="nav_address_hint">Via, città</string>
+    <string name="nav_go">Vai</string>
+    <string name="nav_no_app">Nessuna app di navigazione installata</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Impostazioni</string>
+    <string name="settings_section_appearance">Aspetto</string>
+    <string name="settings_theme">Tema</string>
+    <string name="theme_dark">Scuro</string>
+    <string name="theme_light">Chiaro</string>
+    <string name="theme_system">Segui il sistema</string>
+    <string name="theme_auto_time">Automatico (scuro dalle 18:00 alle 07:00)</string>
+    <string name="settings_language">Lingua</string>
+    <string name="language_system">Predefinita di sistema</string>
+    <string name="settings_section_navigation">Navigatore</string>
+    <string name="settings_home_address">Indirizzo di casa</string>
+    <string name="settings_work_address">Indirizzo di lavoro</string>
+    <string name="settings_not_set">Non impostato</string>
+    <string name="settings_section_system">Sistema</string>
+    <string name="settings_media_access">Accesso ai contenuti multimediali</string>
+    <string name="settings_media_access_on">Consentito</string>
+    <string name="settings_media_access_off">Non consentito. Tocca per aprire le impostazioni di sistema.</string>
+    <string name="settings_default_launcher">Launcher predefinito</string>
+    <string name="settings_default_launcher_summary">Scegli questa app come schermata Home</string>
+    <string name="settings_reset_usage">Azzera le app più usate</string>
+    <string name="settings_reset_usage_summary">Cancella i conteggi di avvio che riempiono la dock</string>
+    <string name="settings_reset_done">Conteggi di avvio azzerati</string>
+    <string name="settings_screen_unavailable">Questo dispositivo non offre quella schermata di impostazioni</string>
+    <string name="settings_section_about">Informazioni</string>
+    <string name="settings_version">Versione %1$s</string>
+
+    <!-- Common -->
+    <string name="back">Indietro</string>
+    <string name="cancel">Annulla</string>
+    <string name="save">Salva</string>
+</resources>

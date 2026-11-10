@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Light palette. The dark palette lives in values-night/colors.xml with the same names.
+     Rule: the theme is uniform, so every surface is defined in both files. -->
+<resources>
+    <color name="bg">#FFFFFF</color>
+    <color name="surface">#F1F3F5</color>
+    <color name="surface_2">#E3E6EA</color>
+    <color name="text_primary">#15171A</color>
+    <color name="text_secondary">#59606B</color>
+    <color name="line">#1A0F141E</color>
+    <color name="track">#D5D9DF</color>
+    <color name="ripple">#1F000000</color>
+    <color name="chip_on_bg">#15171A</color>
+    <color name="chip_on_text">#FFFFFF</color>
+    <color name="chip_off_text">#59606B</color>
+
+    <!-- Same in both themes. -->
+    <color name="accent">#3B76F6</color>
+    <color name="on_accent">#FFFFFF</color>
+</resources>
