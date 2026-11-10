@@ -17,12 +17,13 @@ it should run on any landscape Android head unit.
   - **Top bar**: your name (configurable), tabs for Home, Navigation (opens the maps app) and
     Apps, then GPS, Bluetooth and network status, date and time.
   - **Navigation card**: "Where to?" search, Home and Work, the last two places searched, and
-    the current **speed and heading** from GPS.
+    the current **speed and heading** from GPS, shown as a digital dash in the spirit of a
+    late-90s roadster: a rising bar graph that turns amber past 130 km/h over big LCD digits.
   - **Media card** that follows whatever is playing. Every app with an active media session
     (Spotify, YouTube Music, a podcast app...) appears as a chip; tap one to switch source.
     Title, artist, cover and progress; play/pause/next/previous always work.
   - **Most used**: the four apps you launch most, with their real icons.
-  - **Car card**: a photo of the Corolla and a **trip computer** (distance, duration, average
+  - **Car card**: a photo of the Corolla sitting on a soft ground shadow, and a **trip computer** (distance, duration, average
     speed) measured from GPS. A trip ends after 20 minutes standing still.
   - **Quick settings**: theme, plus Wi-Fi, Bluetooth, display and audio tiles that open the
     launcher's own panels instead of system settings: Wi-Fi switch and nearby networks,
@@ -233,7 +234,7 @@ app/src/main/res/
   values-xx/              translations
 docs/                     architecture, design tokens, head unit notes
 art/                      source artwork (the original car photo)
-scripts/                  translation check, emulator helper
+scripts/                  translation check, emulator helper, car picture builder
 .claude/                  skills and agents for AI coding assistants
 ```
 

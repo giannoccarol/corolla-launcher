@@ -147,9 +147,30 @@ height before it scrolls. Rows are at least 64dp, switch rows 76dp, buttons 60dp
 68x38dp with a 30dp knob; sliders have a 16dp track, a 34dp knob and 56dp minus and plus
 buttons, because a finger in a moving car cannot hit a thin line.
 
+## Speed gauge
+
+`ui/SpeedGauge` draws the speed panel on a canvas, in the spirit of a late-90s Japanese
+roadster's digital dash (an inspiration, not a copy of any maker's artwork):
+
+- **Bar graph** across the panel: 36 segments, 5 km/h each up to 180, rising in height from
+  left to right. Lit segments are the accent colour, amber (`gauge_warn`) from 130 km/h, the
+  Italian motorway limit; unlit ones stay faintly visible (`gauge_ghost`). The bar glides to a
+  new speed (450 ms) and the segment being reached fades in.
+- **Digits**: three italic seven-segment digits, 52dp tall, unlit segments ghosted like an LCD.
+  They change at once, as a real LCD does. No speed shows three dashes.
+- Scale 0 · 60 · 120 · 180 under the bar; heading at the bottom right.
+
 ## Car photo
 
-`art/corolla-e120.png` is the source (transparent background). The app ships it pre-scaled
+`art/corolla-e120.png` is the source (transparent background).
+`scripts/make_car_image.py` builds the app's picture from it: it finds the three visible tyre
+contact points, infers the hidden fourth, and lays a ground shadow under the car in three
+layers (wide soft ambient shadow over the footprint, darker core under the body, tight contact
+patches under the tyres), so the shadow follows the 3/4 perspective. It then writes one WebP
 per density in `res/drawable-{mdpi,hdpi,xhdpi,xxhdpi}/car_corolla.webp`, sized for the 216 dp
-it is drawn at, with a light unsharp mask. Letting Android shrink one large bitmap made it look
-soft, because it scales without mipmaps. Regenerate all four from the source if it changes.
+it is drawn at, with a light unsharp mask (letting Android shrink one large bitmap made it look
+soft). Run it again whenever the source photo changes:
+
+```bash
+python3 scripts/make_car_image.py --preview /tmp/car.png
+```

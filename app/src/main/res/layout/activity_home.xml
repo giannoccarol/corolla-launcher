@@ -349,42 +349,29 @@
                     android:textSize="14sp" />
             </LinearLayout>
 
-            <LinearLayout
+            <!-- Speed: a bar graph across the whole panel, big LCD digits under it, heading at
+                 the bottom right. -->
+            <FrameLayout
                 android:id="@+id/speedPanel"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="116dp"
                 android:background="@drawable/bg_panel"
                 android:clickable="true"
                 android:focusable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingStart="18dp"
-                android:paddingEnd="18dp">
+                android:paddingStart="14dp"
+                android:paddingTop="12dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="10dp">
 
-                <TextView
-                    android:id="@+id/speedValue"
-                    android:fontFeatureSettings="tnum"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-light"
-                    android:includeFontPadding="false"
-                    android:textColor="@color/text_primary"
-                    android:textSize="44sp"
-                    tools:text="0" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="@string/unit_kmh"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="14sp" />
+                <io.github.giannoccarol.corollalauncher.ui.SpeedGauge
+                    android:id="@+id/speedGauge"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_weight="1"
+                    android:layout_gravity="bottom|end"
                     android:gravity="end"
                     android:orientation="vertical">
 
@@ -394,7 +381,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-medium"
                         android:gravity="end"
-                        android:maxLines="2"
+                        android:maxLines="3"
                         android:textColor="@color/text_primary"
                         android:textSize="17sp"
                         tools:text="NE" />
@@ -408,7 +395,7 @@
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp" />
                 </LinearLayout>
-            </LinearLayout>
+            </FrameLayout>
         </LinearLayout>
 
         <!-- Centre column: media player and most used apps -->

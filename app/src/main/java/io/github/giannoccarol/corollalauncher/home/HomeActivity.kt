@@ -402,6 +402,7 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
     // region Speed and trip
 
     private fun setUpCar() {
+        binding.speedGauge.unitText = getString(R.string.unit_kmh)
         labelStat(binding.statDistance, R.string.trip_distance)
         labelStat(binding.statDuration, R.string.trip_duration)
         labelStat(binding.statAverage, R.string.trip_average)
@@ -583,17 +584,19 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
         val dash = getString(R.string.value_missing)
 
         val speed = if (allowed) TripTracker.speedKmh() else null
-        binding.speedValue.update(speed?.let { formatInt(it) } ?: dash)
+        binding.speedGauge.setSpeed(speed)
         val bearing = TripTracker.bearing
         when {
             !allowed -> {
                 binding.headingValue.update(getString(R.string.speed_tap_to_enable))
+                binding.headingValue.textSize = HINT_TEXT_SP
                 binding.headingLabel.visibility = View.GONE
             }
             else -> {
                 binding.headingValue.update(
                     bearing?.let { getString(COMPASS[Compass.pointIndex(it)]) } ?: dash,
                 )
+                binding.headingValue.textSize = HEADING_TEXT_SP
                 binding.headingLabel.visibility = View.VISIBLE
             }
         }
@@ -1035,6 +1038,8 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
         const val ACTION_VOLUME_CHANGED = "android.media.VOLUME_CHANGED_ACTION"
         const val PROGRESS_MAX = 1000
         const val TINT_SAMPLE = 8
+        const val HEADING_TEXT_SP = 22f
+        const val HINT_TEXT_SP = 14f
         const val TINT_ALPHA_DARK = 0.34f
         const val TINT_ALPHA_LIGHT = 0.2f
         const val TICK_MS = 1000L

@@ -14,6 +14,9 @@
     <color name="chip_off_text">#C5CAD3</color>
     <color name="tile_on_bg">#1D2E52</color>
     <color name="tile_on_text">#A9C5FF</color>
+    <!-- Speed gauge: segments past the motorway limit, and unlit LCD segments. -->
+    <color name="gauge_warn">#F5A524</color>
+    <color name="gauge_ghost">#14FFFFFF</color>
     <color name="card_highlight">#0DFFFFFF</color>
     <color name="card_border">#14FFFFFF</color>
     <color name="sheet_surface">#EB15171B</color>
