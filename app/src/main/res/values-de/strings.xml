@@ -169,6 +169,13 @@
     <string name="settings_ai_model_other">Anderes Modell…</string>
     <string name="settings_ai_model_hint">Modellname</string>
     <string name="settings_ai_speak">Antworten vorlesen</string>
+    <string name="llm_too_many_steps">Das hat zu viele Schritte gebraucht. Frag bitte einfacher.</string>
+    <string name="assistant_music_failed">Keine Musik-App hier kann eine Suche abspielen.</string>
+    <string name="assistant_step_web">Suche im Web…</string>
+    <string name="assistant_step_weather">Prüfe das Wetter…</string>
+    <string name="assistant_step_places">Suche nach Orten…</string>
+    <string name="assistant_step_location">Ermittle, wo wir sind…</string>
+    <string name="settings_data_credits">Karten- und Wetterdaten</string>
 
     <!-- Settings -->
     <string name="settings_title">Einstellungen</string>

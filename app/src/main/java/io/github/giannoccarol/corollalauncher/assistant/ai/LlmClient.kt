@@ -3,6 +3,7 @@ package io.github.giannoccarol.corollalauncher.assistant.ai
 import androidx.annotation.StringRes
 import io.github.giannoccarol.corollalauncher.BuildConfig
 import io.github.giannoccarol.corollalauncher.R
+import io.github.giannoccarol.corollalauncher.assistant.Transport
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.SocketTimeoutException
@@ -33,6 +34,21 @@ data class ChatMessage(val role: ChatRole, val text: String)
  * for quick spoken answers, server-side fallback on refusals, and a `refusal` check.
  */
 class LlmClient {
+
+    /** For the tool loop: one POST, parsed, with this client's error handling. */
+    val transport = Transport { url, headers, body ->
+        parse(request(url, headers, body))
+    }
+
+    fun anthropicHeaders(config: AiConfig): Map<String, String> = buildMap {
+        put("anthropic-version", "2023-06-01")
+        put("x-api-key", config.apiKey)
+        if (config.provider.id == "anthropic" && config.model in FALLBACK_MODELS) {
+            put("anthropic-beta", "server-side-fallback-2026-07-01")
+        }
+    } + sessionHeaders(config)
+
+    fun openAiHeaders(config: AiConfig): Map<String, String> = bearer(config)
 
     fun complete(config: AiConfig, system: String, messages: List<ChatMessage>): String =
         when (config.style) {
@@ -65,14 +81,7 @@ class LlmClient {
             }
             put("messages", messagesArray(messages, assistantRole = "assistant"))
         }
-        val headers = buildMap {
-            put("anthropic-version", "2023-06-01")
-            put("x-api-key", config.apiKey)
-            if (firstParty && config.model in FALLBACK_MODELS) {
-                put("anthropic-beta", "server-side-fallback-2026-07-01")
-            }
-        } + sessionHeaders(config)
-        val root = parse(request("${base(config)}/messages", headers, body))
+        val root = parse(request("${base(config)}/messages", anthropicHeaders(config), body))
         if (root.optString("stop_reason") == "refusal") throw LlmException(R.string.llm_refused)
         val content = root.optJSONArray("content") ?: JSONArray()
         val text = buildString {

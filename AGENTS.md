@@ -53,9 +53,11 @@ visible change has been looked at on the emulator in **both themes**.
 7. **No sounds.** The theme disables view click sounds; do not re-enable them, and do not add
    audio feedback of any kind. The one exception is the assistant reading its reply aloud,
    which the driver asked for and can turn off (*Settings → Read replies aloud*).
-8. **The assistant only does what its action list allows.** New capabilities go through
-   `AssistantAction` (parsed in `AssistantReply`, carried out in `HomeActivity.perform`), never
-   by running free-form model output. Keep the prompt's car state free of addresses, contacts
+8. **The assistant only does what its tools allow.** New capabilities are tools in `CarTools`
+   (actions are queued as `AssistantAction` and carried out in `HomeActivity.perform`), never
+   free-form model output that gets executed. Every tool that calls an outside service sends
+   only what the question needs, and its data source is credited in the README and in
+   *Settings → About*. Keep the prompt's car state free of addresses, contacts
    and anything else personal beyond what an action needs. API keys live in `KeyVault` only:
    never log them, never commit `local.properties`.
 9. **Fail soft.** Head unit firmware strips system apps and settings screens. Every
@@ -94,7 +96,8 @@ visible change has been looked at on the emulator in **both themes**.
 | New status bar icon | `view_status_bar.xml` (other screens), the top bar in `activity_home.xml`, and `status/StatusBarController.kt` |
 | New home card | `activity_home.xml` plus a `setUp…`/`render…` pair in `HomeActivity` |
 | Trip or GPS logic | `trip/TripStats.kt` (pure, unit tested), `trip/TripTracker.kt` |
-| New assistant action | `assistant/AssistantReply.kt` (type + parsing + test), the list in `CarAssistant.systemPrompt`, `HomeActivity.perform` |
+| New assistant tool | `assistant/tools/CarTools.kt` (spec + `run` + test); an action tool also needs an `AssistantAction` and `HomeActivity.perform` |
+| New assistant action in the fallback protocol | `assistant/AssistantReply.kt` (parsing + test), `CarAssistant.jsonPrompt` |
 | New AI provider | `assistant/ai/AiProviders.kt` |
 | New animation | a function in `ui/Motion.kt`, or an XML in `res/anim/` used from it |
 | Device finding | `docs/head-unit.md` |

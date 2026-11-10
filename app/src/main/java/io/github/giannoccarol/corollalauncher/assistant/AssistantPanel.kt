@@ -7,6 +7,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import io.github.giannoccarol.corollalauncher.R
 import io.github.giannoccarol.corollalauncher.assistant.ai.LlmException
+import io.github.giannoccarol.corollalauncher.assistant.tools.CarTools
 import io.github.giannoccarol.corollalauncher.databinding.ViewAssistantBinding
 import io.github.giannoccarol.corollalauncher.panels.Sheet
 import io.github.giannoccarol.corollalauncher.settings.Prefs
@@ -120,7 +121,22 @@ class AssistantPanel(
         status = activity.getString(R.string.assistant_thinking)
         pulse(0f)
         update()
-        assistant.ask(text, host.carContext(), languageName(), ::onReply, ::onError)
+        assistant.ask(text, host.carContext(), locale(), ::onStep, ::onReply, ::onError)
+    }
+
+    /** Shows which lookup is running, so a few seconds of silence make sense. */
+    private fun onStep(step: String) {
+        if (!isShowing || state != State.THINKING) return
+        status = activity.getString(
+            when (step) {
+                CarTools.STEP_WEB -> R.string.assistant_step_web
+                CarTools.STEP_WEATHER -> R.string.assistant_step_weather
+                CarTools.STEP_PLACES -> R.string.assistant_step_places
+                CarTools.STEP_LOCATION -> R.string.assistant_step_location
+                else -> R.string.assistant_thinking
+            },
+        )
+        update()
     }
 
     private fun onReply(answer: AssistantReply) {
@@ -139,7 +155,8 @@ class AssistantPanel(
 
         val leavesLauncher = others.any {
             it is AssistantAction.Navigate || it is AssistantAction.NavigateHome ||
-                it is AssistantAction.NavigateWork || it is AssistantAction.OpenApp
+                it is AssistantAction.NavigateWork || it is AssistantAction.OpenApp ||
+                it is AssistantAction.PlayMusic
         }
         if (theme.isNotEmpty()) {
             dismiss()
@@ -224,8 +241,6 @@ class AssistantPanel(
     private fun locale(): Locale = activity.resources.configuration.locales[0] ?: Locale.getDefault()
 
     private fun languageTag(): String = locale().toLanguageTag()
-
-    private fun languageName(): String = locale().getDisplayLanguage(Locale.ENGLISH).ifBlank { "English" }
 
     private companion object {
         const val DISABLED_ALPHA = 0.4f

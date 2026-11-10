@@ -116,7 +116,20 @@ mic button / wheel key ─▶ AssistantPanel ─▶ SpeechController (system rec
   the system prompt is marked for caching; `fallbacks: "default"` with the
   `server-side-fallback-2026-07-01` beta lets the API retry a refused request on another model;
   a `refusal` stop reason becomes a spoken "declined" message.
-- **Protocol**: the model must answer with one JSON object, `{"say": ..., "actions": [...]}`.
+- **Tools** (`ToolAgent`, `tools/CarTools`): for Anthropic Messages and OpenAI-compatible
+  providers the assistant runs a tool loop: request, run the tools the model calls, send the
+  results back, at most five model calls per question, until the model answers in text. The
+  transcript is kept in the provider's own wire format and sent back unchanged, thinking
+  blocks and web search results included, as the Anthropic API requires; after six questions
+  the conversation starts over rather than being trimmed. Information tools run on the worker
+  thread (`tools/Weather` on Open-Meteo, `tools/Places` on Overpass and Nominatim, location from
+  the last GPS fix). Action tools are validated and queued, and the panel carries them out
+  after the answer, so the theme change cannot recreate the screen mid-request. Anthropic also
+  gets its server-side `web_search_20260209` tool (three searches per question at most); a
+  `pause_turn` stop resends the conversation so the search can finish. An OpenAI-compatible
+  provider that answers 400 to the first tool request is switched to the JSON protocol below
+  for the rest of the conversation.
+- **Fallback protocol** (other API styles): the model must answer with one JSON object, `{"say": ..., "actions": [...]}`.
   `AssistantReply` (unit tested) tolerates code fences and stray text, drops unknown actions,
   and speaks plain text as is. Only the actions listed in the prompt exist; `HomeActivity`
   carries them out and turns failures (app not found, address not saved) into extra speech.

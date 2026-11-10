@@ -1,6 +1,8 @@
 package io.github.giannoccarol.corollalauncher.home
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.app.SearchManager
 import android.accessibilityservice.AccessibilityService
 import android.bluetooth.BluetoothAdapter
 import android.content.ActivityNotFoundException
@@ -14,6 +16,8 @@ import android.media.AudioManager
 import android.media.MediaMetadata
 import android.media.session.MediaController
 import android.media.session.PlaybackState
+import android.location.LocationManager
+import android.provider.MediaStore
 import android.net.Uri
 import android.net.wifi.WifiManager
 import android.os.Build
@@ -430,7 +434,55 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
             workSaved = prefs.workAddress != null,
             darkTheme = ThemeManager.isDark(this),
             appNames = AppRepository.apps.map { it.label }.distinct(),
+            position = currentPosition(),
         )
+    }
+
+    /** The last GPS fix, or the system's last known position, when location is allowed. */
+    @SuppressLint("MissingPermission") // Checked first.
+    private fun currentPosition(): Pair<Double, Double>? {
+        if (!TripTracker.hasPermission(this)) return null
+        TripTracker.lastPosition?.let { return it }
+        val manager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return listOf(LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER, LocationManager.PASSIVE_PROVIDER)
+            .firstNotNullOfOrNull { provider ->
+                try {
+                    manager.getLastKnownLocation(provider)
+                } catch (e: IllegalArgumentException) {
+                    null // This unit has no such provider.
+                } catch (e: SecurityException) {
+                    null
+                }
+            }
+            ?.let { it.latitude to it.longitude }
+    }
+
+    /** "Play X": the standard media search intent, which Spotify and most music apps handle. */
+    private fun playMusic(query: String, appName: String?): String? {
+        val app = appName?.let { name ->
+            AppRepository.apps.let { apps -> AppMatcher.find(apps.map { it.label }, name)?.let(apps::get) }
+        }
+        val intent = Intent(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH)
+            .putExtra(SearchManager.QUERY, query)
+            .putExtra(MediaStore.EXTRA_MEDIA_FOCUS, "vnd.android.cursor.item/*")
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        app?.let { intent.setPackage(it.component.packageName) }
+        return try {
+            startActivity(intent)
+            null
+        } catch (e: ActivityNotFoundException) {
+            if (app != null) {
+                // That app does not take searches: let any app that does.
+                try {
+                    startActivity(intent.setPackage(null))
+                    null
+                } catch (e: ActivityNotFoundException) {
+                    getString(R.string.assistant_music_failed)
+                }
+            } else {
+                getString(R.string.assistant_music_failed)
+            }
+        }
     }
 
     override fun perform(action: AssistantAction): String? = when (action) {
@@ -451,6 +503,7 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
             }
             null
         }
+        is AssistantAction.PlayMusic -> playMusic(action.query, action.app)
         is AssistantAction.OpenApp -> {
             val apps = AppRepository.apps
             val index = AppMatcher.find(apps.map { it.label }, action.name)

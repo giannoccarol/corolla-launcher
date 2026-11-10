@@ -30,6 +30,11 @@ object TripTracker {
     var bearing: Float? = null
         private set
 
+    /** The latest fix's position, for the assistant's weather and places tools. */
+    @Volatile
+    var lastPosition: Pair<Double, Double>? = null
+        private set
+
     /** True once at least one fix arrived since tracking started. */
     var hasFix: Boolean = false
         private set
@@ -121,6 +126,7 @@ object TripTracker {
         )
         if (location.hasBearing() && stats.isMoving(timeMs)) bearing = location.bearing
         hasFix = true
+        lastPosition = location.latitude to location.longitude
         notifyListeners()
     }
 

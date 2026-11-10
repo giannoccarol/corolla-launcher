@@ -136,6 +136,7 @@ class SettingsActivity : LauncherActivity() {
         }
 
         section(R.string.settings_section_about)
+        row(R.string.settings_data_credits, getString(R.string.settings_data_credits_summary), onClick = null)
         row(
             R.string.app_name,
             getString(R.string.settings_version, BuildConfig.VERSION_NAME),

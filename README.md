@@ -8,7 +8,7 @@ it should run on any landscape Android head unit.
 | --- | --- |
 | ![Home screen, dark theme](docs/screenshots/home-dark.png) | ![Home screen, light theme](docs/screenshots/home-light.png) |
 
-> **Status: 0.2.0, tested on an emulator only.** The app has not run on the real head unit
+> **Status: 0.3.0, tested on an emulator only.** The app has not run on the real head unit
 > yet. See [Known limits](#known-limits) and [docs/head-unit.md](docs/head-unit.md).
 
 ## What it does
@@ -31,10 +31,20 @@ it should run on any landscape Android head unit.
   - **Bottom bar**: Back, Home and Recent apps on the left, four docked apps around the All apps
     button, volume on the right.
 - **Voice assistant** (Assistant button in the top bar, or the steering wheel voice button):
-  speak or type, hear the answer. It answers general questions and can start navigation, go
-  home or to work, control the music, open apps, set the volume and switch the theme. Works with
-  the same providers as the Monetine app: Anthropic (default, `claude-opus-5-5`), OpenAI,
-  Google Gemini, OpenRouter, xAI, DeepSeek, Mistral, Groq and others, with your own API key.
+  speak or type, hear the answer. It works with tools, so it can look things up and then act
+  ("find a petrol station near here and take me there"):
+  - **web search** for news, scores, opening hours and anything recent (Anthropic only);
+  - **weather** now and for the next days, here or in a named town (Open-Meteo);
+  - **places nearby** by category (fuel, EV charging, parking, cafés, pharmacies...) or by name,
+    nearest first (OpenStreetMap);
+  - **where am I**: the street address of the car;
+  - **play music** by artist, song, playlist or station, optionally in a named app;
+  - **actions**: navigate (to an address, a found place, home or work), media controls, open
+    apps, volume, theme.
+
+  Works with the same providers as the Monetine app, with your own API key: Anthropic (default,
+  `claude-opus-5-5`), OpenAI, Google Gemini, OpenRouter, xAI, DeepSeek, Mistral, Groq and
+  others. Providers without tool support fall back to the actions only.
 - **All apps** grid with search. Long press an app to pin it to the bottom bar or open its
   system info.
 - **Light and dark themes**, always uniform: all black or all white, never mixed. Dark by
@@ -178,9 +188,16 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
   and the actions are unverified. Speech recognition needs a recogniser on the device (the
   Google app provides one where Google services exist); the emulator has none, so voice input
   is untested too and the panel falls back to typing.
-- **What the assistant sends to the provider**: your words, the time, speed, trip distance, the
-  track playing, whether home/work are saved (not the addresses) and the names of installed
-  apps. Nothing is sent until you talk to it.
+- **What the assistant sends, and to whom**: to the AI provider your words, the time, speed,
+  trip distance, the track playing, whether home/work are saved (not the addresses) and the
+  names of installed apps; the car's coordinates only when it asks "where am I". To Open-Meteo
+  and OpenStreetMap the car's coordinates, only when a weather or places question needs them.
+  Nothing is sent until you talk to it.
+- **Web search is Anthropic's** (a server tool, same key, billed per search on top of tokens);
+  with other providers the assistant cannot search the web. Open-Meteo and OpenStreetMap are
+  free and keyless, with fair-use limits a car never reaches.
+- **"Play music" depends on the music app** handling Android's standard play-from-search
+  request; Spotify does, many radio apps do not.
 - **Hiding the system bar is untested on the unit.** Some firmwares draw their bar as an
   overlay that an app cannot hide.
 - **Animation smoothness is unmeasured on real hardware.** They are built to be cheap, but if
@@ -199,7 +216,8 @@ app/src/main/java/.../corollalauncher/
   status/                 the launcher's own status bar
   trip/                   GPS speed, heading and trip computer, foreground service
   panels/                 the launcher's own Wi-Fi, Bluetooth, display and audio panels
-  assistant/              voice assistant: speech, text-to-speech, prompt, actions
+  assistant/              voice assistant: speech, text-to-speech, prompt, tool loop, actions
+  assistant/tools/        weather, places, location and action tools
   assistant/ai/           AI providers and the HTTP client (ported from Monetine)
   keys/                   accessibility service behind the dock's system keys
   nav/                    navigation intents, recent destinations
@@ -250,6 +268,10 @@ two reviewers for head unit constraints and translations.
   (`ai/AiProviders.kt`, `ai/LlmClient.kt`, `ai/LlmBodies.kt`, `data/settings/KeyVault.kt`,
   `voice/SpeechController.kt`), whose provider list follows pi-desktop. Rewritten to use
   Android's org.json and a worker thread instead of kotlinx.serialization and coroutines.
+- Weather data by [Open-Meteo](https://open-meteo.com), CC BY 4.0.
+- Places and addresses © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors,
+  ODbL, through the [Overpass API](https://overpass-api.de) and
+  [Nominatim](https://nominatim.org). The attribution is also shown in *Settings → About*.
 - [JSON-java](https://github.com/stleary/JSON-java) (org.json), Public Domain, used only by unit
   tests (Android ships its own copy).
 - The Toyota Corolla E120 photo (`art/corolla-e120.png`, resized into

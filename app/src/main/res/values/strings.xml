@@ -183,6 +183,14 @@
     <string name="settings_ai_model_other">Other model…</string>
     <string name="settings_ai_model_hint">Model name</string>
     <string name="settings_ai_speak">Read replies aloud</string>
+    <string name="llm_too_many_steps">That took too many steps. Try asking more simply.</string>
+    <string name="assistant_music_failed">No music app here can play a search.</string>
+    <string name="assistant_step_web">Searching the web…</string>
+    <string name="assistant_step_weather">Checking the weather…</string>
+    <string name="assistant_step_places">Looking for places…</string>
+    <string name="assistant_step_location">Finding where we are…</string>
+    <string name="settings_data_credits">Map and weather data</string>
+    <string name="settings_data_credits_summary" translatable="false">© OpenStreetMap contributors (ODbL) · Open-Meteo (CC BY 4.0)</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>

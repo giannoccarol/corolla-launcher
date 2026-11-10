@@ -13,6 +13,9 @@ sealed interface AssistantAction {
     data class Media(val command: MediaCommand) : AssistantAction
     data class OpenApp(val name: String) : AssistantAction
 
+    /** Plays a search ("Vasco Rossi", "radio jazz"), in [app] when given. */
+    data class PlayMusic(val query: String, val app: String?) : AssistantAction
+
     /** Either an absolute [percent] or a relative [step] of -1 or +1. */
     data class Volume(val percent: Int?, val step: Int) : AssistantAction
     data class Theme(val dark: Boolean) : AssistantAction
