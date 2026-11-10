@@ -8,6 +8,9 @@ import android.net.Uri
 /** Hands destinations to whatever navigation app is installed. */
 object NavigationShortcuts {
 
+    /** Opens the default maps app on the current position. */
+    fun openMap(context: Context): Boolean = start(context, Uri.parse("geo:0,0"))
+
     /** Opens the default maps app on a search for [query]. Works with any app that handles `geo:`. */
     fun search(context: Context, query: String): Boolean =
         start(context, Uri.parse("geo:0,0?q=" + Uri.encode(query)))

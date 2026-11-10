@@ -2,11 +2,32 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Both are install-time permissions, used only to draw the status bar icons. -->
+    <!-- Install-time permissions for the status icons and the Wi-Fi and Bluetooth tiles. On
+         newer Android versions the tiles open the system panel instead of switching directly. -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission
+        android:name="android.permission.CHANGE_WIFI_STATE"
+        android:maxSdkVersion="28" />
     <uses-permission
         android:name="android.permission.BLUETOOTH"
         android:maxSdkVersion="30" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" />
+
+    <!-- Speed, heading and the trip computer. Location is asked for only when the driver taps
+         the speed or car card; the foreground service keeps fixes coming while another app is
+         in front. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+
+    <!-- A GPS receiver is welcome but not required: without it the speed card stays empty. -->
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
 
     <!-- Android 11+ package visibility: a launcher needs to see every launchable app. -->
     <queries>
@@ -69,6 +90,11 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
+
+        <service
+            android:name=".trip.TripService"
+            android:exported="false"
+            android:foregroundServiceType="location" />
 
         <!-- Sends Back, Home and Recents for the dock buttons. Off until the user enables it
              in the accessibility settings. It subscribes to no events and reads no content. -->

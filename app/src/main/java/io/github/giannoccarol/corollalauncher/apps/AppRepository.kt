@@ -17,7 +17,11 @@ import java.util.concurrent.Executors
  */
 object AppRepository {
 
-    const val DOCK_SIZE = 6
+    /** Apps in the bottom bar: two on each side of the All apps button. */
+    const val DOCK_SIZE = 4
+
+    /** Apps in the "Most used" card. */
+    const val MOST_USED_SIZE = 4
 
     private val executor = Executors.newSingleThreadExecutor()
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -62,12 +66,24 @@ object AppRepository {
         }
     }
 
-    /** The apps currently shown in the dock; see [DockSelector] for the rules. */
+    /**
+     * The bottom bar: pinned apps, then car essentials. Launch counts are left out on purpose,
+     * so the bar stays put and can be used from muscle memory.
+     */
     fun dockApps(context: Context): List<AppInfo> {
-        val prefs = Prefs(context)
         val byKey = apps.associateBy { it.key }
         return DockSelector
-            .select(apps.map { it.key }, prefs.pinnedApps, prefs.launchCounts(), DOCK_SIZE)
+            .select(apps.map { it.key }, Prefs(context).pinnedApps, emptyMap(), DOCK_SIZE)
+            .mapNotNull { byKey[it] }
+    }
+
+    /** The "Most used" card: by launch count, never repeating an app already in [dock]. */
+    fun mostUsedApps(context: Context, dock: List<AppInfo>): List<AppInfo> {
+        val dockKeys = dock.map { it.key }.toSet()
+        val candidates = apps.filter { it.key !in dockKeys }
+        val byKey = candidates.associateBy { it.key }
+        return DockSelector
+            .select(candidates.map { it.key }, emptyList(), Prefs(context).launchCounts(), MOST_USED_SIZE)
             .mapNotNull { byKey[it] }
     }
 

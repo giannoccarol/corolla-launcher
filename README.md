@@ -8,25 +8,27 @@ it should run on any landscape Android head unit.
 | --- | --- |
 | ![Home screen, dark theme](docs/screenshots/home-dark.png) | ![Home screen, light theme](docs/screenshots/home-light.png) |
 
-> **Status: 0.1.0, tested on an emulator only.** The app has not run on the real head unit
+> **Status: 0.2.0, tested on an emulator only.** The app has not run on the real head unit
 > yet. See [Known limits](#known-limits) and [docs/head-unit.md](docs/head-unit.md).
 
 ## What it does
 
-- **Home screen** with a large clock, navigation shortcuts, a media player and a dock.
-- **Full screen, with its own status bar.** The system bars are hidden while the launcher is in
-  front. A slim bar in the app's style shows time, date and whether GPS, Bluetooth and the
-  network are on.
-- **System keys in the dock**: Back, Home and Recent apps sit bottom left, where the hidden
-  system bar would have had them.
-- **Media player** that follows whatever is playing. Every app with an active media session
-  (Spotify, YouTube Music, a podcast app...) appears as a chip; tap one to switch source.
-  Shows title, artist, cover and progress; play/pause/next/previous always work.
-- **Dock** with the real icons of your most used apps. It fills itself from launch counts,
-  and you can pin apps with a long press. Volume controls sit on the right.
-- **All apps** grid with search. Long press an app to pin it or open its system info.
-- **Navigation shortcuts**: "Where to?" searches in your maps app; Home and Work start
-  navigation to saved addresses (long press to change them).
+- **Dashboard home screen** made of cards, full screen, with the system bars hidden:
+  - **Top bar**: your name (configurable), tabs for Home, Navigation (opens the maps app) and
+    Apps, then GPS, Bluetooth and network status, date and time.
+  - **Navigation card**: "Where to?" search, Home and Work, the last two places searched, and
+    the current **speed and heading** from GPS.
+  - **Media card** that follows whatever is playing. Every app with an active media session
+    (Spotify, YouTube Music, a podcast app...) appears as a chip; tap one to switch source.
+    Title, artist, cover and progress; play/pause/next/previous always work.
+  - **Most used**: the four apps you launch most, with their real icons.
+  - **Car card**: a photo of the Corolla and a **trip computer** (distance, duration, average
+    speed) measured from GPS. A trip ends after 20 minutes standing still.
+  - **Quick settings**: theme, Wi-Fi, Bluetooth, display, audio (equalizer) and Settings.
+  - **Bottom bar**: Back, Home and Recent apps on the left, four docked apps around the All apps
+    button, volume on the right.
+- **All apps** grid with search. Long press an app to pin it to the bottom bar or open its
+  system info.
 - **Light and dark themes**, always uniform: all black or all white, never mixed. Dark by
   default, with manual, follow-system and time-based modes.
 - **Five languages**: English, Italian, German, Spanish, French. Switch in Settings, on any
@@ -75,7 +77,9 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
 2. Install: `adb install -r app/build/outputs/apk/debug/app-debug.apk`
 3. Press Home and choose **Corolla Launcher**, or open *Settings → Default launcher* in the app.
    Some units hide this choice; see [docs/head-unit.md](docs/head-unit.md) for workarounds.
-4. Allow media access so the player can see what is playing. Either tap **Allow access** on the
+4. Tap the speed or car card once and allow location, so speed and trip work. The app never
+   asks on its own. Over adb: `adb shell pm grant <package> android.permission.ACCESS_FINE_LOCATION`.
+5. Allow media access so the player can see what is playing. Either tap **Allow access** on the
    home screen, or grant it over adb:
 
    ```bash
@@ -84,7 +88,7 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
    ```
 
    Drop `.debug` from the package name for release builds.
-5. To make the **Recent apps** key work, enable *Corolla Launcher* under the system
+6. To make the **Recent apps** key work, enable *Corolla Launcher* under the system
    Accessibility settings (the app explains this the first time you tap the key), or over adb:
 
    ```bash
@@ -101,13 +105,15 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
 
 | Action | How |
 | --- | --- |
-| Open an app | Tap its icon in the dock or in **All apps** (grid button, left of the icons) |
+| Set your name | Tap the name at the top left, or *Settings → Your name* |
+| Open an app | Tap its icon in the bottom bar, in **Most used** or in **All apps** |
 | See recent apps | Square key, bottom left (needs the accessibility service, see above) |
 | Show the system bars | Swipe in from the top or bottom edge; they hide again by themselves |
-| Pin or unpin a dock app | Long press the icon |
+| Pin or unpin a bottom bar app | Long press the icon |
+| Turn on speed and trip | Tap the speed or car card and allow location |
 | Switch media source | Tap the app chip at the top of the player |
-| Set Home / Work address | Long press the button, or *Settings → Navigation* |
-| Switch theme | Sun/moon button (top right), or *Settings → Theme* for all modes |
+| Set Home / Work address | Long press the row, or *Settings → Navigation* |
+| Switch theme | The theme tile in quick settings, or *Settings → Theme* for all modes |
 | Change language | *Settings → Language* |
 | Turn animations off | *Settings → Animations* |
 
@@ -128,6 +134,15 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
   that acts.
 - **The Bluetooth icon means "Bluetooth is on"**, not "a phone is connected". Showing the
   connection would need a runtime permission the app currently avoids.
+- **Speed and trip come from the unit's GPS antenna** and were tested only with simulated
+  fixes. Many head units have a weak antenna; the app shows "Waiting for GPS" until a fix
+  arrives. The trip restarts if the app process is restarted.
+- **A small notification stays while location is on** ("Trip computer on"). Android requires
+  it for apps that read GPS in the background; it is silent and low priority.
+- **Wi-Fi and Bluetooth tiles switch directly only on Android 9 and 11 or below**
+  respectively. On newer versions Android forbids it, and the tile opens the system panel.
+- **The Audio tile opens the system equalizer**, which head units often replace with their own
+  DSP app; that app's package is still unknown (see [docs/head-unit.md](docs/head-unit.md)).
 - **Hiding the system bar is untested on the unit.** Some firmwares draw their bar as an
   overlay that an app cannot hide.
 - **Animation smoothness is unmeasured on real hardware.** They are built to be cheap, but if
@@ -144,8 +159,9 @@ app/src/main/java/.../corollalauncher/
   apps/                   app list, dock selection, icons, app drawer
   media/                  media session tracking and media key fallback
   status/                 the launcher's own status bar
+  trip/                   GPS speed, heading and trip computer, foreground service
   keys/                   accessibility service behind the dock's system keys
-  nav/                    navigation intents
+  nav/                    navigation intents, recent destinations
   settings/               preferences, languages, settings screen
   theme/                  light/dark handling
   ui/                     base activity, full-screen handling, text dialog, motion
@@ -153,6 +169,7 @@ app/src/main/res/
   values/ values-night/   light and dark colors (same names in both)
   values-xx/              translations
 docs/                     architecture, design tokens, head unit notes
+art/                      source artwork (the original car photo)
 scripts/                  translation check, emulator helper
 .claude/                  skills and agents for AI coding assistants
 ```
@@ -169,7 +186,9 @@ two reviewers for head unit constraints and translations.
 
 ## Roadmap
 
-- Configurable home: choose and arrange widgets (speedometer from GPS, weather, radio).
+- A live map in the navigation card (see the discussion in [docs/head-unit.md](docs/head-unit.md)).
+- Turn-by-turn hints read from the navigation app's notification.
+- Configurable cards: choose and arrange them (weather, radio presets).
 - Accent color and night hours in Settings.
 - Theme switching from the headlight signal, if the unit exposes it.
 - Launching the stock radio, Bluetooth and reverse camera apps by name once their package
@@ -182,8 +201,13 @@ two reviewers for head unit constraints and translations.
 - Build tooling: [Gradle](https://gradle.org) and the Android Gradle Plugin.
 - Icons in the app are drawn for this project. App icons shown at runtime belong to their
   respective apps and are read from the device, not bundled.
-- The layout takes general inspiration from modern in-car interfaces (large type, bottom
-  dock, uniform light and dark themes). No third-party code, artwork or fonts were copied.
+- The layout takes general inspiration from modern in-car interfaces (card dashboard, large
+  type, bottom bar, uniform light and dark themes). No third-party code, artwork or fonts were
+  copied.
+- The Toyota Corolla E120 photo (`art/corolla-e120.png`, resized into
+  `res/drawable-*/car_corolla.webp`) was supplied by the owner of this project; its original
+  source is not recorded. Toyota and Corolla are trademarks of Toyota Motor Corporation.
+  Replace the photo before making the repository or the app public.
 
 ## License
 

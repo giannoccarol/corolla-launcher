@@ -16,35 +16,38 @@ code can be changed without reopening it.
 
 ## Canvas
 
-Designed on **1024 x 600 dp** (a 7" head unit at 160 dpi, where 1 dp = 1 px). The layout uses
-weights, so other landscape sizes stretch rather than break. Screens shorter than 500 dp of
-usable height get a smaller clock and cover (`values/dimens.xml` vs `values-h500dp/`).
+Designed on **1024 x 600 dp** (a 7" head unit at 160 dpi, where 1 dp = 1 px). Side columns
+have fixed proportions and the centre takes the rest, so other landscape sizes stretch rather
+than break. The mockup lives in the design canvas linked above ("Dashboard" artboards).
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
-│ time  date                                            gps  bt  network    │  36 dp
-├───────────────────────────────┬──────────────────────────────────────────┤
-│ CLOCK                         │                        [settings] [theme] │
-│                               │ ┌──────────────────────────────────────┐ │
-│                               │ │ [source chips]                       │ │
-│                               │ │ cover   title / artist / progress    │ │
-│ NAVIGATION                    │ │                                      │ │
-│ [ Where to?                 ] │ │        ⏮      ▶      ⏭              │ │
-│ [ Home ]        [ Work ]      │ └──────────────────────────────────────┘ │
-├───────────────────────────────┴──────────────────────────────────────────┤
-│ ◁  ○  □        [all apps] app app app app app app          ‹ volume ›     │  88 dp
+│ (L) Lorenzo │ [Home] Navigation  Apps        gps bt net │ date  TIME     │  50 dp
+├──────────────────────┬───────────────────────┬───────────────────────────┤
+│ [ Where to?        ] │ [chips]               │ Corolla          Driving  │
+│ (⌂) Home           › │ cover  title / artist │   [ car photo ]           │
+│ (▣) Work           › │ ───────── progress    │ 12.4 km  18 min  41 km/h  │  270 dp
+│ ──────────────────── │     ⏮    ▶    ⏭      ├───────────────────────────┤
+│ RECENT               ├───────────────────────┤ [theme] [wi-fi] [bt]      │
+│ ◷ place  ◷ place     │ Most used        All ›│ [display][audio][more]    │
+│ [ 43 km/h   N      ] │ app  app  app  app    │                           │  148 dp
+├──────────────────────┴───────────────────────┴───────────────────────────┤
+│ ◁ ○ □            app app [all apps] app app              ‹ volume ›      │  74 dp
 └──────────────────────────────────────────────────────────────────────────┘
-        40 %                                   60 %
+   ~372 dp                 ~364 dp                    ~252 dp     (12 dp gaps)
 ```
 
 The launcher is **full screen**: the system status and navigation bars are hidden while it is
-in front, and replaced by the two strips above.
+in front, and replaced by the top and bottom bars above.
 
-- **Status bar** (top, every screen): small time and date on the left; GPS, Bluetooth and
-  network icons on the right. An icon dims to 28 % when its radio is off instead of
-  disappearing, so the bar never shifts. It is information only, with nothing to tap.
-- **System keys** (dock, bottom left, home screen only): Back, Home, Recent apps, drawn as
-  outlines so they read as system controls and not as apps.
+- **Top bar**: the driver's initial and name (tap to edit; "Add your name" when unset), tabs,
+  then the status icons. An icon dims to 28 % when its radio is off instead of disappearing,
+  so the bar never shifts.
+- **Bottom bar**: system keys drawn as outlines so they read as controls and not as apps; four
+  docked apps that only change when the driver pins or unpins (stable for muscle memory),
+  around the All apps button; volume.
+- **Most used** is the moving part: by launch count, never repeating a docked app.
+- Values not available yet show an em dash, never a fake zero.
 
 ## Colors
 
@@ -59,6 +62,7 @@ Defined in `res/values/colors.xml` and `res/values-night/colors.xml` under the s
 | `text_secondary` | `#59606B` | `#A7ADB7` | labels, hints, secondary icons |
 | `line` | 10 % black | 9 % white | dock divider, field outline |
 | `track` | `#D5D9DF` | `#30353D` | progress bar track |
+| `tile_on_bg` / `tile_on_text` | `#D4DFF5` / `#1A4BBF` | `#1D2E52` / `#A9C5FF` | quick settings tile that is on |
 | `chip_on_bg` / `chip_on_text` | `#15171A` / `#FFFFFF` | `#F4F5F7` / `#000000` | selected source chip |
 | `accent` | `#3B76F6` | same | play button, progress, dialog buttons |
 | `on_accent` | `#FFFFFF` | same | icon on the accent color |
@@ -72,17 +76,19 @@ System Roboto. Clock in `sans-serif-light`, titles and buttons in `sans-serif-me
 
 | Element | Size |
 | --- | --- |
-| Clock | 108sp (84sp on short screens) |
-| Track title | 26sp |
+| Speed | 44sp light |
+| Time in the top bar | 19sp |
+| Track title | 21sp |
 | Screen title | 28sp |
 | Body, artist, fields | 15-18sp |
 | Section labels | 13sp, uppercase, tracked |
 
 ## Shapes and sizes
 
-- Cards 28dp radius; pills fully rounded; settings rows 18dp.
-- Play button 76dp, previous/next 64dp, top-right buttons 48dp.
-- Dock icons 56dp with 18dp gaps; app grid icons 72dp.
+- Cards 24dp radius; tiles 16dp; speed panel 18dp; pills fully rounded; settings rows 18dp.
+- Play button 66dp, previous/next 54dp, system keys 54x56dp, docked apps 52dp, tabs 40dp tall
+  inside a 50dp bar (the tab row is information first; the whole bar is reachable but small).
+- Bottom bar app icons 52dp with 12dp gaps; Most used 52dp; app grid icons 72dp.
 - Adaptive app icons are redrawn as rounded squares (24 % radius) by `IconShaper`, so every
   icon has the same silhouette regardless of the device's icon mask.
 
@@ -114,3 +120,10 @@ device setting outside the app.
 
 Vector drawables in `res/drawable/ic_*.xml`, 24-unit viewport, solid white shapes, tinted in
 layouts with `app:tint`. Filled style, rounded joins. No emoji, no bitmap icons.
+
+## Car photo
+
+`art/corolla-e120.png` is the source (transparent background). The app ships it pre-scaled
+per density in `res/drawable-{mdpi,hdpi,xhdpi,xxhdpi}/car_corolla.webp`, sized for the 216 dp
+it is drawn at, with a light unsharp mask. Letting Android shrink one large bitmap made it look
+soft, because it scales without mipmaps. Regenerate all four from the source if it changes.

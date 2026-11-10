@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Home screen -->
-    <string name="home_navigation">Navegación</string>
     <string name="home_where_to">¿Adónde vamos?</string>
     <string name="home_home">Casa</string>
     <string name="home_work">Trabajo</string>
     <string name="home_all_apps">Todas las apps</string>
-    <string name="home_settings">Ajustes</string>
-    <string name="home_toggle_theme">Cambiar entre tema claro y oscuro</string>
 
     <!-- Media player -->
     <string name="media_previous">Pista anterior</string>
@@ -52,6 +49,47 @@
     <string name="settings_nav_keys_on">Activados</string>
     <string name="settings_nav_keys_off">Desactivados. Toca para abrir los ajustes de accesibilidad.</string>
     <string name="nav_keys_service_description">Hace que funcionen los botones Atrás, Inicio y Apps recientes del dock. No lee lo que aparece en pantalla.</string>
+
+    <!-- Dashboard -->
+    <string name="tab_home">Inicio</string>
+    <string name="tab_navigation">Navegación</string>
+    <string name="tab_apps">Apps</string>
+    <string name="driver_add_name">Añade tu nombre</string>
+    <string name="nav_tap_to_set">Toca para definir</string>
+    <string name="nav_recent">Recientes</string>
+    <string name="nav_recent_empty">Los lugares que busques aparecerán aquí.</string>
+    <string name="speed_heading">Dirección</string>
+    <string name="speed_tap_to_enable">Toca para activar la ubicación</string>
+    <string name="compass_n">N</string>
+    <string name="compass_ne">NE</string>
+    <string name="compass_e">E</string>
+    <string name="compass_se">SE</string>
+    <string name="compass_s">S</string>
+    <string name="compass_sw">SO</string>
+    <string name="compass_w">O</string>
+    <string name="compass_nw">NO</string>
+    <string name="apps_most_used">Más usadas</string>
+    <string name="apps_all">Todas</string>
+    <string name="trip_moving">En marcha</string>
+    <string name="trip_stopped">Parado</string>
+    <string name="trip_waiting_gps">Esperando el GPS</string>
+    <string name="trip_location_off">Ubicación desactivada</string>
+    <string name="trip_gps_off">GPS desactivado</string>
+    <string name="trip_distance">Distancia</string>
+    <string name="trip_duration">Duración</string>
+    <string name="trip_average">Media</string>
+    <string name="trip_channel_name">Viaje</string>
+    <string name="trip_notification_title">Ordenador de viaje activo</string>
+    <string name="trip_notification_text">Mide la velocidad y el viaje.</string>
+    <string name="location_denied">La ubicación está desactivada para esta app. Actívala en los ajustes de la app.</string>
+    <string name="qs_display">Pantalla</string>
+    <string name="qs_audio">Audio</string>
+    <string name="qs_more">Más</string>
+    <string name="settings_driver_name">Tu nombre</string>
+    <string name="settings_driver_name_hint">Aparece arriba a la izquierda</string>
+    <string name="settings_location">Ubicación</string>
+    <string name="settings_location_on">Permitida: se miden la velocidad y el viaje</string>
+    <string name="settings_location_off">No permitida. Toca para abrir los ajustes de la app.</string>
 
     <!-- Settings -->
     <string name="settings_title">Ajustes</string>

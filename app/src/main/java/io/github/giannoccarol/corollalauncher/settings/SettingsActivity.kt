@@ -2,6 +2,7 @@ package io.github.giannoccarol.corollalauncher.settings
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.TextView
@@ -14,6 +15,7 @@ import io.github.giannoccarol.corollalauncher.R
 import io.github.giannoccarol.corollalauncher.databinding.ActivitySettingsBinding
 import io.github.giannoccarol.corollalauncher.keys.NavKeyService
 import io.github.giannoccarol.corollalauncher.theme.ThemeManager
+import io.github.giannoccarol.corollalauncher.trip.TripTracker
 import io.github.giannoccarol.corollalauncher.theme.ThemeMode
 import io.github.giannoccarol.corollalauncher.ui.LauncherActivity
 import io.github.giannoccarol.corollalauncher.ui.Motion
@@ -49,6 +51,15 @@ class SettingsActivity : LauncherActivity() {
         val notSet = getString(R.string.settings_not_set)
 
         section(R.string.settings_section_appearance)
+        row(R.string.settings_driver_name, prefs.driverName ?: notSet) {
+            TextPrompt.show(
+                this, R.string.settings_driver_name, R.string.settings_driver_name_hint,
+                prefs.driverName, R.string.save,
+            ) {
+                prefs.driverName = it.ifEmpty { null }
+                render()
+            }
+        }
         row(R.string.settings_theme, getString(prefs.themeMode.labelRes)) { pickTheme() }
         row(R.string.settings_language, languageLabel(Languages.currentTag())) { pickLanguage() }
         row(
@@ -72,6 +83,13 @@ class SettingsActivity : LauncherActivity() {
         }
 
         section(R.string.settings_section_system)
+        row(
+            R.string.settings_location,
+            getString(
+                if (TripTracker.hasPermission(this)) R.string.settings_location_on
+                else R.string.settings_location_off,
+            ),
+        ) { openAppDetails() }
         val mediaAccess =
             packageName in NotificationManagerCompat.getEnabledListenerPackages(this)
         row(
@@ -163,6 +181,17 @@ class SettingsActivity : LauncherActivity() {
         TextPrompt.show(this, titleRes, R.string.nav_address_hint, current, R.string.save) {
             save(it.ifEmpty { null })
             render()
+        }
+    }
+
+    private fun openAppDetails() {
+        try {
+            startActivity(
+                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    .setData(Uri.fromParts("package", packageName, null)),
+            )
+        } catch (e: ActivityNotFoundException) {
+            toast(R.string.settings_screen_unavailable)
         }
     }
 

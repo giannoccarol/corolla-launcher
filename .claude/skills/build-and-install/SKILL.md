@@ -61,6 +61,16 @@ adb -e shell cmd package set-home-activity \
 On the real head unit, ask the user before changing the default launcher or disabling the
 stock one, and follow `docs/head-unit.md` if the unit refuses.
 
+To give the app location and drive it on the emulator (speed in knots as the last argument;
+`geo fix` sends no bearing, so the heading stays N):
+
+```bash
+adb -e shell pm grant $PKG android.permission.ACCESS_FINE_LOCATION
+for i in $(seq 1 60); do
+  adb -e emu geo fix "$(python3 -c "print(18.17+$i*0.0001)")" 40.35 50 8 24; sleep 1
+done
+```
+
 ## 4. Verify
 
 ```bash

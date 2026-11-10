@@ -2,6 +2,7 @@ package io.github.giannoccarol.corollalauncher.ui
 
 import android.content.Context
 import android.content.DialogInterface
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
@@ -34,8 +35,10 @@ object TextPrompt {
             .setNegativeButton(R.string.cancel, null)
             .create()
         dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
-        input.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
+        // Done on the on-screen keyboard, or Enter on a physical or remote keyboard.
+        input.setOnEditorActionListener { _, actionId, event ->
+            val enter = event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN
+            if (actionId == EditorInfo.IME_ACTION_DONE || enter) {
                 dialog.getButton(DialogInterface.BUTTON_POSITIVE).performClick()
                 true
             } else {

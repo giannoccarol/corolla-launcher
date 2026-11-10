@@ -12,4 +12,6 @@
     <color name="chip_on_bg">#F4F5F7</color>
     <color name="chip_on_text">#000000</color>
     <color name="chip_off_text">#C5CAD3</color>
+    <color name="tile_on_bg">#1D2E52</color>
+    <color name="tile_on_text">#A9C5FF</color>
 </resources>

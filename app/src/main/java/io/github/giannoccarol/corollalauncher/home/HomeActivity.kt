@@ -1,6 +1,8 @@
 package io.github.giannoccarol.corollalauncher.home
 
+import android.Manifest
 import android.accessibilityservice.AccessibilityService
+import android.bluetooth.BluetoothAdapter
 import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -12,6 +14,8 @@ import android.media.AudioManager
 import android.media.MediaMetadata
 import android.media.session.MediaController
 import android.media.session.PlaybackState
+import android.net.Uri
+import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -24,31 +28,44 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import io.github.giannoccarol.corollalauncher.R
 import io.github.giannoccarol.corollalauncher.apps.AppActions
 import io.github.giannoccarol.corollalauncher.apps.AppDrawerActivity
+import io.github.giannoccarol.corollalauncher.apps.AppInfo
 import io.github.giannoccarol.corollalauncher.apps.AppRepository
 import io.github.giannoccarol.corollalauncher.databinding.ActivityHomeBinding
+import io.github.giannoccarol.corollalauncher.databinding.ItemAppCompactBinding
+import io.github.giannoccarol.corollalauncher.databinding.ItemNavPlaceBinding
+import io.github.giannoccarol.corollalauncher.databinding.ItemQuickTileBinding
+import io.github.giannoccarol.corollalauncher.databinding.ItemRecentDestinationBinding
+import io.github.giannoccarol.corollalauncher.databinding.ItemTripStatBinding
 import io.github.giannoccarol.corollalauncher.keys.NavKeyService
 import io.github.giannoccarol.corollalauncher.media.MediaKeys
 import io.github.giannoccarol.corollalauncher.media.MediaSessionMonitor
 import io.github.giannoccarol.corollalauncher.nav.NavigationShortcuts
+import io.github.giannoccarol.corollalauncher.nav.RecentDestinations
 import io.github.giannoccarol.corollalauncher.settings.Prefs
 import io.github.giannoccarol.corollalauncher.settings.SettingsActivity
 import io.github.giannoccarol.corollalauncher.theme.ThemeManager
+import io.github.giannoccarol.corollalauncher.trip.Compass
+import io.github.giannoccarol.corollalauncher.trip.TripService
+import io.github.giannoccarol.corollalauncher.trip.TripTracker
 import io.github.giannoccarol.corollalauncher.ui.LauncherActivity
 import io.github.giannoccarol.corollalauncher.ui.Motion
 import io.github.giannoccarol.corollalauncher.ui.TextPrompt
 import java.util.Locale
 
 /**
- * The home screen: the launcher's status bar on top, clock and navigation shortcuts on the
- * left, the media player on the right, and at the bottom a dock with the system keys, the
- * most used apps and the volume.
+ * The home dashboard. Top bar with the driver's name, tabs and status; three columns of cards
+ * (navigation and speed, media and most used apps, the car and quick settings); and a bottom
+ * bar with the system keys, the docked apps and the volume.
  */
 class HomeActivity : LauncherActivity() {
 
@@ -56,24 +73,39 @@ class HomeActivity : LauncherActivity() {
     private lateinit var prefs: Prefs
     private lateinit var audio: AudioManager
     private lateinit var media: MediaSessionMonitor
+    private lateinit var toggles: QuickToggles
 
     private val handler = Handler(Looper.getMainLooper())
-    private val appsListener: () -> Unit = { renderDock() }
+    private val appsListener: () -> Unit = { renderApps() }
+    private val tripListener: () -> Unit = { renderTrip() }
 
-    /** Packages currently shown as source chips, to avoid rebuilding them on every update. */
+    /** What is currently shown, so lists are rebuilt and animated only on a real change. */
     private var shownSources: List<String> = emptyList()
-
-    /** App keys currently in the dock, for the same reason. */
-    private var shownDock: List<String>? = null
-
-    /** What the player last showed, to animate only real changes. */
+    private var shownApps: List<String>? = null
     private var shownTrack: String? = null
     private var shownPlaying: Boolean? = null
+
+    private val locationRequest = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions(),
+    ) { result ->
+        if (result[Manifest.permission.ACCESS_FINE_LOCATION] == true) {
+            TripService.start(this)
+        } else if (!ActivityCompat.shouldShowRequestPermissionRationale(
+                this, Manifest.permission.ACCESS_FINE_LOCATION,
+            )
+        ) {
+            // "Don't ask again" was chosen: only the app settings can change it now.
+            toast(R.string.location_denied)
+            openAppDetails()
+        }
+        renderTrip()
+    }
 
     private val progressTicker = object : Runnable {
         override fun run() {
             renderProgress()
-            handler.postDelayed(this, PROGRESS_INTERVAL_MS)
+            renderTrip()
+            handler.postDelayed(this, TICK_MS)
         }
     }
 
@@ -82,6 +114,7 @@ class HomeActivity : LauncherActivity() {
             when (intent.action) {
                 Intent.ACTION_TIME_TICK -> ThemeManager.apply(context)
                 ACTION_VOLUME_CHANGED -> renderVolume()
+                else -> renderQuickSettings()
             }
         }
     }
@@ -95,38 +128,55 @@ class HomeActivity : LauncherActivity() {
         prefs = Prefs(this)
         audio = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         media = MediaSessionMonitor(this, ::renderMedia)
+        toggles = QuickToggles(this)
 
         // A launcher is the bottom of the back stack: Back must do nothing here.
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() = Unit
         })
 
+        setUpTopBar()
         setUpNavigation()
         setUpPlayer()
+        setUpCar()
+        setUpQuickSettings()
         setUpDock()
 
         AppRepository.addListener(appsListener)
-        Motion.enter(binding.leftPane, binding.rightPane, binding.dock)
+        TripTracker.addListener(tripListener)
+        Motion.enter(binding.navCard, binding.centerColumn, binding.rightColumn, binding.dock)
     }
 
     override fun onStart() {
         super.onStart()
         ThemeManager.apply(this)
-        val filter = IntentFilter().apply {
+        val local = IntentFilter().apply {
             addAction(Intent.ACTION_TIME_TICK)
             addAction(ACTION_VOLUME_CHANGED)
         }
-        ContextCompat.registerReceiver(
-            this, systemReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED,
-        )
+        ContextCompat.registerReceiver(this, systemReceiver, local, ContextCompat.RECEIVER_NOT_EXPORTED)
+        // Exported: the Bluetooth broadcast comes from the Bluetooth process. Both actions are
+        // protected, so no other app can send them.
+        val radios = IntentFilter().apply {
+            addAction(WifiManager.WIFI_STATE_CHANGED_ACTION)
+            addAction(BluetoothAdapter.ACTION_STATE_CHANGED)
+        }
+        ContextCompat.registerReceiver(this, radiosReceiver, radios, ContextCompat.RECEIVER_EXPORTED)
+
         media.start()
+        TripService.start(this)
         handler.post(progressTicker)
+        renderDriver()
+        renderPlaces()
         renderVolume()
-        renderDock()
+        renderApps()
+        renderQuickSettings()
+        renderTrip()
     }
 
     override fun onStop() {
         unregisterReceiver(systemReceiver)
+        unregisterReceiver(radiosReceiver)
         media.stop()
         handler.removeCallbacks(progressTicker)
         super.onStop()
@@ -134,10 +184,56 @@ class HomeActivity : LauncherActivity() {
 
     override fun onDestroy() {
         AppRepository.removeListener(appsListener)
+        TripTracker.removeListener(tripListener)
         super.onDestroy()
     }
 
-    // region Navigation shortcuts
+    /** A second receiver so the two registrations can use different export flags. */
+    private val radiosReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) = renderQuickSettings()
+    }
+
+    // region Top bar
+
+    private fun setUpTopBar() {
+        binding.driver.setOnClickListener { editDriverName() }
+        binding.tabHome.setOnClickListener { Motion.pop(binding.cards) }
+        binding.tabNavigation.setOnClickListener {
+            if (!NavigationShortcuts.openMap(this)) toast(R.string.nav_no_app)
+        }
+        binding.tabApps.setOnClickListener { openDrawer() }
+        Motion.pressable(binding.driver, binding.tabHome, binding.tabNavigation, binding.tabApps)
+    }
+
+    private fun renderDriver() {
+        val name = prefs.driverName
+        if (name == null) {
+            binding.driverName.setText(R.string.driver_add_name)
+            binding.driverName.setTextColor(ContextCompat.getColor(this, R.color.text_secondary))
+            binding.driverInitial.text = ""
+        } else {
+            binding.driverName.text = name
+            binding.driverName.setTextColor(ContextCompat.getColor(this, R.color.text_primary))
+            binding.driverInitial.text =
+                name.first().toString().uppercase(Locale.getDefault())
+        }
+        binding.driver.contentDescription =
+            getString(R.string.settings_driver_name) + ": " + (name ?: getString(R.string.settings_not_set))
+    }
+
+    private fun editDriverName() {
+        TextPrompt.show(
+            this, R.string.settings_driver_name, R.string.settings_driver_name_hint,
+            prefs.driverName, R.string.save,
+        ) {
+            prefs.driverName = it.ifEmpty { null }
+            renderDriver()
+        }
+    }
+
+    // endregion
+
+    // region Navigation card
 
     private fun setUpNavigation() {
         binding.whereTo.setOnClickListener {
@@ -145,17 +241,56 @@ class HomeActivity : LauncherActivity() {
                 this, R.string.nav_destination_title, R.string.nav_destination_hint,
                 initial = null, positiveRes = R.string.nav_go,
             ) { query ->
-                if (query.isNotEmpty() && !NavigationShortcuts.search(this, query)) {
-                    toast(R.string.nav_no_app)
-                }
+                if (query.isEmpty()) return@show
+                prefs.recentDestinations = RecentDestinations.push(prefs.recentDestinations, query)
+                renderPlaces()
+                if (!NavigationShortcuts.search(this, query)) toast(R.string.nav_no_app)
             }
         }
 
-        binding.navHome.setOnClickListener { goTo(prefs.homeAddress, ::editHomeAddress) }
-        binding.navHome.setOnLongClickListener { editHomeAddress(); true }
-        binding.navWork.setOnClickListener { goTo(prefs.workAddress, ::editWorkAddress) }
-        binding.navWork.setOnLongClickListener { editWorkAddress(); true }
-        Motion.pressable(binding.whereTo, binding.navHome, binding.navWork)
+        setUpPlace(binding.navHome, R.drawable.ic_home, R.string.home_home,
+            { prefs.homeAddress }, ::editHomeAddress)
+        setUpPlace(binding.navWork, R.drawable.ic_work, R.string.home_work,
+            { prefs.workAddress }, ::editWorkAddress)
+
+        binding.speedPanel.setOnClickListener {
+            if (!TripTracker.hasPermission(this)) askForLocation()
+        }
+        Motion.pressable(binding.whereTo, binding.navHome.root, binding.navWork.root, binding.speedPanel)
+    }
+
+    private fun setUpPlace(
+        place: ItemNavPlaceBinding,
+        @DrawableRes icon: Int,
+        @StringRes title: Int,
+        address: () -> String?,
+        edit: () -> Unit,
+    ) {
+        place.icon.setImageResource(icon)
+        place.title.setText(title)
+        place.root.setOnClickListener { goTo(address(), edit) }
+        place.root.setOnLongClickListener { edit(); true }
+    }
+
+    private fun renderPlaces() {
+        val tapToSet = getString(R.string.nav_tap_to_set)
+        binding.navHome.subtitle.text = prefs.homeAddress ?: tapToSet
+        binding.navWork.subtitle.text = prefs.workAddress ?: tapToSet
+
+        binding.recentList.removeAllViews()
+        val recents = prefs.recentDestinations.take(RECENTS_SHOWN)
+        for (destination in recents) {
+            val row = ItemRecentDestinationBinding.inflate(layoutInflater, binding.recentList, false)
+            row.label.text = destination
+            row.root.setOnClickListener {
+                prefs.recentDestinations = RecentDestinations.push(prefs.recentDestinations, destination)
+                if (!NavigationShortcuts.navigateTo(this, destination)) toast(R.string.nav_no_app)
+                renderPlaces()
+            }
+            Motion.pressable(row.root)
+            binding.recentList.addView(row.root)
+        }
+        binding.recentEmpty.visibility = if (recents.isEmpty()) View.VISIBLE else View.GONE
     }
 
     /** Navigates to a saved address, or asks for it the first time. */
@@ -170,15 +305,104 @@ class HomeActivity : LauncherActivity() {
         TextPrompt.show(
             this, R.string.settings_home_address, R.string.nav_address_hint,
             prefs.homeAddress, R.string.save,
-        ) { prefs.homeAddress = it.ifEmpty { null } }
+        ) {
+            prefs.homeAddress = it.ifEmpty { null }
+            renderPlaces()
+        }
     }
 
     private fun editWorkAddress() {
         TextPrompt.show(
             this, R.string.settings_work_address, R.string.nav_address_hint,
             prefs.workAddress, R.string.save,
-        ) { prefs.workAddress = it.ifEmpty { null } }
+        ) {
+            prefs.workAddress = it.ifEmpty { null }
+            renderPlaces()
+        }
     }
+
+    // endregion
+
+    // region Speed and trip
+
+    private fun setUpCar() {
+        labelStat(binding.statDistance, R.string.trip_distance)
+        labelStat(binding.statDuration, R.string.trip_duration)
+        labelStat(binding.statAverage, R.string.trip_average)
+        binding.carCard.setOnClickListener {
+            if (!TripTracker.hasPermission(this)) askForLocation()
+        }
+    }
+
+    private fun labelStat(stat: ItemTripStatBinding, @StringRes label: Int) {
+        stat.label.setText(label)
+    }
+
+    /** Asked only when the driver taps the speed or car card, never on its own. */
+    private fun askForLocation() {
+        locationRequest.launch(
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
+        )
+    }
+
+    private fun renderTrip() {
+        val allowed = TripTracker.hasPermission(this)
+        val dash = getString(R.string.value_missing)
+
+        val speed = if (allowed) TripTracker.speedKmh() else null
+        binding.speedValue.update(speed?.let { formatInt(it) } ?: dash)
+        val bearing = TripTracker.bearing
+        when {
+            !allowed -> {
+                binding.headingValue.update(getString(R.string.speed_tap_to_enable))
+                binding.headingLabel.visibility = View.GONE
+            }
+            else -> {
+                binding.headingValue.update(
+                    bearing?.let { getString(COMPASS[Compass.pointIndex(it)]) } ?: dash,
+                )
+                binding.headingLabel.visibility = View.VISIBLE
+            }
+        }
+
+        binding.tripState.update(
+            getString(
+                when {
+                    !allowed -> R.string.trip_location_off
+                    !TripTracker.gpsEnabled(this) -> R.string.trip_gps_off
+                    !TripTracker.hasFix -> R.string.trip_waiting_gps
+                    TripTracker.isMoving() -> R.string.trip_moving
+                    else -> R.string.trip_stopped
+                },
+            ),
+        )
+
+        val hasTrip = allowed && TripTracker.hasTrip()
+        binding.statDistance.value.update(if (hasTrip) {
+            getString(R.string.trip_km_value, String.format(Locale.getDefault(), "%.1f", TripTracker.distanceKm()))
+        } else {
+            dash
+        })
+        binding.statDuration.value.update(
+            if (hasTrip) formatDuration(TripTracker.durationMinutes()) else dash,
+        )
+        val average = if (hasTrip) TripTracker.averageKmh() else null
+        binding.statAverage.value.update(average?.let { getString(R.string.trip_kmh_value, it) } ?: dash)
+    }
+
+    private fun formatDuration(minutes: Long): String =
+        if (minutes < 60) getString(R.string.trip_minutes_value, minutes.toInt())
+        else getString(R.string.trip_hours_minutes_value, (minutes / 60).toInt(), (minutes % 60).toInt())
+
+    /**
+     * Sets the text only when it changed. The home screen refreshes every second; rewriting
+     * identical text would still trigger layout passes and accessibility events.
+     */
+    private fun TextView.update(value: CharSequence) {
+        if (text.toString() != value.toString()) text = value
+    }
+
+    private fun formatInt(value: Int): String = String.format(Locale.getDefault(), "%d", value)
 
     // endregion
 
@@ -186,15 +410,6 @@ class HomeActivity : LauncherActivity() {
 
     private fun setUpPlayer() {
         binding.cover.clipToOutline = true
-
-        binding.settingsButton.setOnClickListener {
-            Motion.open(this, Intent(this, SettingsActivity::class.java))
-        }
-        binding.themeButton.setImageResource(
-            if (ThemeManager.isDark(this)) R.drawable.ic_sun else R.drawable.ic_moon,
-        )
-        binding.themeButton.setOnClickListener { ThemeManager.toggle(this) }
-
         binding.prevButton.setOnClickListener {
             transport(KeyEvent.KEYCODE_MEDIA_PREVIOUS) { it.transportControls.skipToPrevious() }
         }
@@ -208,16 +423,9 @@ class HomeActivity : LauncherActivity() {
             }
         }
         binding.emptyAction.setOnClickListener {
-            try {
-                startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
-            } catch (e: ActivityNotFoundException) {
-                toast(R.string.settings_screen_unavailable)
-            }
+            openSystem(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
         }
-        Motion.pressable(
-            binding.settingsButton, binding.themeButton, binding.prevButton,
-            binding.playButton, binding.nextButton, binding.emptyAction,
-        )
+        Motion.pressable(binding.prevButton, binding.playButton, binding.nextButton, binding.emptyAction)
     }
 
     /** Uses the selected session when there is one, otherwise a plain media button press. */
@@ -322,8 +530,8 @@ class HomeActivity : LauncherActivity() {
         if (duration <= 0L) {
             // Radio and other live streams have no length to show.
             binding.progress.progress = if (playing) PROGRESS_MAX else 0
-            binding.elapsed.text = if (playing) getString(R.string.media_live) else ""
-            binding.total.text = ""
+            binding.elapsed.update(if (playing) getString(R.string.media_live) else "")
+            binding.total.update("")
             return
         }
 
@@ -334,8 +542,8 @@ class HomeActivity : LauncherActivity() {
         }
         position = position.coerceIn(0L, duration)
         binding.progress.progress = (position * PROGRESS_MAX / duration).toInt()
-        binding.elapsed.text = DateUtils.formatElapsedTime(position / 1000)
-        binding.total.text = DateUtils.formatElapsedTime(duration / 1000)
+        binding.elapsed.update(DateUtils.formatElapsedTime(position / 1000))
+        binding.total.update(DateUtils.formatElapsedTime(duration / 1000))
     }
 
     private fun MediaController.isPlaying(): Boolean =
@@ -350,12 +558,59 @@ class HomeActivity : LauncherActivity() {
 
     // endregion
 
-    // region Dock
+    // region Quick settings
+
+    private fun setUpQuickSettings() {
+        tile(binding.qsWifi, R.drawable.ic_wifi, R.string.qs_wifi) { toggles.toggleWifi() }
+        tile(binding.qsBluetooth, R.drawable.ic_bluetooth, R.string.qs_bluetooth) {
+            toggles.toggleBluetooth()
+        }
+        tile(binding.qsDisplay, R.drawable.ic_brightness, R.string.qs_display) {
+            toggles.openDisplaySettings()
+        }
+        tile(binding.qsAudio, R.drawable.ic_equalizer, R.string.qs_audio) { toggles.openAudio() }
+        tile(binding.qsMore, R.drawable.ic_settings, R.string.qs_more) {
+            Motion.open(this, Intent(this, SettingsActivity::class.java))
+        }
+        val dark = ThemeManager.isDark(this)
+        tile(
+            binding.qsTheme, if (dark) R.drawable.ic_moon else R.drawable.ic_sun,
+            if (dark) R.string.theme_dark else R.string.theme_light,
+        ) { ThemeManager.toggle(this) }
+    }
+
+    private fun tile(
+        tile: ItemQuickTileBinding,
+        @DrawableRes icon: Int,
+        @StringRes label: Int,
+        onClick: () -> Unit,
+    ) {
+        tile.icon.setImageResource(icon)
+        tile.label.setText(label)
+        tile.root.setOnClickListener { onClick() }
+        Motion.pressable(tile.root)
+    }
+
+    private fun renderQuickSettings() {
+        setTileOn(binding.qsWifi, toggles.wifiEnabled())
+        setTileOn(binding.qsBluetooth, toggles.bluetoothEnabled())
+    }
+
+    private fun setTileOn(tile: ItemQuickTileBinding, on: Boolean) {
+        tile.root.setBackgroundResource(if (on) R.drawable.bg_tile_on else R.drawable.bg_tile)
+        val color = ContextCompat.getColor(this, if (on) R.color.tile_on_text else R.color.text_primary)
+        tile.label.setTextColor(color)
+        ImageViewCompat.setImageTintList(tile.icon, ColorStateList.valueOf(color))
+        tile.root.isSelected = on
+    }
+
+    // endregion
+
+    // region Apps and dock
 
     private fun setUpDock() {
-        binding.allAppsButton.setOnClickListener {
-            Motion.open(this, Intent(this, AppDrawerActivity::class.java))
-        }
+        binding.allAppsButton.setOnClickListener { openDrawer() }
+        binding.allAppsLink.setOnClickListener { openDrawer() }
         // On the home screen itself Back and Home have nothing to do; they are here so the
         // system keys keep their usual place while the system bar is hidden.
         binding.keyBack.setOnClickListener {
@@ -369,12 +624,16 @@ class HomeActivity : LauncherActivity() {
                 explainNavKeys()
             }
         }
-        Motion.pressable(
-            binding.keyBack, binding.keyHome, binding.keyRecents,
-            binding.allAppsButton, binding.volumeDown, binding.volumeUp,
-        )
         binding.volumeDown.setOnClickListener { adjustVolume(AudioManager.ADJUST_LOWER) }
         binding.volumeUp.setOnClickListener { adjustVolume(AudioManager.ADJUST_RAISE) }
+        Motion.pressable(
+            binding.keyBack, binding.keyHome, binding.keyRecents, binding.allAppsButton,
+            binding.allAppsLink, binding.volumeDown, binding.volumeUp,
+        )
+    }
+
+    private fun openDrawer() {
+        Motion.open(this, Intent(this, AppDrawerActivity::class.java))
     }
 
     /** Recents needs the accessibility service; say so and offer the way to turn it on. */
@@ -383,43 +642,56 @@ class HomeActivity : LauncherActivity() {
             .setTitle(R.string.nav_keys_enable_title)
             .setMessage(getString(R.string.nav_keys_enable_message, getString(R.string.app_name)))
             .setPositiveButton(R.string.nav_keys_open_settings) { _, _ ->
-                try {
-                    startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
-                } catch (e: ActivityNotFoundException) {
-                    toast(R.string.settings_screen_unavailable)
-                }
+                openSystem(Settings.ACTION_ACCESSIBILITY_SETTINGS)
             }
             .setNegativeButton(R.string.cancel, null)
             .show()
     }
 
-    private fun renderDock() {
-        val apps = AppRepository.dockApps(this)
-        val keys = apps.map { it.key }
-        if (keys == shownDock) return
-        shownDock = keys
+    private fun renderApps() {
+        val dock = AppRepository.dockApps(this)
+        val mostUsed = AppRepository.mostUsedApps(this, dock)
+        val keys = (dock + mostUsed).map { it.key }
+        if (keys == shownApps) return
+        shownApps = keys
 
-        binding.dockApps.removeAllViews()
-        val icons = ArrayList<View>(apps.size)
-        for (app in apps) {
-            val icon = layoutInflater
-                .inflate(R.layout.item_dock_app, binding.dockApps, false) as ImageView
+        binding.dockLeft.removeAllViews()
+        binding.dockRight.removeAllViews()
+        val icons = ArrayList<View>()
+        dock.forEachIndexed { index, app ->
+            val target = if (index < dock.size / 2 + dock.size % 2) binding.dockLeft else binding.dockRight
+            val icon = layoutInflater.inflate(R.layout.item_dock_app, target, false) as ImageView
             icon.setImageDrawable(app.icon)
             icon.contentDescription = app.label
-            icon.setOnClickListener {
-                if (!AppRepository.launch(this, app)) {
-                    toast(getString(R.string.app_launch_failed, app.label))
-                }
-            }
-            icon.setOnLongClickListener {
-                AppActions.showMenu(it, app, ::renderDock)
-                true
-            }
-            Motion.pressable(icon)
-            binding.dockApps.addView(icon)
+            bindApp(icon, app)
+            target.addView(icon)
             icons += icon
         }
+
+        binding.mostUsed.removeAllViews()
+        for (app in mostUsed) {
+            val item = ItemAppCompactBinding.inflate(layoutInflater, binding.mostUsed, false)
+            item.icon.setImageDrawable(app.icon)
+            item.label.text = app.label
+            bindApp(item.root, app)
+            binding.mostUsed.addView(item.root)
+            icons += item.root
+        }
         Motion.popIn(icons)
+    }
+
+    private fun bindApp(view: View, app: AppInfo) {
+        view.setOnClickListener {
+            if (!AppRepository.launch(this, app)) toast(getString(R.string.app_launch_failed, app.label))
+        }
+        view.setOnLongClickListener {
+            AppActions.showMenu(it, app) {
+                shownApps = null
+                renderApps()
+            }
+            true
+        }
+        Motion.pressable(view)
     }
 
     private fun adjustVolume(direction: Int) {
@@ -432,12 +704,29 @@ class HomeActivity : LauncherActivity() {
     }
 
     private fun renderVolume() {
-        binding.volumeValue.text = String.format(
-            Locale.getDefault(), "%d", audio.getStreamVolume(AudioManager.STREAM_MUSIC),
-        )
+        binding.volumeValue.text = formatInt(audio.getStreamVolume(AudioManager.STREAM_MUSIC))
     }
 
     // endregion
+
+    private fun openSystem(action: String) {
+        try {
+            startActivity(Intent(action))
+        } catch (e: ActivityNotFoundException) {
+            toast(R.string.settings_screen_unavailable)
+        }
+    }
+
+    private fun openAppDetails() {
+        try {
+            startActivity(
+                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    .setData(Uri.fromParts("package", packageName, null)),
+            )
+        } catch (e: ActivityNotFoundException) {
+            toast(R.string.settings_screen_unavailable)
+        }
+    }
 
     private fun toast(@StringRes messageRes: Int) = toast(getString(messageRes))
 
@@ -449,6 +738,12 @@ class HomeActivity : LauncherActivity() {
         /** Not a public constant, but stable since Android 1.5 and what volume UIs listen to. */
         const val ACTION_VOLUME_CHANGED = "android.media.VOLUME_CHANGED_ACTION"
         const val PROGRESS_MAX = 1000
-        const val PROGRESS_INTERVAL_MS = 1000L
+        const val TICK_MS = 1000L
+        const val RECENTS_SHOWN = 2
+
+        val COMPASS = intArrayOf(
+            R.string.compass_n, R.string.compass_ne, R.string.compass_e, R.string.compass_se,
+            R.string.compass_s, R.string.compass_sw, R.string.compass_w, R.string.compass_nw,
+        )
     }
 }

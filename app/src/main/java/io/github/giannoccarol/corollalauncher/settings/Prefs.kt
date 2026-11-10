@@ -24,6 +24,19 @@ class Prefs(context: Context) {
         get() = settings.getString(KEY_WORK_ADDRESS, null)
         set(value) = settings.edit { putString(KEY_WORK_ADDRESS, value) }
 
+    /** Shown at the top left of the home screen; null hides the name. */
+    var driverName: String?
+        get() = settings.getString(KEY_DRIVER_NAME, null)?.takeIf { it.isNotBlank() }
+        set(value) = settings.edit { putString(KEY_DRIVER_NAME, value?.trim()) }
+
+    /** Destinations typed in "Where to?", newest first. */
+    var recentDestinations: List<String>
+        get() = settings.getString(KEY_RECENT_DESTINATIONS, null)
+            ?.split('\n')
+            ?.filter { it.isNotEmpty() }
+            .orEmpty()
+        set(value) = settings.edit { putString(KEY_RECENT_DESTINATIONS, value.joinToString("\n")) }
+
     /** Off makes every transition instant; meant for head units too slow to animate. */
     var animations: Boolean
         get() = settings.getBoolean(KEY_ANIMATIONS, true)
@@ -54,5 +67,7 @@ class Prefs(context: Context) {
         const val KEY_WORK_ADDRESS = "work_address"
         const val KEY_PINNED = "pinned_apps"
         const val KEY_ANIMATIONS = "animations"
+        const val KEY_DRIVER_NAME = "driver_name"
+        const val KEY_RECENT_DESTINATIONS = "recent_destinations"
     }
 }

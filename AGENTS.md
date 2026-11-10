@@ -64,8 +64,9 @@ visible change has been looked at on the emulator in **both themes**.
   see `DockSelector`.
 - One activity per screen, each in its feature package, extending `ui/LauncherActivity` and
   including `view_status_bar` at the top of its layout. Shared helpers go in `ui/`.
-- No runtime permission prompts: they are unusable while driving. If a feature needs one,
-  raise it with the owner first.
+- Runtime permission prompts only in direct response to a tap on the feature that needs it
+  (location is asked from the speed or car card), never on start-up. A new permission needs
+  the owner's agreement first.
 - New dependencies need a reason written in the pull request; prefer the platform and AndroidX.
 - All repository content is in English: code, comments, docs, commit messages.
 
@@ -84,6 +85,8 @@ visible change has been looked at on the emulator in **both themes**.
 | New language | follow `.claude/skills/add-language/SKILL.md` |
 | New icon | vector drawable in `res/drawable/`, white fill, tinted in the layout |
 | New color | both `values/colors.xml` and `values-night/colors.xml` |
-| New status bar icon | `view_status_bar.xml` and `status/StatusBarController.kt` |
+| New status bar icon | `view_status_bar.xml` (other screens), the top bar in `activity_home.xml`, and `status/StatusBarController.kt` |
+| New home card | `activity_home.xml` plus a `setUp…`/`render…` pair in `HomeActivity` |
+| Trip or GPS logic | `trip/TripStats.kt` (pure, unit tested), `trip/TripTracker.kt` |
 | New animation | a function in `ui/Motion.kt`, or an XML in `res/anim/` used from it |
 | Device finding | `docs/head-unit.md` |

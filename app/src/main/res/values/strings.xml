@@ -5,13 +5,10 @@
     <string name="app_name" translatable="false">Corolla Launcher</string>
 
     <!-- Home screen -->
-    <string name="home_navigation">Navigation</string>
     <string name="home_where_to">Where to?</string>
     <string name="home_home">Home</string>
     <string name="home_work">Work</string>
     <string name="home_all_apps">All apps</string>
-    <string name="home_settings">Settings</string>
-    <string name="home_toggle_theme">Switch between light and dark theme</string>
 
     <!-- Media player -->
     <string name="media_previous">Previous track</string>
@@ -56,6 +53,57 @@
     <string name="settings_nav_keys_on">Enabled</string>
     <string name="settings_nav_keys_off">Not enabled. Tap to open the accessibility settings.</string>
     <string name="nav_keys_service_description">Makes the Back, Home and Recent apps buttons in the dock work. It does not read what is on screen.</string>
+
+    <!-- Dashboard -->
+    <string name="tab_home">Home</string>
+    <string name="tab_navigation">Navigation</string>
+    <string name="tab_apps">Apps</string>
+    <string name="driver_add_name">Add your name</string>
+    <string name="nav_tap_to_set">Tap to set</string>
+    <string name="nav_recent">Recent</string>
+    <string name="nav_recent_empty">Places you search for appear here.</string>
+    <string name="speed_heading">Heading</string>
+    <string name="speed_tap_to_enable">Tap to turn on location</string>
+    <string name="compass_n">N</string>
+    <string name="compass_ne">NE</string>
+    <string name="compass_e">E</string>
+    <string name="compass_se">SE</string>
+    <string name="compass_s">S</string>
+    <string name="compass_sw">SW</string>
+    <string name="compass_w">W</string>
+    <string name="compass_nw">NW</string>
+    <string name="apps_most_used">Most used</string>
+    <string name="apps_all">All</string>
+    <string name="trip_moving">Driving</string>
+    <string name="trip_stopped">Stopped</string>
+    <string name="trip_waiting_gps">Waiting for GPS</string>
+    <string name="trip_location_off">Location off</string>
+    <string name="trip_gps_off">GPS off</string>
+    <string name="trip_distance">Distance</string>
+    <string name="trip_duration">Duration</string>
+    <string name="trip_average">Average</string>
+    <string name="trip_channel_name">Trip</string>
+    <string name="trip_notification_title">Trip computer on</string>
+    <string name="trip_notification_text">Measuring speed and trip.</string>
+    <string name="location_denied">Location is off for this app. Turn it on in the app settings.</string>
+    <string name="qs_display">Display</string>
+    <string name="qs_audio">Audio</string>
+    <string name="qs_more">More</string>
+    <string name="settings_driver_name">Your name</string>
+    <string name="settings_driver_name_hint">Shown at the top left</string>
+    <string name="settings_location">Location</string>
+    <string name="settings_location_on">Allowed: speed and trip are measured</string>
+    <string name="settings_location_off">Not allowed. Tap to open the app settings.</string>
+    <string name="car_name" translatable="false">Corolla</string>
+    <string name="car_photo_description" translatable="false">Toyota Corolla E120</string>
+    <string name="unit_kmh" translatable="false">km/h</string>
+    <string name="value_missing" translatable="false">—</string>
+    <string name="trip_km_value" translatable="false">%1$s km</string>
+    <string name="trip_kmh_value" translatable="false">%1$d km/h</string>
+    <string name="trip_minutes_value" translatable="false">%1$d min</string>
+    <string name="trip_hours_minutes_value" translatable="false">%1$d h %2$02d min</string>
+    <string name="qs_wifi" translatable="false">Wi-Fi</string>
+    <string name="qs_bluetooth" translatable="false">Bluetooth</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>

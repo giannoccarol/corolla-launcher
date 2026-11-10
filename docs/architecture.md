@@ -8,7 +8,7 @@ between the screens and the platform APIs.
 
 | Activity | Role |
 | --- | --- |
-| `home/HomeActivity` | The home screen. Declared with the `HOME` category, `singleTask`. |
+| `home/HomeActivity` | The home dashboard. Declared with the `HOME` category, `singleTask`. |
 | `apps/AppDrawerActivity` | Searchable grid of every installed app. |
 | `settings/SettingsActivity` | Theme, language, addresses, system shortcuts. |
 
@@ -53,9 +53,40 @@ AudioManager ──────────────────────�
 - When there is no session (no access granted, or the playing app has none), the transport
   buttons fall back to `MediaKeys`, which dispatches media button events through `AudioManager`.
 
+### Speed and trip computer
+
+- `trip/TripTracker` is a process-wide object that requests GPS updates once a second and
+  feeds them to `trip/TripStats`, a pure class (unit tested) that accumulates distance, moving
+  time and average speed, filters bad fixes (accuracy over 50 m, jumps faster than 70 m/s) and
+  starts a new trip after 20 minutes standing still. Times come from
+  `Location.elapsedRealtimeNanos`, so clock changes cannot distort them.
+- `trip/TripService` is a foreground service of type `location`. Android throttles location
+  for background apps to a few fixes per hour, and the navigator is usually in front while
+  driving; the service keeps fixes flowing. Its notification is silent and low priority.
+- Location is a runtime permission. `HomeActivity` asks for it only when the speed or car card
+  is tapped, and starts the service on every `onStart` once it is granted.
+- `trip/Compass` turns the bearing into one of eight compass points (unit tested).
+- Trip data lives in memory only: a restart of the process starts a new trip.
+
+### Quick settings
+
+`home/QuickToggles` switches Wi-Fi directly on Android 9 and below (`CHANGE_WIFI_STATE`) and
+Bluetooth on Android 11 and below (`BLUETOOTH_ADMIN`); on newer versions, where apps may not
+do that, it opens the system panel or settings screen. Display opens the display settings and
+Audio the registered equalizer, falling back to the sound settings. Tile state follows the
+`WIFI_STATE_CHANGED` and Bluetooth `ACTION_STATE_CHANGED` broadcasts.
+
+### Refresh cost
+
+The home screen ticks once a second (media progress and trip). `TextView.update()` in
+`HomeActivity` writes a text only when it actually changed; rewriting identical text would
+still cause layout passes and accessibility events, and kept the screen from ever being idle.
+Lists (bottom bar, most used, source chips) are rebuilt only when their content changes.
+
 ### Status bar and system keys
 
-- `status/StatusBarController` drives `view_status_bar.xml`, which each screen includes. Time
+- `status/StatusBarController` drives the status icons through their ids: in the home top bar,
+  and in `view_status_bar.xml` that the other screens include. Time
   and date are `TextClock`s. GPS and Bluetooth state come from two protected system
   broadcasts, the network from a default-network callback; all are registered in `onStart`
   and released in `onStop`.
@@ -113,6 +144,7 @@ Two `SharedPreferences` files, wrapped by `settings/Prefs`:
 
 - **Compose**: startup and scrolling cost too much on a Cortex-A7 class device.
 - **Wallpaper and app widgets**: the home is a designed surface with a uniform background.
-- **Runtime permissions**: the app requests none. Media access and the system keys are
-  special grants the user turns on in system settings.
+- **Runtime permissions on start-up**: the only one, location, is asked from a tap. Media
+  access and the system keys are special grants the user turns on in system settings.
+- **A map library**: see "Live map" in `docs/head-unit.md` for the options and their cost.
 - **A bundled font**: the system Roboto in light and medium weights keeps the APK small.

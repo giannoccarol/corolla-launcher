@@ -37,6 +37,9 @@ reachable over adb, and record the answers here.
 - [ ] Does full screen really hide the unit's top bar, or is that bar an overlay?
 - [ ] With the bar hidden, do the panel's hardware BACK and MENU buttons cover navigation?
 - [ ] Can the accessibility service for the Recent apps key be enabled on this firmware?
+- [ ] Does the unit have Google Play services (needed for an embedded Google map)?
+- [ ] Package name of the unit's DSP / equalizer app, for the Audio tile.
+- [ ] Is the GPS antenna connected and how long does the first fix take?
 - [ ] Are the animations smooth on the unit, or should they ship off by default?
 - [ ] Does the unit beep on every touch by itself, and where is that turned off?
 
@@ -54,6 +57,25 @@ Some firmwares pin their own launcher. Things to try, least invasive first:
    `adb shell pm disable-user --user 0 <stock.launcher.package>`
    Do this only after confirming the new launcher starts on boot, and note the package name
    here so it can be re-enabled with `pm enable`.
+
+## Live map in the home screen (not built yet)
+
+Two ways to put a real map in the navigation card, both used in the owner's Cruscotto project
+(`~/Documenti/Projects/Cruscotto`, `car/GoogleCarMap.kt` and `car/NavPanes.kt`):
+
+| | Google Maps SDK | MapLibre + OpenFreeMap |
+| --- | --- | --- |
+| Needs | Google Play services on the unit, an API key in `local.properties` | Nothing; tiles from `tiles.openfreemap.org`, no key |
+| Looks | Google's map, traffic, 3D buildings, custom grey style | OpenStreetMap, restyled grey |
+| Cost on the unit | Rendering inside Play services; light APK | Native renderer in the APK (about 10-20 MB per CPU type) |
+| Offline | Cached areas only | Cached areas only |
+
+Cruscotto uses Google Maps when a key is present and falls back to MapLibre otherwise. Both
+need mobile data or Wi-Fi in the car, and both cost GPU time that the weak head unit also needs
+for everything else, so the map should stay a passive view (follow the car, no tilt, no 3D)
+and pause when the home screen is hidden. Turn-by-turn hints can be read from Google Maps'
+navigation notification with the notification listener the app already has, as Cruscotto's
+`data/NotificationSource.kt` does.
 
 ## Findings log
 

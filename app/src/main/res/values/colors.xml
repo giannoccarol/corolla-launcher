@@ -13,6 +13,8 @@
     <color name="chip_on_bg">#15171A</color>
     <color name="chip_on_text">#FFFFFF</color>
     <color name="chip_off_text">#59606B</color>
+    <color name="tile_on_bg">#D4DFF5</color>
+    <color name="tile_on_text">#1A4BBF</color>
 
     <!-- Same in both themes. -->
     <color name="accent">#3B76F6</color>
