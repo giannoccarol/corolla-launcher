@@ -39,6 +39,9 @@ reachable over adb, and record the answers here.
 - [ ] Can the accessibility service for the Recent apps key be enabled on this firmware?
 - [ ] Does the unit have Google Play services (needed for an embedded Google map)?
 - [ ] Package name of the unit's DSP / equalizer app, for the Audio tile.
+- [ ] Package and label of the Android Auto / CarPlay app; is it recognised by `ProjectionApps`?
+- [ ] With this launcher as Home, does connecting the phone still open Android Auto by itself?
+- [ ] Does the projection app publish a media session while Android Auto plays music?
 - [ ] Is the GPS antenna connected and how long does the first fix take?
 - [ ] What does the wheel's voice button send (key code or intent)? Does it reach the launcher?
 - [ ] Is there a speech recogniser (`adb shell cmd package query-services -a android.speech.RecognitionService`)?

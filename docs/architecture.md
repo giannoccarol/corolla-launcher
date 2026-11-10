@@ -36,6 +36,9 @@ AudioManager ──────────────────────�
   thread, shapes their icons once (`IconShaper`), and notifies listeners on the main thread.
 - `LauncherApp` registers for package added/removed/changed broadcasts and triggers a reload,
   so the list stays correct even while the home screen is not visible.
+- `ProjectionApps` (pure, unit tested) recognises the head unit's Android Auto / CarPlay app by
+  package and label hints, ignoring Google's phone-side Android Auto app. `AppRepository`
+  puts it first in the bottom bar unless the driver removed it (`Prefs.projectionInDock`).
 - `DockSelector` is pure logic and unit tested. Order: pinned apps, then most launched, then
   apps whose package looks like a car essential (maps, music, radio, phone), then the rest.
 - Launch counts are the launcher's own (`Prefs.incrementLaunch`). They only count launches made

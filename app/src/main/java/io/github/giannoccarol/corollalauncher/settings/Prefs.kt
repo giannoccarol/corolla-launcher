@@ -58,6 +58,11 @@ class Prefs(context: Context) {
         get() = settings.getBoolean(KEY_ANIMATIONS, true)
         set(value) = settings.edit { putBoolean(KEY_ANIMATIONS, value) }
 
+    /** The head unit's Android Auto / CarPlay app sits first in the bottom bar unless removed. */
+    var projectionInDock: Boolean
+        get() = settings.getBoolean(KEY_PROJECTION_IN_DOCK, true)
+        set(value) = settings.edit { putBoolean(KEY_PROJECTION_IN_DOCK, value) }
+
     /** Flattened component names the user pinned to the dock, in pin order. */
     var pinnedApps: List<String>
         get() = settings.getString(KEY_PINNED, null)
@@ -83,6 +88,7 @@ class Prefs(context: Context) {
         const val KEY_WORK_ADDRESS = "work_address"
         const val KEY_PINNED = "pinned_apps"
         const val KEY_ANIMATIONS = "animations"
+        const val KEY_PROJECTION_IN_DOCK = "projection_in_dock"
         const val KEY_DRIVER_NAME = "driver_name"
         const val KEY_RECENT_DESTINATIONS = "recent_destinations"
         const val KEY_AI_PROVIDER = "ai_provider"

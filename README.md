@@ -30,7 +30,9 @@ it should run on any landscape Android head unit.
     Bluetooth switch and paired phones, brightness and theme, and volume per stream. Sliders are
     thick and flanked by large minus and plus buttons for use while driving.
   - **Bottom bar**: Back, Home and Recent apps on the left, four docked apps around the All apps
-    button, volume on the right.
+    button, volume on the right. The head unit's **Android Auto / CarPlay app** (Phone Link,
+    ZLink, AutoLink, Carlinkit...) is found automatically and always comes first; long press it
+    to remove it. "Apri Android Auto" works with the assistant too.
 - **Voice assistant** (Assistant button in the top bar, or the steering wheel voice button):
   speak or type, hear the answer. It works with tools, so it can look things up and then act
   ("find a petrol station near here and take me there"):
@@ -203,6 +205,11 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
   free and keyless, with fair-use limits a car never reaches.
 - **"Play music" depends on the music app** handling Android's standard play-from-search
   request; Spotify does, many radio apps do not.
+- **Android Auto / CarPlay is untested on the unit.** The launcher only opens the unit's own
+  projection app; it does not touch the connection. On some firmwares the stock launcher is
+  what opens that app when the phone connects: with this launcher as Home, that may stop
+  happening and the app has to be opened from its icon until we know its package and add an
+  automatic start. Music played through Android Auto will probably not show in the media card.
 - **Hiding the system bar is untested on the unit.** Some firmwares draw their bar as an
   overlay that an app cannot hide.
 - **Animation smoothness is unmeasured on real hardware.** They are built to be cheap, but if

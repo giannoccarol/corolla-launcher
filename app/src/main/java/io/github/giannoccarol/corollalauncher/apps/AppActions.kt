@@ -18,7 +18,9 @@ object AppActions {
     fun showMenu(anchor: View, app: AppInfo, onPinsChanged: () -> Unit) {
         val context = anchor.context
         val prefs = Prefs(context)
-        val pinned = app.key in prefs.pinnedApps
+        // The projection app is in the bar by default rather than by a pin.
+        val isProjection = AppRepository.projectionApp()?.key == app.key
+        val pinned = if (isProjection) prefs.projectionInDock else app.key in prefs.pinnedApps
 
         PopupMenu(context, anchor).apply {
             menu.add(0, ITEM_PIN, 0, if (pinned) R.string.app_unpin else R.string.app_pin)
@@ -26,8 +28,12 @@ object AppActions {
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     ITEM_PIN -> {
-                        prefs.pinnedApps =
-                            if (pinned) prefs.pinnedApps - app.key else prefs.pinnedApps + app.key
+                        if (isProjection) {
+                            prefs.projectionInDock = !pinned
+                        } else {
+                            prefs.pinnedApps =
+                                if (pinned) prefs.pinnedApps - app.key else prefs.pinnedApps + app.key
+                        }
                         onPinsChanged()
                         true
                     }

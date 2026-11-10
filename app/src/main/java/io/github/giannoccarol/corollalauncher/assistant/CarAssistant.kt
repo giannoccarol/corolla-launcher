@@ -30,6 +30,8 @@ data class CarContext(
     val appNames: List<String>,
     /** Latitude and longitude, used by the tools only; never put in the prompt itself. */
     val position: Pair<Double, Double>?,
+    /** Label of the head unit's Android Auto / CarPlay app, when there is one. */
+    val projectionApp: String? = null,
 )
 
 /**
@@ -153,6 +155,7 @@ class CarAssistant(context: Context) {
         appendLine("Saved work address: ${if (car.workSaved) "yes" else "no"}")
         appendLine("Theme: ${if (car.darkTheme) "dark" else "light"}")
         appendLine("Installed apps: ${car.appNames.joinToString(", ")}")
+        appendLine("Android Auto / CarPlay app: ${car.projectionApp ?: "none installed"}")
         append("</car_state>")
     }
 
@@ -169,6 +172,7 @@ class CarAssistant(context: Context) {
             You are the voice assistant of the head unit in a Toyota Corolla E120, talking to the driver while they drive.
             Your reply is read aloud, so keep it to one or two short sentences, with no lists, markdown, links or emoji, and never ask the driver to read or type anything.
             Each driver message starts with a <car_state> block describing the car right now.
+            "Android Auto" or "CarPlay" means the head unit's projection app named in <car_state>: open that app.
         """.trimIndent()
 
         fun toolPrompt(languageName: String) = """

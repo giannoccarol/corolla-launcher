@@ -71,10 +71,21 @@ object AppRepository {
      * so the bar stays put and can be used from muscle memory.
      */
     fun dockApps(context: Context): List<AppInfo> {
+        val prefs = Prefs(context)
         val byKey = apps.associateBy { it.key }
+        // The Android Auto / CarPlay app, when there is one, comes first and stays put.
+        val projection = projectionApp()?.takeIf { prefs.projectionInDock }
+        val pinned = listOfNotNull(projection?.key) + prefs.pinnedApps
         return DockSelector
-            .select(apps.map { it.key }, Prefs(context).pinnedApps, emptyMap(), DOCK_SIZE)
+            .select(apps.map { it.key }, pinned, emptyMap(), DOCK_SIZE)
             .mapNotNull { byKey[it] }
+    }
+
+    /** The head unit's Android Auto / CarPlay app, if one is installed. */
+    fun projectionApp(): AppInfo? {
+        val current = apps
+        val index = ProjectionApps.find(current.map { ProjectionApps.Candidate(it.component.packageName, it.label) })
+        return index?.let(current::get)
     }
 
     /** The "Most used" card: by launch count, never repeating an app already in [dock]. */

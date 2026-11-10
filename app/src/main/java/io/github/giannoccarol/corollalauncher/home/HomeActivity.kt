@@ -445,6 +445,7 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
             darkTheme = ThemeManager.isDark(this),
             appNames = AppRepository.apps.map { it.label }.distinct(),
             position = currentPosition(),
+            projectionApp = AppRepository.projectionApp()?.label,
         )
     }
 
