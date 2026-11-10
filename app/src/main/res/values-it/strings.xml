@@ -129,6 +129,47 @@
     <string name="slider_less">Meno</string>
     <string name="slider_more">Più</string>
 
+    <!-- Assistant -->
+    <string name="assistant_title">Assistente</string>
+    <string name="assistant_talk">Parla con l\'assistente</string>
+    <string name="assistant_stop">Smetti di ascoltare</string>
+    <string name="assistant_listening">Ti ascolto…</string>
+    <string name="assistant_thinking">Ci penso…</string>
+    <string name="assistant_tap_to_talk">Tocca il microfono per parlare</string>
+    <string name="assistant_greeting">Come posso aiutarti?</string>
+    <string name="assistant_type">Scrivi</string>
+    <string name="assistant_type_hint">Chiedi qualcosa</string>
+    <string name="assistant_send">Invia</string>
+    <string name="assistant_no_key">Scegli un provider e inserisci la sua API key nelle Impostazioni per usare l\'assistente.</string>
+    <string name="assistant_open_settings">Apri impostazioni</string>
+    <string name="assistant_mic_needed">Consenti il microfono per parlare con l\'assistente.</string>
+    <string name="assistant_speech_unavailable">Il riconoscimento vocale non è disponibile su questo dispositivo. Puoi scrivere.</string>
+    <string name="assistant_app_not_found">Non trovo un\'app chiamata %1$s.</string>
+    <string name="assistant_no_home">L\'indirizzo di casa non è ancora salvato.</string>
+    <string name="assistant_no_work">L\'indirizzo di lavoro non è ancora salvato.</string>
+    <string name="speech_no_match">Non ho capito. Riprova.</string>
+    <string name="speech_timeout">Non ho sentito niente.</string>
+    <string name="speech_network">Il riconoscimento vocale ha bisogno di internet.</string>
+    <string name="speech_busy">Il microfono è occupato.</string>
+    <string name="speech_failed">Il riconoscimento vocale si è interrotto. Riprova.</string>
+    <string name="llm_no_connection">Nessuna connessione a internet.</string>
+    <string name="llm_timeout">L\'assistente ci ha messo troppo a rispondere.</string>
+    <string name="llm_http_401">La API key è stata rifiutata. Controllala nelle Impostazioni.</string>
+    <string name="llm_http_404">Modello non trovato. Controlla il modello nelle Impostazioni.</string>
+    <string name="llm_http_429">Troppe richieste, o il credito è finito. Riprova più tardi.</string>
+    <string name="llm_http_5xx">Il provider ha dei problemi (errore %1$d).</string>
+    <string name="llm_http_other">Il provider ha restituito un errore (%1$d).</string>
+    <string name="llm_invalid_response">Il provider ha mandato una risposta che non riesco a leggere.</string>
+    <string name="llm_refused">Il modello non ha voluto rispondere.</string>
+    <string name="settings_section_assistant">Assistente</string>
+    <string name="settings_ai_provider">Provider</string>
+    <string name="settings_ai_key">API key</string>
+    <string name="settings_ai_key_hint">Incolla la chiave (vuota la rimuove)</string>
+    <string name="settings_ai_model">Modello</string>
+    <string name="settings_ai_model_other">Altro modello…</string>
+    <string name="settings_ai_model_hint">Nome del modello</string>
+    <string name="settings_ai_speak">Leggi le risposte ad alta voce</string>
+
     <!-- Settings -->
     <string name="settings_title">Impostazioni</string>
     <string name="settings_section_appearance">Aspetto</string>

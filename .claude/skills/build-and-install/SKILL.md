@@ -71,6 +71,17 @@ for i in $(seq 1 60); do
 done
 ```
 
+To try the assistant without typing a key on the device, put `ASSISTANT_PROVIDER`,
+`ASSISTANT_API_KEY` and `ASSISTANT_MODEL` in `local.properties` before building (never commit
+it, never paste a key into chat or logs). A wrong key is a cheap way to test the request path:
+the panel must show "The API key was rejected" with the provider's detail. The emulator image
+has no speech recogniser, so use *Type*. The wheel button can be simulated with
+`adb shell input keyevent KEYCODE_VOICE_ASSIST` or `adb shell am start -a android.intent.action.VOICE_COMMAND`.
+
+If the owner is using the visible emulator, do not drive it: start a second AVD (for example
+`headunit_test`, created like `scripts/emulator.sh create` with another name) on another port
+and set `ANDROID_SERIAL` to it.
+
 ## 4. Verify
 
 ```bash

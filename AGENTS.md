@@ -51,10 +51,16 @@ visible change has been looked at on the emulator in **both themes**.
    something that is permanently on screen (no pulsing, no moving progress). Every animation
    must be skipped when `Motion.enabled()` is false.
 7. **No sounds.** The theme disables view click sounds; do not re-enable them, and do not add
-   audio feedback of any kind.
-8. **Fail soft.** Head unit firmware strips system apps and settings screens. Every
+   audio feedback of any kind. The one exception is the assistant reading its reply aloud,
+   which the driver asked for and can turn off (*Settings → Read replies aloud*).
+8. **The assistant only does what its action list allows.** New capabilities go through
+   `AssistantAction` (parsed in `AssistantReply`, carried out in `HomeActivity.perform`), never
+   by running free-form model output. Keep the prompt's car state free of addresses, contacts
+   and anything else personal beyond what an action needs. API keys live in `KeyVault` only:
+   never log them, never commit `local.properties`.
+9. **Fail soft.** Head unit firmware strips system apps and settings screens. Every
    `startActivity` to something outside the app must handle `ActivityNotFoundException`.
-9. **Be honest in the docs.** If something was only tested on the emulator, the README says so.
+10. **Be honest in the docs.** If something was only tested on the emulator, the README says so.
    Update "Known limits" when a limit is removed or discovered.
 
 ## Conventions
@@ -88,5 +94,7 @@ visible change has been looked at on the emulator in **both themes**.
 | New status bar icon | `view_status_bar.xml` (other screens), the top bar in `activity_home.xml`, and `status/StatusBarController.kt` |
 | New home card | `activity_home.xml` plus a `setUp…`/`render…` pair in `HomeActivity` |
 | Trip or GPS logic | `trip/TripStats.kt` (pure, unit tested), `trip/TripTracker.kt` |
+| New assistant action | `assistant/AssistantReply.kt` (type + parsing + test), the list in `CarAssistant.systemPrompt`, `HomeActivity.perform` |
+| New AI provider | `assistant/ai/AiProviders.kt` |
 | New animation | a function in `ui/Motion.kt`, or an XML in `res/anim/` used from it |
 | Device finding | `docs/head-unit.md` |

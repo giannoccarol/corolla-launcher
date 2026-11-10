@@ -22,6 +22,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.provider.Settings
+import android.speech.RecognizerIntent
 import android.text.format.DateUtils
 import android.view.KeyEvent
 import android.view.View
@@ -41,6 +42,13 @@ import io.github.giannoccarol.corollalauncher.apps.AppActions
 import io.github.giannoccarol.corollalauncher.apps.AppDrawerActivity
 import io.github.giannoccarol.corollalauncher.apps.AppInfo
 import io.github.giannoccarol.corollalauncher.apps.AppRepository
+import io.github.giannoccarol.corollalauncher.assistant.AppMatcher
+import io.github.giannoccarol.corollalauncher.assistant.AssistantAction
+import io.github.giannoccarol.corollalauncher.assistant.AssistantHost
+import io.github.giannoccarol.corollalauncher.assistant.AssistantPanel
+import io.github.giannoccarol.corollalauncher.assistant.CarContext
+import io.github.giannoccarol.corollalauncher.assistant.MediaCommand
+import io.github.giannoccarol.corollalauncher.assistant.Speaker
 import io.github.giannoccarol.corollalauncher.databinding.ActivityHomeBinding
 import io.github.giannoccarol.corollalauncher.databinding.ItemAppCompactBinding
 import io.github.giannoccarol.corollalauncher.databinding.ItemNavPlaceBinding
@@ -61,6 +69,7 @@ import io.github.giannoccarol.corollalauncher.nav.RecentDestinations
 import io.github.giannoccarol.corollalauncher.settings.Prefs
 import io.github.giannoccarol.corollalauncher.settings.SettingsActivity
 import io.github.giannoccarol.corollalauncher.theme.ThemeManager
+import io.github.giannoccarol.corollalauncher.theme.ThemeMode
 import io.github.giannoccarol.corollalauncher.trip.Compass
 import io.github.giannoccarol.corollalauncher.trip.TripService
 import io.github.giannoccarol.corollalauncher.trip.TripTracker
@@ -74,13 +83,14 @@ import java.util.Locale
  * (navigation and speed, media and most used apps, the car and quick settings); and a bottom
  * bar with the system keys, the docked apps and the volume.
  */
-class HomeActivity : LauncherActivity(), PermissionAsker {
+class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
 
     private lateinit var binding: ActivityHomeBinding
     private lateinit var prefs: Prefs
     private lateinit var audio: AudioManager
     private lateinit var media: MediaSessionMonitor
     private lateinit var toggles: QuickToggles
+    private lateinit var speaker: Speaker
 
     private val handler = Handler(Looper.getMainLooper())
     private val appsListener: () -> Unit = { renderApps() }
@@ -111,6 +121,10 @@ class HomeActivity : LauncherActivity(), PermissionAsker {
         renderTrip()
         refreshPanel()
     }
+
+    private val microphoneRequest = registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { refreshPanel() }
 
     private val nearbyRequest = registerForActivityResult(
         ActivityResultContracts.RequestPermission(),
@@ -144,6 +158,7 @@ class HomeActivity : LauncherActivity(), PermissionAsker {
         audio = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         media = MediaSessionMonitor(this, ::renderMedia)
         toggles = QuickToggles(this)
+        speaker = Speaker(this)
 
         // A launcher is the bottom of the back stack: Back must do nothing here.
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -160,6 +175,28 @@ class HomeActivity : LauncherActivity(), PermissionAsker {
         AppRepository.addListener(appsListener)
         TripTracker.addListener(tripListener)
         Motion.enter(binding.navCard, binding.centerColumn, binding.rightColumn, binding.dock)
+        if (savedInstanceState == null) handleVoiceIntent(intent)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleVoiceIntent(intent)
+    }
+
+    /**
+     * The voice button on the wheel or panel usually sends one of these, or a key event; the
+     * system turns the VOICE_ASSIST key into WEB_SEARCH when no voice app is installed.
+     */
+    private fun handleVoiceIntent(intent: Intent?) {
+        if (intent?.action in VOICE_ACTIONS) openAssistant()
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_VOICE_ASSIST || keyCode == KeyEvent.KEYCODE_SEARCH) {
+            openAssistant()
+            return true
+        }
+        return super.onKeyUp(keyCode, event)
     }
 
     override fun onStart() {
@@ -204,6 +241,7 @@ class HomeActivity : LauncherActivity(), PermissionAsker {
 
     override fun onDestroy() {
         panel?.dismiss()
+        speaker.shutdown()
         AppRepository.removeListener(appsListener)
         TripTracker.removeListener(tripListener)
         super.onDestroy()
@@ -223,7 +261,11 @@ class HomeActivity : LauncherActivity(), PermissionAsker {
             if (!NavigationShortcuts.openMap(this)) toast(R.string.nav_no_app)
         }
         binding.tabApps.setOnClickListener { openDrawer() }
-        Motion.pressable(binding.driver, binding.tabHome, binding.tabNavigation, binding.tabApps)
+        binding.assistantButton.setOnClickListener { openAssistant() }
+        Motion.pressable(
+            binding.driver, binding.tabHome, binding.tabNavigation, binding.tabApps,
+            binding.assistantButton,
+        )
     }
 
     private fun renderDriver() {
@@ -354,6 +396,98 @@ class HomeActivity : LauncherActivity(), PermissionAsker {
             if (!TripTracker.hasPermission(this)) askForLocation()
         }
     }
+
+    // region Assistant
+
+    private fun openAssistant() {
+        if (panel is AssistantPanel && panel?.isShowing == true) return
+        openPanel(AssistantPanel(this, this, speaker))
+    }
+
+    override fun askForMicrophone() {
+        microphoneRequest.launch(Manifest.permission.RECORD_AUDIO)
+    }
+
+    override fun openSettings() {
+        Motion.open(this, Intent(this, SettingsActivity::class.java))
+    }
+
+    override fun carContext(): CarContext {
+        val now = java.util.Date()
+        val time = android.text.format.DateFormat.getTimeFormat(this).format(now)
+        val day = android.text.format.DateFormat.format("EEEE d MMMM yyyy", now)
+        val metadata = media.current?.metadata
+        val playing = metadata?.getString(MediaMetadata.METADATA_KEY_TITLE)?.let { title ->
+            val artist = metadata.getString(MediaMetadata.METADATA_KEY_ARTIST)
+            listOfNotNull(title, artist, media.current?.packageName?.let(::appLabel)).joinToString(" - ")
+        }
+        return CarContext(
+            localTime = "$day, $time",
+            speedKmh = if (TripTracker.hasPermission(this)) TripTracker.speedKmh() else null,
+            tripKm = if (TripTracker.hasTrip()) TripTracker.distanceKm() else null,
+            nowPlaying = playing,
+            homeSaved = prefs.homeAddress != null,
+            workSaved = prefs.workAddress != null,
+            darkTheme = ThemeManager.isDark(this),
+            appNames = AppRepository.apps.map { it.label }.distinct(),
+        )
+    }
+
+    override fun perform(action: AssistantAction): String? = when (action) {
+        is AssistantAction.Navigate -> {
+            prefs.recentDestinations = RecentDestinations.push(prefs.recentDestinations, action.destination)
+            renderPlaces()
+            if (NavigationShortcuts.navigateTo(this, action.destination)) null else getString(R.string.nav_no_app)
+        }
+        AssistantAction.NavigateHome -> navigateSaved(prefs.homeAddress, R.string.assistant_no_home)
+        AssistantAction.NavigateWork -> navigateSaved(prefs.workAddress, R.string.assistant_no_work)
+        is AssistantAction.Media -> {
+            when (action.command) {
+                MediaCommand.PLAY -> transport(KeyEvent.KEYCODE_MEDIA_PLAY) { it.transportControls.play() }
+                MediaCommand.PAUSE -> transport(KeyEvent.KEYCODE_MEDIA_PAUSE) { it.transportControls.pause() }
+                MediaCommand.NEXT -> transport(KeyEvent.KEYCODE_MEDIA_NEXT) { it.transportControls.skipToNext() }
+                MediaCommand.PREVIOUS ->
+                    transport(KeyEvent.KEYCODE_MEDIA_PREVIOUS) { it.transportControls.skipToPrevious() }
+            }
+            null
+        }
+        is AssistantAction.OpenApp -> {
+            val apps = AppRepository.apps
+            val index = AppMatcher.find(apps.map { it.label }, action.name)
+            when {
+                index == null -> getString(R.string.assistant_app_not_found, action.name)
+                AppRepository.launch(this, apps[index]) -> null
+                else -> getString(R.string.app_launch_failed, apps[index].label)
+            }
+        }
+        is AssistantAction.Volume -> {
+            if (action.percent != null) {
+                val max = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+                try {
+                    audio.setStreamVolume(AudioManager.STREAM_MUSIC, (max * action.percent + 50) / 100, 0)
+                } catch (e: SecurityException) {
+                    // Do Not Disturb: leave the volume as it is.
+                }
+                renderVolume()
+            } else {
+                adjustVolume(if (action.step > 0) AudioManager.ADJUST_RAISE else AudioManager.ADJUST_LOWER)
+            }
+            null
+        }
+        is AssistantAction.Theme -> {
+            prefs.themeMode = if (action.dark) ThemeMode.DARK else ThemeMode.LIGHT
+            ThemeManager.apply(this)
+            null
+        }
+    }
+
+    private fun navigateSaved(address: String?, @StringRes missing: Int): String? = when {
+        address.isNullOrBlank() -> getString(missing)
+        NavigationShortcuts.navigateTo(this, address) -> null
+        else -> getString(R.string.nav_no_app)
+    }
+
+    // endregion
 
     override fun askForNearbyDevices() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -777,6 +911,14 @@ class HomeActivity : LauncherActivity(), PermissionAsker {
         const val PROGRESS_MAX = 1000
         const val TICK_MS = 1000L
         const val RECENTS_SHOWN = 2
+
+        /** Not in the public SDK, but what the system sends for the VOICE_ASSIST key. */
+        const val ACTION_VOICE_ASSIST = "android.intent.action.VOICE_ASSIST"
+
+        val VOICE_ACTIONS = setOf(
+            Intent.ACTION_VOICE_COMMAND, Intent.ACTION_ASSIST, ACTION_VOICE_ASSIST,
+            RecognizerIntent.ACTION_WEB_SEARCH, RecognizerIntent.ACTION_VOICE_SEARCH_HANDS_FREE,
+        )
 
         val COMPASS = intArrayOf(
             R.string.compass_n, R.string.compass_ne, R.string.compass_e, R.string.compass_se,

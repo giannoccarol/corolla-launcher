@@ -40,6 +40,10 @@ reachable over adb, and record the answers here.
 - [ ] Does the unit have Google Play services (needed for an embedded Google map)?
 - [ ] Package name of the unit's DSP / equalizer app, for the Audio tile.
 - [ ] Is the GPS antenna connected and how long does the first fix take?
+- [ ] What does the wheel's voice button send (key code or intent)? Does it reach the launcher?
+- [ ] Is there a speech recogniser (`adb shell cmd package query-services -a android.speech.RecognitionService`)?
+- [ ] Is there a text-to-speech engine, and does it speak Italian?
+- [ ] Does the built-in microphone pick up the driver clearly?
 - [ ] Are the animations smooth on the unit, or should they ship off by default?
 - [ ] Does the unit beep on every touch by itself, and where is that turned off?
 

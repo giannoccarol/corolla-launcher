@@ -93,6 +93,42 @@ comes back.
 | Display | brightness and automatic mode (after the WRITE_SETTINGS grant), theme | the grant itself |
 | Audio | media, call and notification volume | equalizer |
 
+### Assistant
+
+```
+mic button / wheel key ─▶ AssistantPanel ─▶ SpeechController (system recogniser)
+                                  │                    │ text
+                                  ▼                    ▼
+                         HomeActivity.carContext ─▶ CarAssistant ─▶ LlmClient ─▶ provider
+                                                       │ JSON reply
+                                                       ▼
+                          AssistantReply.parse ─▶ HomeActivity.perform(actions) + Speaker
+```
+
+- **Triggers**: the Assistant button; the wheel or panel voice button, which reaches the
+  launcher as `VOICE_COMMAND`, `ASSIST`, `VOICE_ASSIST` or `WEB_SEARCH` (all declared on
+  `HomeActivity`) or as the `SEARCH` key. Opening from a trigger starts listening at once.
+- **Providers** (`assistant/ai/`): ported from Monetine. One HTTP client speaks Anthropic
+  Messages, OpenAI-compatible Chat Completions, OpenAI Responses and Google generateContent,
+  with org.json and plain `HttpURLConnection` on a single worker thread. HTTPS only.
+- **Anthropic specifics**: default model `claude-opus-5-5`; `output_config.effort` is `low`
+  because spoken answers must come fast (thinking stays adaptive, so `max_tokens` is 4096);
+  the system prompt is marked for caching; `fallbacks: "default"` with the
+  `server-side-fallback-2026-07-01` beta lets the API retry a refused request on another model;
+  a `refusal` stop reason becomes a spoken "declined" message.
+- **Protocol**: the model must answer with one JSON object, `{"say": ..., "actions": [...]}`.
+  `AssistantReply` (unit tested) tolerates code fences and stray text, drops unknown actions,
+  and speaks plain text as is. Only the actions listed in the prompt exist; `HomeActivity`
+  carries them out and turns failures (app not found, address not saved) into extra speech.
+- **Context**: each driver message is prefixed with a `<car_state>` block (time, speed, trip,
+  now playing, which addresses are saved, installed app names). History is kept for the life
+  of the panel, eight messages at most.
+- **Keys**: `KeyVault` stores one key per provider with AES-GCM under an Android Keystore key.
+  `LauncherApp` seeds it once from `BuildConfig.ASSISTANT_API_KEY` when `local.properties`
+  provides one.
+- **Speech out**: `Speaker` wraps `TextToSpeech` with the assistant audio usage, so the unit
+  can duck the music as it does for navigation prompts.
+
 ### Refresh cost
 
 The home screen ticks once a second (media progress and trip). `TextView.update()` in

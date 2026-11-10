@@ -129,6 +129,47 @@
     <string name="slider_less">Weniger</string>
     <string name="slider_more">Mehr</string>
 
+    <!-- Assistant -->
+    <string name="assistant_title">Assistent</string>
+    <string name="assistant_talk">Mit dem Assistenten sprechen</string>
+    <string name="assistant_stop">Zuhören beenden</string>
+    <string name="assistant_listening">Ich höre zu…</string>
+    <string name="assistant_thinking">Ich denke nach…</string>
+    <string name="assistant_tap_to_talk">Tippe auf das Mikrofon, um zu sprechen</string>
+    <string name="assistant_greeting">Wie kann ich helfen?</string>
+    <string name="assistant_type">Schreiben</string>
+    <string name="assistant_type_hint">Frag etwas</string>
+    <string name="assistant_send">Senden</string>
+    <string name="assistant_no_key">Wähle einen Anbieter und gib seinen API-Schlüssel in den Einstellungen ein, um den Assistenten zu nutzen.</string>
+    <string name="assistant_open_settings">Einstellungen öffnen</string>
+    <string name="assistant_mic_needed">Erlaube das Mikrofon, um mit dem Assistenten zu sprechen.</string>
+    <string name="assistant_speech_unavailable">Spracherkennung ist auf diesem Gerät nicht verfügbar. Du kannst stattdessen schreiben.</string>
+    <string name="assistant_app_not_found">Ich finde keine App namens %1$s.</string>
+    <string name="assistant_no_home">Deine Adresse von Zuhause ist noch nicht gespeichert.</string>
+    <string name="assistant_no_work">Deine Arbeitsadresse ist noch nicht gespeichert.</string>
+    <string name="speech_no_match">Das habe ich nicht verstanden. Versuch es noch einmal.</string>
+    <string name="speech_timeout">Ich habe nichts gehört.</string>
+    <string name="speech_network">Die Spracherkennung braucht eine Internetverbindung.</string>
+    <string name="speech_busy">Das Mikrofon ist belegt.</string>
+    <string name="speech_failed">Die Spracherkennung wurde abgebrochen. Versuch es noch einmal.</string>
+    <string name="llm_no_connection">Keine Internetverbindung.</string>
+    <string name="llm_timeout">Der Assistent hat zu lange für die Antwort gebraucht.</string>
+    <string name="llm_http_401">Der API-Schlüssel wurde abgelehnt. Prüfe ihn in den Einstellungen.</string>
+    <string name="llm_http_404">Modell nicht gefunden. Prüfe das Modell in den Einstellungen.</string>
+    <string name="llm_http_429">Zu viele Anfragen oder das Guthaben ist aufgebraucht. Versuch es später.</string>
+    <string name="llm_http_5xx">Der Anbieter hat Probleme (Fehler %1$d).</string>
+    <string name="llm_http_other">Der Anbieter hat einen Fehler gemeldet (%1$d).</string>
+    <string name="llm_invalid_response">Der Anbieter hat eine unlesbare Antwort gesendet.</string>
+    <string name="llm_refused">Das Modell hat die Antwort verweigert.</string>
+    <string name="settings_section_assistant">Assistent</string>
+    <string name="settings_ai_provider">Anbieter</string>
+    <string name="settings_ai_key">API-Schlüssel</string>
+    <string name="settings_ai_key_hint">Schlüssel einfügen (leer entfernt ihn)</string>
+    <string name="settings_ai_model">Modell</string>
+    <string name="settings_ai_model_other">Anderes Modell…</string>
+    <string name="settings_ai_model_hint">Modellname</string>
+    <string name="settings_ai_speak">Antworten vorlesen</string>
+
     <!-- Settings -->
     <string name="settings_title">Einstellungen</string>
     <string name="settings_section_appearance">Darstellung</string>

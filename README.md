@@ -30,6 +30,11 @@ it should run on any landscape Android head unit.
     thick and flanked by large minus and plus buttons for use while driving.
   - **Bottom bar**: Back, Home and Recent apps on the left, four docked apps around the All apps
     button, volume on the right.
+- **Voice assistant** (Assistant button in the top bar, or the steering wheel voice button):
+  speak or type, hear the answer. It answers general questions and can start navigation, go
+  home or to work, control the music, open apps, set the volume and switch the theme. Works with
+  the same providers as the Monetine app: Anthropic (default, `claude-opus-5-5`), OpenAI,
+  Google Gemini, OpenRouter, xAI, DeepSeek, Mistral, Groq and others, with your own API key.
 - **All apps** grid with search. Long press an app to pin it to the bottom bar or open its
   system info.
 - **Light and dark themes**, always uniform: all black or all white, never mixed. Dark by
@@ -91,7 +96,20 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
    ```
 
    Drop `.debug` from the package name for release builds.
-6. To make the **Recent apps** key work, enable *Corolla Launcher* under the system
+6. Set up the assistant: *Settings → Assistant*, choose the provider and paste its API key.
+   Typing a key on the head unit is tedious, so you can instead put it in `local.properties`
+   before building (that file is never committed):
+
+   ```properties
+   ASSISTANT_PROVIDER=anthropic
+   ASSISTANT_API_KEY=sk-ant-...
+   ASSISTANT_MODEL=claude-opus-5-5
+   ```
+
+   The app stores it encrypted on first start. **The key is then inside that APK**: do not share
+   the file. Keys saved in the Monetine app cannot be copied over: Android keeps them encrypted
+   with a key that never leaves the phone.
+7. To make the **Recent apps** key work, enable *Corolla Launcher* under the system
    Accessibility settings (the app explains this the first time you tap the key), or over adb:
 
    ```bash
@@ -119,6 +137,8 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
 | Switch theme | The theme tile in quick settings, or *Settings → Theme* for all modes |
 | Change language | *Settings → Language* |
 | Turn animations off | *Settings → Animations* |
+| Ask the assistant | Assistant button (top bar) or the wheel's voice button; tap the microphone again to stop |
+| Type instead of speaking | *Type* in the assistant panel |
 
 ## Known limits
 
@@ -152,6 +172,15 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
   nothing on units whose backlight is driven by their own controller.
 - **The Audio tile opens the system equalizer**, which head units often replace with their own
   DSP app; that app's package is still unknown (see [docs/head-unit.md](docs/head-unit.md)).
+- **The assistant has not answered a real question yet.** Its whole request path was tested
+  against the live Anthropic API with a deliberately wrong key (the provider's "invalid key"
+  reply came back and was shown), but no valid key was used, so the request body, the answers
+  and the actions are unverified. Speech recognition needs a recogniser on the device (the
+  Google app provides one where Google services exist); the emulator has none, so voice input
+  is untested too and the panel falls back to typing.
+- **What the assistant sends to the provider**: your words, the time, speed, trip distance, the
+  track playing, whether home/work are saved (not the addresses) and the names of installed
+  apps. Nothing is sent until you talk to it.
 - **Hiding the system bar is untested on the unit.** Some firmwares draw their bar as an
   overlay that an app cannot hide.
 - **Animation smoothness is unmeasured on real hardware.** They are built to be cheap, but if
@@ -170,6 +199,8 @@ app/src/main/java/.../corollalauncher/
   status/                 the launcher's own status bar
   trip/                   GPS speed, heading and trip computer, foreground service
   panels/                 the launcher's own Wi-Fi, Bluetooth, display and audio panels
+  assistant/              voice assistant: speech, text-to-speech, prompt, actions
+  assistant/ai/           AI providers and the HTTP client (ported from Monetine)
   keys/                   accessibility service behind the dock's system keys
   nav/                    navigation intents, recent destinations
   settings/               preferences, languages, settings screen
@@ -214,6 +245,13 @@ two reviewers for head unit constraints and translations.
 - The layout takes general inspiration from modern in-car interfaces (card dashboard, large
   type, bottom bar, uniform light and dark themes). No third-party code, artwork or fonts were
   copied.
+- The assistant's provider catalogue, HTTP client, API key vault and speech controller are
+  ported from the owner's [Monetine](https://github.com/giannoccarol/monetine) app
+  (`ai/AiProviders.kt`, `ai/LlmClient.kt`, `ai/LlmBodies.kt`, `data/settings/KeyVault.kt`,
+  `voice/SpeechController.kt`), whose provider list follows pi-desktop. Rewritten to use
+  Android's org.json and a worker thread instead of kotlinx.serialization and coroutines.
+- [JSON-java](https://github.com/stleary/JSON-java) (org.json), Public Domain, used only by unit
+  tests (Android ships its own copy).
 - The Toyota Corolla E120 photo (`art/corolla-e120.png`, resized into
   `res/drawable-*/car_corolla.webp`) was supplied by the owner of this project; its original
   source is not recorded. Toyota and Corolla are trademarks of Toyota Motor Corporation.

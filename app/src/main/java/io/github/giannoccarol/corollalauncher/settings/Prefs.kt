@@ -37,6 +37,22 @@ class Prefs(context: Context) {
             .orEmpty()
         set(value) = settings.edit { putString(KEY_RECENT_DESTINATIONS, value.joinToString("\n")) }
 
+    /** The assistant's AI provider; its API key lives in the assistant's KeyVault. */
+    var aiProviderId: String?
+        get() = settings.getString(KEY_AI_PROVIDER, null)
+        set(value) = settings.edit { putString(KEY_AI_PROVIDER, value) }
+
+    /** The model chosen for [providerId], or null for the provider's default. */
+    fun aiModel(providerId: String): String? =
+        settings.getString(KEY_AI_MODEL_PREFIX + providerId, null)?.takeIf { it.isNotBlank() }
+
+    fun setAiModel(providerId: String, model: String?) =
+        settings.edit { putString(KEY_AI_MODEL_PREFIX + providerId, model?.trim()) }
+
+    var speakReplies: Boolean
+        get() = settings.getBoolean(KEY_SPEAK_REPLIES, true)
+        set(value) = settings.edit { putBoolean(KEY_SPEAK_REPLIES, value) }
+
     /** Off makes every transition instant; meant for head units too slow to animate. */
     var animations: Boolean
         get() = settings.getBoolean(KEY_ANIMATIONS, true)
@@ -69,5 +85,8 @@ class Prefs(context: Context) {
         const val KEY_ANIMATIONS = "animations"
         const val KEY_DRIVER_NAME = "driver_name"
         const val KEY_RECENT_DESTINATIONS = "recent_destinations"
+        const val KEY_AI_PROVIDER = "ai_provider"
+        const val KEY_AI_MODEL_PREFIX = "ai_model_"
+        const val KEY_SPEAK_REPLIES = "speak_replies"
     }
 }

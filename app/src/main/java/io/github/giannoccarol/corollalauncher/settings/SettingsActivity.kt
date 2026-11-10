@@ -12,6 +12,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationManagerCompat
 import io.github.giannoccarol.corollalauncher.BuildConfig
 import io.github.giannoccarol.corollalauncher.R
+import io.github.giannoccarol.corollalauncher.assistant.KeyVault
+import io.github.giannoccarol.corollalauncher.assistant.ai.AiProvider
+import io.github.giannoccarol.corollalauncher.assistant.ai.AiProviders
 import io.github.giannoccarol.corollalauncher.databinding.ActivitySettingsBinding
 import io.github.giannoccarol.corollalauncher.keys.NavKeyService
 import io.github.giannoccarol.corollalauncher.theme.ThemeManager
@@ -26,6 +29,7 @@ class SettingsActivity : LauncherActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
     private lateinit var prefs: Prefs
+    private lateinit var vault: KeyVault
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +37,7 @@ class SettingsActivity : LauncherActivity() {
         setContentView(binding.root)
         setUpWindow(binding.root)
         prefs = Prefs(this)
+        vault = KeyVault(this)
         binding.backButton.setOnClickListener { finish() }
     }
 
@@ -67,6 +72,21 @@ class SettingsActivity : LauncherActivity() {
             getString(if (prefs.animations) R.string.settings_on else R.string.settings_off),
         ) {
             prefs.animations = !prefs.animations
+            render()
+        }
+
+        section(R.string.settings_section_assistant)
+        val provider = AiProviders.byId(prefs.aiProviderId)
+        row(R.string.settings_ai_provider, provider.name) { pickProvider() }
+        row(R.string.settings_ai_key, vault.masked(provider.id) ?: notSet) { editKey(provider.id) }
+        row(R.string.settings_ai_model, prefs.aiModel(provider.id) ?: provider.defaultModel) {
+            pickModel(provider)
+        }
+        row(
+            R.string.settings_ai_speak,
+            getString(if (prefs.speakReplies) R.string.settings_on else R.string.settings_off),
+        ) {
+            prefs.speakReplies = !prefs.speakReplies
             render()
         }
 
@@ -153,6 +173,56 @@ class SettingsActivity : LauncherActivity() {
                 dialog.dismiss()
                 prefs.themeMode = modes[which]
                 ThemeManager.apply(this)
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    private fun pickProvider() {
+        val providers = AiProviders.all
+        val current = providers.indexOf(AiProviders.byId(prefs.aiProviderId))
+        AlertDialog.Builder(this)
+            .setTitle(R.string.settings_ai_provider)
+            .setSingleChoiceItems(providers.map { it.name }.toTypedArray(), current) { dialog, which ->
+                dialog.dismiss()
+                prefs.aiProviderId = providers[which].id
+                render()
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    /** Saving an empty key removes it. */
+    private fun editKey(providerId: String) {
+        TextPrompt.show(
+            this, getString(R.string.settings_ai_key), R.string.settings_ai_key_hint,
+            initial = null, positiveRes = R.string.save, password = true,
+        ) {
+            vault.set(providerId, it)
+            render()
+        }
+    }
+
+    private fun pickModel(provider: AiProvider) {
+        val models = provider.suggestedModels
+        val labels = (models + getString(R.string.settings_ai_model_other)).toTypedArray()
+        val current = models.indexOf(prefs.aiModel(provider.id) ?: provider.defaultModel)
+        AlertDialog.Builder(this)
+            .setTitle(R.string.settings_ai_model)
+            .setSingleChoiceItems(labels, current) { dialog, which ->
+                dialog.dismiss()
+                if (which < models.size) {
+                    prefs.setAiModel(provider.id, models[which])
+                    render()
+                } else {
+                    TextPrompt.show(
+                        this, getString(R.string.settings_ai_model), R.string.settings_ai_model_hint,
+                        prefs.aiModel(provider.id), R.string.save, password = false,
+                    ) {
+                        prefs.setAiModel(provider.id, it.ifEmpty { null })
+                        render()
+                    }
+                }
             }
             .setNegativeButton(R.string.cancel, null)
             .show()

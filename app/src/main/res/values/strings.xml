@@ -143,6 +143,47 @@
     <string name="slider_less">Less</string>
     <string name="slider_more">More</string>
 
+    <!-- Assistant -->
+    <string name="assistant_title">Assistant</string>
+    <string name="assistant_talk">Talk to the assistant</string>
+    <string name="assistant_stop">Stop listening</string>
+    <string name="assistant_listening">Listening…</string>
+    <string name="assistant_thinking">Thinking…</string>
+    <string name="assistant_tap_to_talk">Tap the microphone to talk</string>
+    <string name="assistant_greeting">How can I help?</string>
+    <string name="assistant_type">Type</string>
+    <string name="assistant_type_hint">Ask something</string>
+    <string name="assistant_send">Send</string>
+    <string name="assistant_no_key">Choose a provider and enter its API key in Settings to use the assistant.</string>
+    <string name="assistant_open_settings">Open settings</string>
+    <string name="assistant_mic_needed">Allow the microphone to talk to the assistant.</string>
+    <string name="assistant_speech_unavailable">Speech recognition isn\'t available on this device. You can type instead.</string>
+    <string name="assistant_app_not_found">I couldn\'t find an app called %1$s.</string>
+    <string name="assistant_no_home">Your home address isn\'t saved yet.</string>
+    <string name="assistant_no_work">Your work address isn\'t saved yet.</string>
+    <string name="speech_no_match">I didn\'t catch that. Try again.</string>
+    <string name="speech_timeout">I didn\'t hear anything.</string>
+    <string name="speech_network">Speech recognition needs an internet connection.</string>
+    <string name="speech_busy">The microphone is busy.</string>
+    <string name="speech_failed">Speech recognition stopped. Try again.</string>
+    <string name="llm_no_connection">No internet connection.</string>
+    <string name="llm_timeout">The assistant took too long to answer.</string>
+    <string name="llm_http_401">The API key was rejected. Check it in Settings.</string>
+    <string name="llm_http_404">Model not found. Check the model in Settings.</string>
+    <string name="llm_http_429">Too many requests, or the credit is used up. Try again later.</string>
+    <string name="llm_http_5xx">The provider is having problems (error %1$d).</string>
+    <string name="llm_http_other">The provider returned an error (%1$d).</string>
+    <string name="llm_invalid_response">The provider sent a reply I couldn\'t read.</string>
+    <string name="llm_refused">The model declined to answer that.</string>
+    <string name="settings_section_assistant">Assistant</string>
+    <string name="settings_ai_provider">Provider</string>
+    <string name="settings_ai_key">API key</string>
+    <string name="settings_ai_key_hint">Paste the key (empty removes it)</string>
+    <string name="settings_ai_model">Model</string>
+    <string name="settings_ai_model_other">Other model…</string>
+    <string name="settings_ai_model_hint">Model name</string>
+    <string name="settings_ai_speak">Read replies aloud</string>
+
     <!-- Settings -->
     <string name="settings_title">Settings</string>
     <string name="settings_section_appearance">Appearance</string>
