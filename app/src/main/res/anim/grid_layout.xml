@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- App tiles appear one after the other the first time the grid is shown. -->
+<layoutAnimation xmlns:android="http://schemas.android.com/apk/res/android"
+    android:animation="@anim/grid_item_in"
+    android:animationOrder="normal"
+    android:delay="4%" />

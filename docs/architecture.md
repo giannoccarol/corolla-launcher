@@ -60,6 +60,19 @@ AudioManager ──────────────────────�
 - `SystemBars.apply()` draws edge to edge, colors the system bars like the background and pads
   the root view by the insets, so the uniform theme reaches the screen edges.
 
+### Motion and sound
+
+- `ui/Motion.kt` is the only place that starts animations. It animates alpha, translation and
+  scale through `ViewPropertyAnimator`, which the GPU composites without re-laying-out or
+  redrawing the views, and it returns early when `Motion.enabled()` is false (the Animations
+  setting, or animations disabled system-wide).
+- Screen transitions are window animations (`res/anim/screen_*.xml`) set with
+  `overridePendingTransition`, which still works on every Android version the app supports.
+- `HomeActivity` remembers what the dock and the player last showed (`shownDock`,
+  `shownTrack`, `shownPlaying`) so it only rebuilds or animates on a real change, not on
+  every media callback.
+- Click sounds are disabled once, in the theme (`android:soundEffectsEnabled` = false).
+
 ### Language
 
 - English strings are the base (`values/strings.xml`); each language has a `values-xx` folder.

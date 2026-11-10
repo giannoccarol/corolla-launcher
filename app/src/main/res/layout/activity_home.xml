@@ -16,6 +16,7 @@
 
         <!-- Left pane: clock and navigation shortcuts -->
         <LinearLayout
+            android:id="@+id/leftPane"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="40"
@@ -159,6 +160,7 @@
 
         <!-- Right pane: quick buttons and the media player card -->
         <LinearLayout
+            android:id="@+id/rightPane"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="60"

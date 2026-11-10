@@ -17,7 +17,14 @@ in full, not only the diff, and check each of the following.
   actions, no long lists that must be scrolled to reach something common.
 - Text meant to be read at a glance is large and high contrast. Nothing essential is conveyed
   by color alone.
-- Nothing new distracts: no auto-playing motion, no popups that appear on their own.
+- Nothing new distracts: no looping or auto-playing motion, no popups that appear on their own.
+
+## Motion and sound
+
+- Every animation is started from `ui/Motion.kt` and is skipped when `Motion.enabled()` is false.
+- Only alpha, translation and scale are animated. Flag any animation of size, margins, padding,
+  color or text, any `LayoutTransition`, and anything longer than about 250 ms or repeating.
+- Nothing re-enables click sounds (`soundEffectsEnabled`, `playSoundEffect`) or adds audio.
 
 ## Theme
 

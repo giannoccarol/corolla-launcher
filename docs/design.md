@@ -75,6 +75,30 @@ System Roboto. Clock in `sans-serif-light`, titles and buttons in `sans-serif-me
 - Adaptive app icons are redrawn as rounded squares (24 % radius) by `IconShaper`, so every
   icon has the same silhouette regardless of the device's icon mask.
 
+## Motion
+
+Present but quiet: it should make the screen feel responsive, never ask for attention.
+
+| Where | What | Duration |
+| --- | --- | --- |
+| Any button or icon, while pressed | shrinks to 93 %, springs back on release | 80 / 180 ms |
+| Home screen appearing | left pane, right pane and dock rise 14dp and fade in, staggered | 260 ms |
+| Dock icons, when the set changes | pop in one after the other | 200 ms |
+| Opening All apps or Settings | the screen rises 4 % and fades in; closing reverses it | 220 / 180 ms |
+| App grid, first show | tiles fade and scale in, staggered | 180 ms |
+| Track change | title, artist and cover fade in | 200 ms |
+| Play/pause change | the play button bounces once | 180 ms |
+
+Rules: only alpha, translation and scale; nothing loops; nothing that stays on screen moves
+(the progress bar steps once a second on purpose). *Settings → Animations* and the system
+"animator duration scale" both switch everything off. All of it lives in `ui/Motion.kt`.
+
+## Sound
+
+None. `android:soundEffectsEnabled` is false in the app theme and the dialog theme, which
+makes it the default for every view. The head unit's own touch beep, if it has one, is a
+device setting outside the app.
+
 ## Icons
 
 Vector drawables in `res/drawable/ic_*.xml`, 24-unit viewport, solid white shapes, tinted in

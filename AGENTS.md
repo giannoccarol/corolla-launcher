@@ -44,11 +44,17 @@ visible change has been looked at on the emulator in **both themes**.
    No interaction may require precise or repeated taps.
 5. **Assume weak hardware.** The unit may be a quad-core Cortex-A7 with 1-2 GB of RAM running
    Android 8-10, whatever the listing claims. Keep `minSdk` at 24, guard newer APIs with
-   `Build.VERSION.SDK_INT`, avoid heavy libraries, never block the main thread, and do not add
-   animations that redraw large areas.
-6. **Fail soft.** Head unit firmware strips system apps and settings screens. Every
+   `Build.VERSION.SDK_INT`, avoid heavy libraries and never block the main thread.
+6. **Animations are welcome, but only cheap ones, and only through `ui/Motion.kt`.** Animate
+   alpha, translation and scale only; never size, padding, color, text or anything else that
+   forces a layout or a redraw. Keep each under about 250 ms, never loop, and never animate
+   something that is permanently on screen (no pulsing, no moving progress). Every animation
+   must be skipped when `Motion.enabled()` is false.
+7. **No sounds.** The theme disables view click sounds; do not re-enable them, and do not add
+   audio feedback of any kind.
+8. **Fail soft.** Head unit firmware strips system apps and settings screens. Every
    `startActivity` to something outside the app must handle `ActivityNotFoundException`.
-7. **Be honest in the docs.** If something was only tested on the emulator, the README says so.
+9. **Be honest in the docs.** If something was only tested on the emulator, the README says so.
    Update "Known limits" when a limit is removed or discovered.
 
 ## Conventions
@@ -75,4 +81,5 @@ visible change has been looked at on the emulator in **both themes**.
 | New language | follow `.claude/skills/add-language/SKILL.md` |
 | New icon | vector drawable in `res/drawable/`, white fill, tinted in the layout |
 | New color | both `values/colors.xml` and `values-night/colors.xml` |
+| New animation | a function in `ui/Motion.kt`, or an XML in `res/anim/` used from it |
 | Device finding | `docs/head-unit.md` |

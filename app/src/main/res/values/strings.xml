@@ -56,6 +56,9 @@
     <string name="theme_auto_time">Automatic (dark from 18:00 to 07:00)</string>
     <string name="settings_language">Language</string>
     <string name="language_system">System default</string>
+    <string name="settings_animations">Animations</string>
+    <string name="settings_on">On</string>
+    <string name="settings_off">Off</string>
     <string name="settings_section_navigation">Navigation</string>
     <string name="settings_home_address">Home address</string>
     <string name="settings_work_address">Work address</string>

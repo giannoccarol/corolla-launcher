@@ -39,6 +39,7 @@ import io.github.giannoccarol.corollalauncher.nav.NavigationShortcuts
 import io.github.giannoccarol.corollalauncher.settings.Prefs
 import io.github.giannoccarol.corollalauncher.settings.SettingsActivity
 import io.github.giannoccarol.corollalauncher.theme.ThemeManager
+import io.github.giannoccarol.corollalauncher.ui.Motion
 import io.github.giannoccarol.corollalauncher.ui.SystemBars
 import io.github.giannoccarol.corollalauncher.ui.TextPrompt
 import java.util.Locale
@@ -59,6 +60,13 @@ class HomeActivity : AppCompatActivity() {
 
     /** Packages currently shown as source chips, to avoid rebuilding them on every update. */
     private var shownSources: List<String> = emptyList()
+
+    /** App keys currently in the dock, for the same reason. */
+    private var shownDock: List<String>? = null
+
+    /** What the player last showed, to animate only real changes. */
+    private var shownTrack: String? = null
+    private var shownPlaying: Boolean? = null
 
     private val progressTicker = object : Runnable {
         override fun run() {
@@ -97,6 +105,7 @@ class HomeActivity : AppCompatActivity() {
         setUpDock()
 
         AppRepository.addListener(appsListener)
+        Motion.enter(binding.leftPane, binding.rightPane, binding.dock)
     }
 
     override fun onStart() {
@@ -155,6 +164,7 @@ class HomeActivity : AppCompatActivity() {
         binding.navHome.setOnLongClickListener { editHomeAddress(); true }
         binding.navWork.setOnClickListener { goTo(prefs.workAddress, ::editWorkAddress) }
         binding.navWork.setOnLongClickListener { editWorkAddress(); true }
+        Motion.pressable(binding.whereTo, binding.navHome, binding.navWork)
     }
 
     /** Navigates to a saved address, or asks for it the first time. */
@@ -187,7 +197,7 @@ class HomeActivity : AppCompatActivity() {
         binding.cover.clipToOutline = true
 
         binding.settingsButton.setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
+            Motion.open(this, Intent(this, SettingsActivity::class.java))
         }
         binding.themeButton.setImageResource(
             if (ThemeManager.isDark(this)) R.drawable.ic_sun else R.drawable.ic_moon,
@@ -213,6 +223,10 @@ class HomeActivity : AppCompatActivity() {
                 toast(R.string.settings_screen_unavailable)
             }
         }
+        Motion.pressable(
+            binding.settingsButton, binding.themeButton, binding.prevButton,
+            binding.playButton, binding.nextButton, binding.emptyAction,
+        )
     }
 
     /** Uses the selected session when there is one, otherwise a plain media button press. */
@@ -237,6 +251,8 @@ class HomeActivity : AppCompatActivity() {
             )
             binding.emptyAction.visibility = if (hasAccess) View.GONE else View.VISIBLE
             binding.playButton.setImageResource(R.drawable.ic_play)
+            shownTrack = null
+            shownPlaying = null
             return
         }
 
@@ -270,9 +286,16 @@ class HomeActivity : AppCompatActivity() {
             binding.cover.setImageResource(R.drawable.ic_music)
         }
 
-        binding.playButton.setImageResource(
-            if (controller.isPlaying()) R.drawable.ic_pause else R.drawable.ic_play,
-        )
+        val playing = controller.isPlaying()
+        binding.playButton.setImageResource(if (playing) R.drawable.ic_pause else R.drawable.ic_play)
+        if (shownPlaying != null && shownPlaying != playing) Motion.pop(binding.playButton)
+        shownPlaying = playing
+
+        val track = "${controller.packageName}|$title|$artist"
+        if (track != shownTrack) {
+            shownTrack = track
+            Motion.fadeIn(binding.mediaContent)
+        }
         renderProgress()
     }
 
@@ -288,6 +311,7 @@ class HomeActivity : AppCompatActivity() {
                 chip.text = appLabel(packageName)
                 chip.tag = packageName
                 chip.setOnClickListener { media.select(packageName) }
+                Motion.pressable(chip)
                 binding.sources.addView(chip)
             }
         }
@@ -339,15 +363,22 @@ class HomeActivity : AppCompatActivity() {
 
     private fun setUpDock() {
         binding.allAppsButton.setOnClickListener {
-            startActivity(Intent(this, AppDrawerActivity::class.java))
+            Motion.open(this, Intent(this, AppDrawerActivity::class.java))
         }
+        Motion.pressable(binding.allAppsButton, binding.volumeDown, binding.volumeUp)
         binding.volumeDown.setOnClickListener { adjustVolume(AudioManager.ADJUST_LOWER) }
         binding.volumeUp.setOnClickListener { adjustVolume(AudioManager.ADJUST_RAISE) }
     }
 
     private fun renderDock() {
+        val apps = AppRepository.dockApps(this)
+        val keys = apps.map { it.key }
+        if (keys == shownDock) return
+        shownDock = keys
+
         binding.dockApps.removeAllViews()
-        for (app in AppRepository.dockApps(this)) {
+        val icons = ArrayList<View>(apps.size)
+        for (app in apps) {
             val icon = layoutInflater
                 .inflate(R.layout.item_dock_app, binding.dockApps, false) as ImageView
             icon.setImageDrawable(app.icon)
@@ -361,8 +392,11 @@ class HomeActivity : AppCompatActivity() {
                 AppActions.showMenu(it, app, ::renderDock)
                 true
             }
+            Motion.pressable(icon)
             binding.dockApps.addView(icon)
+            icons += icon
         }
+        Motion.popIn(icons)
     }
 
     private fun adjustVolume(direction: Int) {

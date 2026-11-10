@@ -2,12 +2,14 @@ package io.github.giannoccarol.corollalauncher.apps
 
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.GridLayoutManager
 import io.github.giannoccarol.corollalauncher.R
 import io.github.giannoccarol.corollalauncher.databinding.ActivityAppDrawerBinding
+import io.github.giannoccarol.corollalauncher.ui.Motion
 import io.github.giannoccarol.corollalauncher.ui.SystemBars
 
 /** Every installed app in a searchable grid. */
@@ -30,6 +32,11 @@ class AppDrawerActivity : AppCompatActivity() {
         val columns = (resources.configuration.screenWidthDp / TILE_WIDTH_DP).coerceIn(3, 8)
         binding.grid.layoutManager = GridLayoutManager(this, columns)
         binding.grid.adapter = adapter
+        if (Motion.enabled(this)) {
+            binding.grid.layoutAnimation =
+                AnimationUtils.loadLayoutAnimation(this, R.anim.grid_layout)
+        }
+        Motion.pressable(binding.backButton)
 
         binding.backButton.setOnClickListener { finish() }
         binding.search.doAfterTextChanged { applyFilter() }
@@ -43,6 +50,11 @@ class AppDrawerActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
+    override fun finish() {
+        super.finish()
+        Motion.close(this)
+    }
+
     private fun applyFilter() {
         val query = binding.search.text.toString().trim()
         val apps = AppRepository.apps.filter {
@@ -54,7 +66,8 @@ class AppDrawerActivity : AppCompatActivity() {
 
     private fun launch(app: AppInfo) {
         if (AppRepository.launch(this, app)) {
-            finish()
+            // Plain finish: the launched app plays its own opening animation.
+            super.finish()
         } else {
             Toast.makeText(
                 this, getString(R.string.app_launch_failed, app.label), Toast.LENGTH_SHORT,

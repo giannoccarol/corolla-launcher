@@ -52,6 +52,9 @@
     <string name="theme_auto_time">Automatique (sombre de 18 h à 7 h)</string>
     <string name="settings_language">Langue</string>
     <string name="language_system">Langue du système</string>
+    <string name="settings_animations">Animations</string>
+    <string name="settings_on">Activées</string>
+    <string name="settings_off">Désactivées</string>
     <string name="settings_section_navigation">Navigation</string>
     <string name="settings_home_address">Adresse du domicile</string>
     <string name="settings_work_address">Adresse du travail</string>

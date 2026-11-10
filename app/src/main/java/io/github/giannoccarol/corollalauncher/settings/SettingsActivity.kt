@@ -15,6 +15,7 @@ import io.github.giannoccarol.corollalauncher.R
 import io.github.giannoccarol.corollalauncher.databinding.ActivitySettingsBinding
 import io.github.giannoccarol.corollalauncher.theme.ThemeManager
 import io.github.giannoccarol.corollalauncher.theme.ThemeMode
+import io.github.giannoccarol.corollalauncher.ui.Motion
 import io.github.giannoccarol.corollalauncher.ui.SystemBars
 import io.github.giannoccarol.corollalauncher.ui.TextPrompt
 
@@ -38,6 +39,11 @@ class SettingsActivity : AppCompatActivity() {
         render()
     }
 
+    override fun finish() {
+        super.finish()
+        Motion.close(this)
+    }
+
     private fun render() {
         binding.list.removeAllViews()
         val notSet = getString(R.string.settings_not_set)
@@ -45,6 +51,13 @@ class SettingsActivity : AppCompatActivity() {
         section(R.string.settings_section_appearance)
         row(R.string.settings_theme, getString(prefs.themeMode.labelRes)) { pickTheme() }
         row(R.string.settings_language, languageLabel(Languages.currentTag())) { pickLanguage() }
+        row(
+            R.string.settings_animations,
+            getString(if (prefs.animations) R.string.settings_on else R.string.settings_off),
+        ) {
+            prefs.animations = !prefs.animations
+            render()
+        }
 
         section(R.string.settings_section_navigation)
         row(R.string.settings_home_address, prefs.homeAddress ?: notSet) {

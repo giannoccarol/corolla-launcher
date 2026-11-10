@@ -26,6 +26,10 @@ it should run on any landscape Android head unit.
   default, with manual, follow-system and time-based modes.
 - **Five languages**: English, Italian, German, Spanish, French. Switch in Settings, on any
   Android version.
+- **Light animations, no touch sounds.** Buttons react to the press, screens and dock icons
+  ease in, the player fades between tracks. Only GPU-composited properties are animated, and
+  *Settings → Animations* turns all of it off on a unit that cannot keep up. The app never
+  plays a click sound.
 
 ## Requirements
 
@@ -86,6 +90,7 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
 | Set Home / Work address | Long press the button, or *Settings → Navigation* |
 | Switch theme | Sun/moon button (top right), or *Settings → Theme* for all modes |
 | Change language | *Settings → Language* |
+| Turn animations off | *Settings → Animations* |
 
 ## Known limits
 
@@ -99,6 +104,10 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
   unit's own controller instead of Android's volume.
 - **Notification access can be unavailable** on low-RAM Android 8 builds. The player then
   stays in its fallback mode.
+- **Animation smoothness is unmeasured on real hardware.** They are built to be cheap, but if
+  they stutter on the unit, turn them off in Settings.
+- **The unit may still beep on touch.** The app's own click sounds are off, but many head
+  units have a separate system-wide touch beep in their own settings, which no app can mute.
 
 ## Project layout
 
@@ -111,7 +120,7 @@ app/src/main/java/.../corollalauncher/
   nav/                    navigation intents
   settings/               preferences, languages, settings screen
   theme/                  light/dark handling
-  ui/                     shared helpers (system bars, text dialog)
+  ui/                     shared helpers (system bars, text dialog, motion)
 app/src/main/res/
   values/ values-night/   light and dark colors (same names in both)
   values-xx/              translations
