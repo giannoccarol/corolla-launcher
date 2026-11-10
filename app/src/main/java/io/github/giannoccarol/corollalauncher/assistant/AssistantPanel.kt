@@ -72,6 +72,7 @@ class AssistantPanel(
     }
 
     override fun onDismissed() {
+        view?.micHalo?.let(Motion::stopBreathing)
         speech.release()
     }
 
@@ -87,6 +88,7 @@ class AssistantPanel(
 
     private fun startListening() {
         speaker.stop()
+        view?.micHalo?.let(Motion::stopBreathing)
         state = State.LISTENING
         heard = null
         detail = null
@@ -121,6 +123,8 @@ class AssistantPanel(
         status = activity.getString(R.string.assistant_thinking)
         pulse(0f)
         update()
+        // The halo swells slowly while the answer is on its way.
+        view?.micHalo?.let(Motion::breathe)
         assistant.ask(text, host.carContext(), locale(), ::onStep, ::onReply, ::onError)
     }
 
@@ -150,7 +154,9 @@ class AssistantPanel(
         reply = spoken
         state = State.ANSWERED
         status = activity.getString(R.string.assistant_tap_to_talk)
+        settle()
         update()
+        view?.reply?.let(Motion::fadeIn)
         if (prefs.speakReplies && spoken.isNotBlank()) speaker.say(spoken, locale())
 
         val leavesLauncher = others.any {
@@ -183,15 +189,22 @@ class AssistantPanel(
         reply = message
         detail = providerDetail
         status = activity.getString(R.string.assistant_tap_to_talk)
-        pulse(0f)
+        settle()
         update()
+        view?.reply?.let(Motion::fadeIn)
     }
 
     private fun idle() {
         state = State.IDLE
         status = activity.getString(R.string.assistant_tap_to_talk)
-        pulse(0f)
+        settle()
         update()
+    }
+
+    /** Stops the thinking breath and lets the halo shrink back. */
+    private fun settle() {
+        view?.micHalo?.let(Motion::stopBreathing)
+        pulse(0f)
     }
 
     private fun update() {

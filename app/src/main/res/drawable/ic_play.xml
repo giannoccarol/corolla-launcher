@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Two halves with the same path structure as the other state, so they can morph. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="32dp"
     android:height="32dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
     <path
+        android:name="left"
         android:fillColor="#FFFFFFFF"
-        android:pathData="M8.5,5l11,7 -11,7z"
+        android:pathData="M8.2,5.2 L8.2,18.8 L13.6,15.4 L13.6,8.6 Z"
         android:strokeColor="#FFFFFFFF"
-        android:strokeLineCap="round"
         android:strokeLineJoin="round"
-        android:strokeWidth="1.75" />
+        android:strokeWidth="1.4" />
+    <path
+        android:name="right"
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M13.6,8.6 L13.6,15.4 L19.2,12 L19.2,12 Z"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeLineJoin="round"
+        android:strokeWidth="1.4" />
 </vector>

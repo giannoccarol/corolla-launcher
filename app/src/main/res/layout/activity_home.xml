@@ -231,6 +231,7 @@
 
         <TextClock
             android:id="@+id/statusTime"
+            android:fontFeatureSettings="tnum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -362,6 +363,7 @@
 
                 <TextView
                     android:id="@+id/speedValue"
+                    android:fontFeatureSettings="tnum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
@@ -517,6 +519,7 @@
 
                             <TextView
                                 android:id="@+id/elapsed"
+                                android:fontFeatureSettings="tnum"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -526,6 +529,7 @@
 
                             <TextView
                                 android:id="@+id/total"
+                                android:fontFeatureSettings="tnum"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/text_secondary"
@@ -960,6 +964,7 @@
 
             <TextView
                 android:id="@+id/volumeValue"
+                android:fontFeatureSettings="tnum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"

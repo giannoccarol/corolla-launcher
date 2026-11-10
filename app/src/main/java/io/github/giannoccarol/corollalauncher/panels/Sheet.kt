@@ -19,6 +19,7 @@ import io.github.giannoccarol.corollalauncher.databinding.DialogSheetBinding
 import io.github.giannoccarol.corollalauncher.databinding.ItemSheetRowBinding
 import io.github.giannoccarol.corollalauncher.databinding.ItemSheetSliderBinding
 import io.github.giannoccarol.corollalauncher.databinding.ItemSheetSwitchBinding
+import io.github.giannoccarol.corollalauncher.ui.Motion
 
 /**
  * The launcher's own panel, used instead of jumping to system settings: a rounded card over the
@@ -45,6 +46,7 @@ open class Sheet(protected val activity: Activity, @StringRes title: Int) {
             setLayout(width.coerceAtMost(maxWidthPx()), ViewGroup.LayoutParams.WRAP_CONTENT)
             setGravity(Gravity.CENTER)
             addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            if (!Motion.enabled(activity)) setWindowAnimations(0)
             WindowCompat.getInsetsController(this, decorView).apply {
                 systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                 hide(WindowInsetsCompat.Type.systemBars())

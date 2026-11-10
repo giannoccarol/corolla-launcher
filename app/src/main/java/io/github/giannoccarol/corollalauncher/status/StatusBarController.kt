@@ -19,6 +19,7 @@ import android.widget.ImageView
 import android.widget.TextClock
 import androidx.core.content.ContextCompat
 import io.github.giannoccarol.corollalauncher.R
+import io.github.giannoccarol.corollalauncher.ui.Motion
 import java.util.Locale
 
 /**
@@ -110,7 +111,7 @@ class StatusBarController(view: View) {
     }
 
     private fun setOn(icon: ImageView, on: Boolean) {
-        icon.alpha = if (on) 1f else OFF_ALPHA
+        Motion.fadeTo(icon, if (on) 1f else OFF_ALPHA)
     }
 
     private fun gpsOn(): Boolean = try {

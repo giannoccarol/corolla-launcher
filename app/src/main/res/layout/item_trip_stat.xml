@@ -8,6 +8,7 @@
 
     <TextView
         android:id="@+id/value"
+        android:fontFeatureSettings="tnum"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"

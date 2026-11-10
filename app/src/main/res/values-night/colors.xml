@@ -14,4 +14,9 @@
     <color name="chip_off_text">#C5CAD3</color>
     <color name="tile_on_bg">#1D2E52</color>
     <color name="tile_on_text">#A9C5FF</color>
+    <color name="card_highlight">#0DFFFFFF</color>
+    <color name="card_border">#14FFFFFF</color>
+    <color name="sheet_surface">#EB15171B</color>
+    <color name="sheet_border">#1FFFFFFF</color>
+    <color name="scrim">#99000000</color>
 </resources>

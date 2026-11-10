@@ -1,11 +1,14 @@
 package io.github.giannoccarol.corollalauncher.theme
 
+import android.app.Activity
 import android.content.Context
+import android.content.res.Resources
 import android.content.res.Configuration
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
 import io.github.giannoccarol.corollalauncher.R
 import io.github.giannoccarol.corollalauncher.settings.Prefs
+import io.github.giannoccarol.corollalauncher.ui.ThemeTransition
 import java.util.Calendar
 
 enum class ThemeMode(val id: String, @param:StringRes val labelRes: Int) {
@@ -51,10 +54,28 @@ object ThemeManager {
         context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
             Configuration.UI_MODE_NIGHT_YES
 
+    /**
+     * Applies the saved mode with a crossfade when it actually changes what [activity] shows:
+     * user-initiated switches and the evening switch of the time-based mode.
+     */
+    fun applyAnimated(activity: Activity) {
+        val mode = Prefs(activity).themeMode
+        if (willBeDark(mode) != isDark(activity)) ThemeTransition.capture(activity)
+        apply(activity)
+    }
+
     /** Flips between explicit dark and explicit light, whatever the previous mode was. */
-    fun toggle(context: Context) {
-        Prefs(context).themeMode = if (isDark(context)) ThemeMode.LIGHT else ThemeMode.DARK
-        apply(context)
+    fun toggle(activity: Activity) {
+        Prefs(activity).themeMode = if (isDark(activity)) ThemeMode.LIGHT else ThemeMode.DARK
+        applyAnimated(activity)
+    }
+
+    private fun willBeDark(mode: ThemeMode): Boolean = when (mode) {
+        ThemeMode.DARK -> true
+        ThemeMode.LIGHT -> false
+        ThemeMode.AUTO_TIME -> isNightHour(currentHour())
+        ThemeMode.SYSTEM -> Resources.getSystem().configuration.uiMode and
+            Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
     }
 
     private fun currentHour(): Int = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)

@@ -15,6 +15,11 @@
     <color name="chip_off_text">#59606B</color>
     <color name="tile_on_bg">#D4DFF5</color>
     <color name="tile_on_text">#1A4BBF</color>
+    <color name="card_highlight">#99FFFFFF</color>
+    <color name="card_border">#0F0F141E</color>
+    <color name="sheet_surface">#F2F6F7F9</color>
+    <color name="sheet_border">#140F141E</color>
+    <color name="scrim">#59000000</color>
 
     <!-- Same in both themes. -->
     <color name="accent">#3B76F6</color>

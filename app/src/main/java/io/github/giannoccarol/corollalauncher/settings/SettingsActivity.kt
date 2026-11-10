@@ -173,7 +173,7 @@ class SettingsActivity : LauncherActivity() {
             ) { dialog, which ->
                 dialog.dismiss()
                 prefs.themeMode = modes[which]
-                ThemeManager.apply(this)
+                ThemeManager.applyAnimated(this)
             }
             .setNegativeButton(R.string.cancel, null)
             .show()

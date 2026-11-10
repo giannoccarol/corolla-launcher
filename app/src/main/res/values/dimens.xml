@@ -6,6 +6,7 @@
     <dimen name="dock_height">74dp</dimen>
     <dimen name="dock_icon">52dp</dimen>
     <dimen name="cover_size">88dp</dimen>
+    <dimen name="card_radius">24dp</dimen>
     <dimen name="drawer_icon">72dp</dimen>
 
     <!-- Pixel size app icons are rendered at once, large enough for the drawer tiles. -->

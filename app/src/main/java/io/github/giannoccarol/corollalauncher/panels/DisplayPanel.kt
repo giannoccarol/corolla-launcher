@@ -60,7 +60,7 @@ class DisplayPanel(activity: Activity) : Sheet(activity, R.string.qs_display) {
                 // The activity is recreated when the theme changes; close the panel first.
                 dismiss()
                 prefs.themeMode = mode
-                ThemeManager.apply(activity)
+                ThemeManager.applyAnimated(activity)
             }
         }
         button(R.string.display_system_settings) { open(Intent(Settings.ACTION_DISPLAY_SETTINGS)) }

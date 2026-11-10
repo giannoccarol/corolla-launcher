@@ -2,7 +2,7 @@
 <!-- A screen of this app opening: rises slightly while fading in. -->
 <set xmlns:android="http://schemas.android.com/apk/res/android"
     android:duration="220"
-    android:interpolator="@android:interpolator/decelerate_cubic">
+    android:interpolator="@android:interpolator/linear_out_slow_in">
     <alpha
         android:fromAlpha="0"
         android:toAlpha="1" />

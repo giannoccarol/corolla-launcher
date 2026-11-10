@@ -11,7 +11,7 @@ class MaxHeightScrollView @JvmOverloads constructor(
 ) : ScrollView(context, attrs) {
 
     /** Fraction of the screen height the content may take before it starts scrolling. */
-    var maxScreenFraction = 0.74f
+    var maxScreenFraction = 0.78f
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val max = (resources.displayMetrics.heightPixels * maxScreenFraction).toInt()

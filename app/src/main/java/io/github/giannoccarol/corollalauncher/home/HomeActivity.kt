@@ -11,7 +11,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.animation.ArgbEvaluator
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import android.media.AudioManager
 import android.media.MediaMetadata
 import android.media.session.MediaController
@@ -77,6 +83,7 @@ import io.github.giannoccarol.corollalauncher.theme.ThemeMode
 import io.github.giannoccarol.corollalauncher.trip.Compass
 import io.github.giannoccarol.corollalauncher.trip.TripService
 import io.github.giannoccarol.corollalauncher.trip.TripTracker
+import io.github.giannoccarol.corollalauncher.ui.AlbumColor
 import io.github.giannoccarol.corollalauncher.ui.LauncherActivity
 import io.github.giannoccarol.corollalauncher.ui.Motion
 import io.github.giannoccarol.corollalauncher.ui.TextPrompt
@@ -105,6 +112,8 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
     private var shownApps: List<String>? = null
     private var shownTrack: String? = null
     private var shownPlaying: Boolean? = null
+    private var shownTint = Color.TRANSPARENT
+    private lateinit var albumTint: GradientDrawable
 
     /** The panel currently open, refreshed when a permission or a system screen comes back. */
     private var panel: Sheet? = null
@@ -145,7 +154,7 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
     private val systemReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
-                Intent.ACTION_TIME_TICK -> ThemeManager.apply(context)
+                Intent.ACTION_TIME_TICK -> ThemeManager.applyAnimated(this@HomeActivity)
                 ACTION_VOLUME_CHANGED -> renderVolume()
                 else -> renderQuickSettings()
             }
@@ -529,7 +538,7 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
         }
         is AssistantAction.Theme -> {
             prefs.themeMode = if (action.dark) ThemeMode.DARK else ThemeMode.LIGHT
-            ThemeManager.apply(this)
+            ThemeManager.applyAnimated(this)
             null
         }
     }
@@ -634,6 +643,13 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
 
     private fun setUpPlayer() {
         binding.cover.clipToOutline = true
+        // The card's own background with a gradient tint on top, coloured from the cover.
+        val radius = resources.getDimension(R.dimen.card_radius)
+        albumTint = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(Color.TRANSPARENT, Color.TRANSPARENT))
+            .apply { cornerRadius = radius }
+        binding.mediaCard.background = LayerDrawable(
+            arrayOf(ContextCompat.getDrawable(this, R.drawable.bg_card)!!, albumTint),
+        )
         binding.prevButton.setOnClickListener {
             transport(KeyEvent.KEYCODE_MEDIA_PREVIOUS) { it.transportControls.skipToPrevious() }
         }
@@ -673,7 +689,8 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
                 if (hasAccess) R.string.media_nothing_playing_hint else R.string.media_access_hint,
             )
             binding.emptyAction.visibility = if (hasAccess) View.GONE else View.VISIBLE
-            binding.playButton.setImageResource(R.drawable.ic_play)
+            showPlaying(false, animate = false)
+            tintFromCover(null)
             shownTrack = null
             shownPlaying = null
             return
@@ -696,6 +713,8 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
         val art = metadata?.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART)
             ?: metadata?.getBitmap(MediaMetadata.METADATA_KEY_ART)
             ?: metadata?.getBitmap(MediaMetadata.METADATA_KEY_DISPLAY_ICON)
+        val track = "${controller.packageName}|$title|$artist"
+        if (track != shownTrack) tintFromCover(art)
         if (art != null) {
             ImageViewCompat.setImageTintList(binding.cover, null)
             binding.cover.scaleType = ImageView.ScaleType.CENTER_CROP
@@ -710,11 +729,9 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
         }
 
         val playing = controller.isPlaying()
-        binding.playButton.setImageResource(if (playing) R.drawable.ic_pause else R.drawable.ic_play)
-        if (shownPlaying != null && shownPlaying != playing) Motion.pop(binding.playButton)
+        if (shownPlaying != playing) showPlaying(playing, animate = shownPlaying != null)
         shownPlaying = playing
 
-        val track = "${controller.packageName}|$title|$artist"
         if (track != shownTrack) {
             shownTrack = track
             Motion.fadeIn(binding.mediaContent)
@@ -765,9 +782,47 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
             position += (sinceUpdate * state.playbackSpeed).toLong()
         }
         position = position.coerceIn(0L, duration)
-        binding.progress.progress = (position * PROGRESS_MAX / duration).toInt()
+        // Animated by the ProgressBar itself between the once-a-second ticks: it glides
+        // instead of jumping, and only that thin bar redraws.
+        binding.progress.setProgress((position * PROGRESS_MAX / duration).toInt(), Motion.enabled(this))
         binding.elapsed.update(DateUtils.formatElapsedTime(position / 1000))
         binding.total.update(DateUtils.formatElapsedTime(duration / 1000))
+    }
+
+    /** Play and pause morph into each other instead of swapping. */
+    private fun showPlaying(playing: Boolean, animate: Boolean) {
+        val morph = if (animate && Motion.enabled(this)) {
+            AnimatedVectorDrawableCompat.create(
+                this, if (playing) R.drawable.avd_play_to_pause else R.drawable.avd_pause_to_play,
+            )
+        } else {
+            null
+        }
+        if (morph != null) {
+            binding.playButton.setImageDrawable(morph)
+            morph.start()
+        } else {
+            binding.playButton.setImageResource(if (playing) R.drawable.ic_pause else R.drawable.ic_play)
+        }
+    }
+
+    /**
+     * Washes the media card with the cover's colour, like a good player does, and crossfades
+     * when the track changes. Subtler in the light theme, gone when nothing is playing.
+     */
+    private fun tintFromCover(art: Bitmap?) {
+        val target = art?.let { cover ->
+            val thumb = Bitmap.createScaledBitmap(cover, TINT_SAMPLE, TINT_SAMPLE, true)
+            val pixels = IntArray(TINT_SAMPLE * TINT_SAMPLE)
+            thumb.getPixels(pixels, 0, TINT_SAMPLE, 0, 0, TINT_SAMPLE, TINT_SAMPLE)
+            if (thumb !== cover) thumb.recycle()
+            AlbumColor.pick(pixels)
+        }?.let { AlbumColor.withAlpha(it, if (ThemeManager.isDark(this)) TINT_ALPHA_DARK else TINT_ALPHA_LIGHT) }
+            ?: Color.TRANSPARENT
+        Motion.colorTo(binding.mediaCard, shownTint, target) { color ->
+            albumTint.colors = intArrayOf(color, AlbumColor.withAlpha(color, 0f))
+        }
+        shownTint = target
     }
 
     private fun MediaController.isPlaying(): Boolean =
@@ -811,6 +866,8 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
     ) {
         tile.icon.setImageResource(icon)
         tile.label.setText(label)
+        // Own copy of the drawable, so one tile's colour change does not repaint the others.
+        tile.root.background = tile.root.background.mutate()
         tile.root.setOnClickListener { onClick() }
         Motion.pressable(tile.root)
     }
@@ -820,12 +877,27 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
         setTileOn(binding.qsBluetooth, toggles.bluetoothEnabled())
     }
 
+    /** Switching on and off crossfades the tile's fill together with its icon and label. */
     private fun setTileOn(tile: ItemQuickTileBinding, on: Boolean) {
-        tile.root.setBackgroundResource(if (on) R.drawable.bg_tile_on else R.drawable.bg_tile)
-        val color = ContextCompat.getColor(this, if (on) R.color.tile_on_text else R.color.text_primary)
-        tile.label.setTextColor(color)
-        ImageViewCompat.setImageTintList(tile.icon, ColorStateList.valueOf(color))
+        val previous = tile.root.getTag(R.id.tile_state) as? Boolean
+        if (previous == on) return
+        tile.root.setTag(R.id.tile_state, on)
         tile.root.isSelected = on
+        val fill = (tile.root.background as? LayerDrawable)?.findDrawableByLayerId(R.id.fill) as? GradientDrawable
+        val fillOff = ContextCompat.getColor(this, R.color.surface_2)
+        val fillOn = ContextCompat.getColor(this, R.color.tile_on_bg)
+        val inkOff = ContextCompat.getColor(this, R.color.text_primary)
+        val inkOn = ContextCompat.getColor(this, R.color.tile_on_text)
+        val argb = ArgbEvaluator()
+        val fillFrom = if (previous == true) fillOn else fillOff
+        val inkFrom = if (previous == true) inkOn else inkOff
+        // The first render sets the state without animating; later changes crossfade.
+        Motion.transition(tile.root, animate = previous != null) { t ->
+            fill?.setColor(argb.evaluate(t, fillFrom, if (on) fillOn else fillOff) as Int)
+            val ink = argb.evaluate(t, inkFrom, if (on) inkOn else inkOff) as Int
+            tile.label.setTextColor(ink)
+            ImageViewCompat.setImageTintList(tile.icon, ColorStateList.valueOf(ink))
+        }
     }
 
     // endregion
@@ -962,6 +1034,9 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
         /** Not a public constant, but stable since Android 1.5 and what volume UIs listen to. */
         const val ACTION_VOLUME_CHANGED = "android.media.VOLUME_CHANGED_ACTION"
         const val PROGRESS_MAX = 1000
+        const val TINT_SAMPLE = 8
+        const val TINT_ALPHA_DARK = 0.34f
+        const val TINT_ALPHA_LIGHT = 0.2f
         const val TICK_MS = 1000L
         const val RECENTS_SHOWN = 2
 

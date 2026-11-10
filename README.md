@@ -51,10 +51,14 @@ it should run on any landscape Android head unit.
   default, with manual, follow-system and time-based modes.
 - **Five languages**: English, Italian, German, Spanish, French. Switch in Settings, on any
   Android version.
-- **Light animations, no touch sounds.** Buttons react to the press, screens and dock icons
-  ease in, the player fades between tracks. Only GPU-composited properties are animated, and
-  *Settings → Animations* turns all of it off on a unit that cannot keep up. The app never
-  plays a click sound.
+- **Finish and motion, without the cost.** Cards and tiles have a hairline edge and a faint
+  sheen from above; panels are translucent and grow in from 94 %; the media card takes a wash
+  of colour from the album cover and crossfades it between tracks; play and pause morph into
+  each other; the progress bar glides; quick settings tiles crossfade on and off; switching
+  theme dissolves the old screen into the new one instead of jumping; numbers use fixed-width
+  digits so speed and time do not jitter. Material easing curves throughout. Only
+  GPU-composited properties move, and *Settings → Animations* turns all of it off on a unit
+  that cannot keep up. The app never plays a click sound.
 
 ## Requirements
 

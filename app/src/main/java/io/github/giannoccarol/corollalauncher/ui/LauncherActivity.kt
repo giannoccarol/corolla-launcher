@@ -17,6 +17,8 @@ abstract class LauncherActivity : AppCompatActivity() {
     protected fun setUpWindow(root: View, includeIme: Boolean = false) {
         SystemBars.apply(this, root, includeIme)
         root.findViewById<View>(R.id.statusBar)?.let { statusBar = StatusBarController(it) }
+        // After a theme switch, the old screen fades away over the new one.
+        root.post { ThemeTransition.reveal(this) }
     }
 
     override fun onStart() {

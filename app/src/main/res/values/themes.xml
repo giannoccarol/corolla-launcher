@@ -24,11 +24,18 @@
         <item name="android:textColorHint">@color/text_secondary</item>
     </style>
 
+    <!-- Panel window motion; Sheet switches it off when animations are off. -->
+    <style name="Animation.Launcher.Sheet" parent="@android:style/Animation.Dialog">
+        <item name="android:windowEnterAnimation">@anim/sheet_enter</item>
+        <item name="android:windowExitAnimation">@anim/sheet_exit</item>
+    </style>
+
     <!-- The launcher's own panels: transparent window around a rounded card, dimmed home. -->
     <style name="Theme.Launcher.Sheet" parent="Theme.AppCompat.DayNight.Dialog">
         <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:backgroundDimAmount">0.55</item>
+        <item name="android:windowAnimationStyle">@style/Animation.Launcher.Sheet</item>
         <item name="colorAccent">@color/accent</item>
         <item name="colorControlActivated">@color/accent</item>
         <item name="android:textColorPrimary">@color/text_primary</item>

@@ -47,9 +47,10 @@ visible change has been looked at on the emulator in **both themes**.
    `Build.VERSION.SDK_INT`, avoid heavy libraries and never block the main thread.
 6. **Animations are welcome, but only cheap ones, and only through `ui/Motion.kt`.** Animate
    alpha, translation and scale only; never size, padding, color, text or anything else that
-   forces a layout or a redraw. Keep each under about 250 ms, never loop, and never animate
-   something that is permanently on screen (no pulsing, no moving progress). Every animation
-   must be skipped when `Motion.enabled()` is false.
+   forces a layout or a redraw (a colour crossfade of one drawable is fine). Keep each under
+   about 400 ms. The only repeating motion allowed is tied to a transient state and stops with
+   it (the assistant's halo while it thinks). Use the curves in `Motion`, not ad-hoc ones.
+   Every animation must be skipped when `Motion.enabled()` is false.
 7. **No sounds.** The theme disables view click sounds; do not re-enable them, and do not add
    audio feedback of any kind. The one exception is the assistant reading its reply aloud,
    which the driver asked for and can turn off (*Settings → Read replies aloud*).

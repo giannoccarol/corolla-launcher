@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- View tags holding running animators, so a new one can cancel the old. -->
+    <item name="motion_color_animator" type="id" />
+    <item name="motion_breath_animator" type="id" />
+    <!-- Last on/off state shown by a quick settings tile. -->
+    <item name="tile_state" type="id" />
+</resources>

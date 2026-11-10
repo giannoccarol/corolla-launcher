@@ -92,23 +92,42 @@ System Roboto. Clock in `sans-serif-light`, titles and buttons in `sans-serif-me
 - Adaptive app icons are redrawn as rounded squares (24 % radius) by `IconShaper`, so every
   icon has the same silhouette regardless of the device's icon mask.
 
+## Surfaces
+
+- **Cards, tiles, rows, pills**: the fill colour, then a top-down sheen (`card_highlight`, 5 %
+  white in dark, 60 % white in light) and a 1dp hairline edge (`card_border`). On a pure black
+  screen that separates surfaces without shadows, which would be invisible there anyway.
+- **Panels**: `sheet_surface` is the card colour at 92-95 % opacity, so the dimmed home shows
+  faintly through, with a brighter hairline (`sheet_border`).
+- **Media card**: the card plus a diagonal wash of the album cover's colour (34 % in dark, 20 %
+  in light), picked by `ui/AlbumColor` (most saturated, mid-bright hue, then calmed).
+- **Numbers that change in place** (time, speed, volume, trip, track times, slider values)
+  use tabular figures (`fontFeatureSettings="tnum"`).
+- **Slider knob**: white with an accent ring in both themes.
+
 ## Motion
 
-Present but quiet: it should make the screen feel responsive, never ask for attention.
+Present, refined, never in the way. Curves are Material's: *emphasized decelerate*
+(0.05, 0.7, 0.1, 1) for things arriving, *standard* (0.2, 0, 0, 1) for state changes,
+`linear_out_slow_in` / `fast_out_linear_in` for windows.
 
 | Where | What | Duration |
 | --- | --- | --- |
-| Any button or icon, while pressed | shrinks to 93 %, springs back on release | 80 / 180 ms |
-| Home screen appearing | left pane, right pane and dock rise 14dp and fade in, staggered | 260 ms |
-| Dock icons, when the set changes | pop in one after the other | 200 ms |
-| Opening All apps or Settings | the screen rises 4 % and fades in; closing reverses it | 220 / 180 ms |
-| App grid, first show | tiles fade and scale in, staggered | 180 ms |
-| Track change | title, artist and cover fade in | 200 ms |
-| Play/pause change | the play button bounces once | 180 ms |
+| Anything pressed | sinks to 95 % and 82 % opacity, settles back | 90 / 260 ms |
+| Home screen appearing | the three columns and the bottom bar rise 16dp and fade in, staggered 60 ms | 380 ms |
+| Dock and Most used icons | grow from 82 % and fade in, staggered 35 ms | 300 ms |
+| Opening All apps or Settings | rises 4 % and fades in; closing reverses it | 220 / 180 ms |
+| Panels | grow from 94 % and fade in; leave to 97 % faster | 240 / 160 ms |
+| Track change | title and cover rise 6dp and fade in; the card's album wash crossfades | 260 / 320 ms |
+| Play / pause | the icon morphs (two halves of a path) | 260 ms |
+| Progress | glides between the once-a-second updates | system |
+| Quick settings tile on/off | fill, icon and label crossfade | 320 ms |
+| Status icons | fade between on (100 %) and off (28 %) | 260 ms |
+| Theme switch | a snapshot of the old screen fades out over the new | 420 ms |
+| Assistant | halo follows the voice while listening, breathes slowly while thinking, reply fades in | live / 900 ms |
 
-Rules: only alpha, translation and scale; nothing loops; nothing that stays on screen moves
-(the progress bar steps once a second on purpose). *Settings → Animations* and the system
-"animator duration scale" both switch everything off. All of it lives in `ui/Motion.kt`.
+Everything lives in `ui/Motion.kt` (and `ui/ThemeTransition.kt`) and is skipped when
+*Settings → Animations* or the system animator scale is off.
 
 ## Sound
 
