@@ -201,6 +201,9 @@
     <string name="theme_system">Follow system</string>
     <string name="theme_auto_time">Automatic (dark from 18:00 to 07:00)</string>
     <string name="settings_language">Language</string>
+    <string name="settings_icons">App icons</string>
+    <string name="settings_icons_themed">Themed</string>
+    <string name="settings_icons_original">Original</string>
     <string name="language_system">System default</string>
     <string name="settings_animations">Animations</string>
     <string name="settings_on">On</string>

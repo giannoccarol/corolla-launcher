@@ -28,7 +28,7 @@ class AppGridAdapter(
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val app = items[position]
-        holder.binding.icon.setImageDrawable(app.icon)
+        AppIcons.bind(holder.binding.icon, app)
         holder.binding.label.text = app.label
         holder.binding.root.setOnClickListener { onClick(app) }
         holder.binding.root.setOnLongClickListener {

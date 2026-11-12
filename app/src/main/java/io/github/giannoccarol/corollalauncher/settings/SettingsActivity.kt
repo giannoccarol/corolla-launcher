@@ -12,6 +12,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationManagerCompat
 import io.github.giannoccarol.corollalauncher.BuildConfig
 import io.github.giannoccarol.corollalauncher.R
+import io.github.giannoccarol.corollalauncher.apps.AppIcons
+import io.github.giannoccarol.corollalauncher.apps.AppRepository
+import io.github.giannoccarol.corollalauncher.apps.IconPack
 import io.github.giannoccarol.corollalauncher.assistant.KeyVault
 import io.github.giannoccarol.corollalauncher.assistant.ai.AiProvider
 import io.github.giannoccarol.corollalauncher.assistant.ai.AiProviders
@@ -67,6 +70,9 @@ class SettingsActivity : LauncherActivity() {
         }
         row(R.string.settings_theme, getString(prefs.themeMode.labelRes)) { pickTheme() }
         row(R.string.settings_language, languageLabel(Languages.currentTag())) { pickLanguage() }
+        row(R.string.settings_icons, iconStyleLabel(prefs.iconStyle, IconPack.installed(this))) {
+            pickIconStyle()
+        }
         row(
             R.string.settings_animations,
             getString(if (prefs.animations) R.string.settings_on else R.string.settings_off),
@@ -243,6 +249,33 @@ class SettingsActivity : LauncherActivity() {
             }
             .setNegativeButton(R.string.cancel, null)
             .show()
+    }
+
+    /** Themed, original, or one of the icon packs installed from the Play Store. */
+    private fun pickIconStyle() {
+        val packs = IconPack.installed(this)
+        val styles = listOf(AppIcons.STYLE_THEMED, AppIcons.STYLE_ORIGINAL) + packs.map { it.packageName }
+        AlertDialog.Builder(this)
+            .setTitle(R.string.settings_icons)
+            .setSingleChoiceItems(
+                styles.map { iconStyleLabel(it, packs) }.toTypedArray(),
+                styles.indexOf(prefs.iconStyle).coerceAtLeast(0),
+            ) { dialog, which ->
+                dialog.dismiss()
+                prefs.iconStyle = styles[which]
+                AppRepository.reload(this)
+                render()
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    /** An uninstalled pack falls back to the themed icons, and is shown as such. */
+    private fun iconStyleLabel(style: String, packs: List<IconPack.Installed>): String = when (style) {
+        AppIcons.STYLE_ORIGINAL -> getString(R.string.settings_icons_original)
+        AppIcons.STYLE_THEMED -> getString(R.string.settings_icons_themed)
+        else -> packs.firstOrNull { it.packageName == style }?.label
+            ?: getString(R.string.settings_icons_themed)
     }
 
     private fun languageLabel(tag: String?): String =

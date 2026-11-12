@@ -19,7 +19,7 @@ import android.os.Build
 object IconShaper {
 
     /** Corner radius as a fraction of the icon size. */
-    private const val CORNER_FRACTION = 0.24f
+    const val CORNER_FRACTION = 0.24f
 
     /** Adaptive layers are 108dp wide with a 72dp visible area, hence 1.5x. */
     private const val LAYER_SCALE = 1.5f

@@ -15,6 +15,9 @@
     <color name="chip_off_text">#59606B</color>
     <color name="tile_on_bg">#D4DFF5</color>
     <color name="tile_on_text">#1A4BBF</color>
+    <!-- Themed app icons: a tonal tile and a glyph of the same hue, like Android's themed icons. -->
+    <color name="icon_tile">#DCE5F7</color>
+    <color name="icon_glyph">#1A4BBF</color>
     <!-- Speed gauge: segments past the motorway limit, and unlit LCD segments. -->
     <color name="gauge_warn">#D9820B</color>
     <color name="gauge_ghost">#0E0F141E</color>

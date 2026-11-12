@@ -33,7 +33,17 @@ AudioManager ──────────────────────�
 ### Apps
 
 - `AppRepository` is a process-wide object. It loads launchable activities on a background
-  thread, shapes their icons once (`IconShaper`), and notifies listeners on the main thread.
+  thread, builds their icons once (`AppIcons.Loader`), and notifies listeners on the main thread.
+- `AppIcons` makes the icon in the style set in *Settings → App icons*:
+  - themed (default): an `ALPHA_8` mask per app, put on a tile and tinted by `AppIcons.bind`
+    with the current theme's colours. The glyph is chosen by `IconGlyphs` (pure, unit tested:
+    exact packages, brand names in labels, then label words in five languages, then package
+    fragments); `IconSilhouette` (pure) decides whether an adaptive foreground is usable;
+  - original: `IconShaper` gives adaptive icons one rounded-square shape;
+  - icon pack: `IconPack` reads the pack's appfilter.xml (compiled or as an asset) into
+    `IconPackFilter` (pure), rasterises its drawables to the icon size, and fits uncovered
+    apps with the pack's background, mask, overlay and scale. A pack that is uninstalled or
+    unreadable falls back to themed icons.
 - `LauncherApp` registers for package added/removed/changed broadcasts and triggers a reload,
   so the list stays correct even while the home screen is not visible.
 - `ProjectionApps` (pure, unit tested) recognises the head unit's Android Auto / CarPlay app by
@@ -206,7 +216,7 @@ Two `SharedPreferences` files, wrapped by `settings/Prefs`:
 
 | File | Contents |
 | --- | --- |
-| `launcher` | theme mode, home and work address, pinned apps |
+| `launcher` | theme mode, home and work address, pinned apps, icon style |
 | `launch_counts` | launch count per app component |
 
 ## Things that are intentionally absent

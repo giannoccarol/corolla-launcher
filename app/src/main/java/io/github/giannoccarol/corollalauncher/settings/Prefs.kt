@@ -2,6 +2,7 @@ package io.github.giannoccarol.corollalauncher.settings
 
 import android.content.Context
 import androidx.core.content.edit
+import io.github.giannoccarol.corollalauncher.apps.AppIcons
 import io.github.giannoccarol.corollalauncher.theme.ThemeMode
 
 /** Thin typed wrapper over SharedPreferences. Cheap to construct; no caching of its own. */
@@ -71,6 +72,11 @@ class Prefs(context: Context) {
             .orEmpty()
         set(value) = settings.edit { putString(KEY_PINNED, value.joinToString("\n")) }
 
+    /** [AppIcons.STYLE_THEMED], [AppIcons.STYLE_ORIGINAL] or an installed icon pack's package. */
+    var iconStyle: String
+        get() = settings.getString(KEY_ICON_STYLE, null) ?: AppIcons.STYLE_THEMED
+        set(value) = settings.edit { putString(KEY_ICON_STYLE, value) }
+
     fun launchCounts(): Map<String, Int> =
         counts.all.mapNotNull { (key, value) -> (value as? Int)?.let { key to it } }.toMap()
 
@@ -94,5 +100,6 @@ class Prefs(context: Context) {
         const val KEY_AI_PROVIDER = "ai_provider"
         const val KEY_AI_MODEL_PREFIX = "ai_model_"
         const val KEY_SPEAK_REPLIES = "speak_replies"
+        const val KEY_ICON_STYLE = "icon_style"
     }
 }

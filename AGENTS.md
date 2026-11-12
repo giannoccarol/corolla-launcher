@@ -93,6 +93,8 @@ visible change has been looked at on the emulator in **both themes**.
 | New setting | `settings/Prefs.kt` for storage, a row in `SettingsActivity.render()` |
 | New language | follow `.claude/skills/add-language/SKILL.md` |
 | New icon | vector drawable in `res/drawable/`, white fill, tinted in the layout |
+| App gets the wrong themed glyph | its package or label in `apps/IconGlyphs.kt` (+ test) |
+| New themed glyph | `scripts/import_glyphs.py` (Simple Icons or Material Icons), then `apps/GlyphResources.kt` and a rule in `IconGlyphs` |
 | New color | both `values/colors.xml` and `values-night/colors.xml` |
 | New status bar icon | `view_status_bar.xml` (other screens), the top bar in `activity_home.xml`, and `status/StatusBarController.kt` |
 | New home card | `activity_home.xml` plus a `setUp…`/`render…` pair in `HomeActivity` |

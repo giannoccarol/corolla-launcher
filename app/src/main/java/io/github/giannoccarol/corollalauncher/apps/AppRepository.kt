@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
-import io.github.giannoccarol.corollalauncher.R
 import io.github.giannoccarol.corollalauncher.settings.Prefs
 import java.util.Locale
 import java.util.concurrent.CopyOnWriteArraySet
@@ -100,17 +99,15 @@ object AppRepository {
 
     private fun load(context: Context): List<AppInfo> {
         val packageManager = context.packageManager
-        val iconSize = context.resources.getDimensionPixelSize(R.dimen.app_icon_bitmap)
+        val icons = AppIcons.Loader(context, Prefs(context).iconStyle)
         val launcherIntent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
         return packageManager.queryIntentActivities(launcherIntent, 0)
             .asSequence()
             .filter { it.activityInfo.packageName != context.packageName }
             .map { info ->
-                AppInfo(
-                    component = ComponentName(info.activityInfo.packageName, info.activityInfo.name),
-                    label = info.loadLabel(packageManager).toString(),
-                    icon = IconShaper.shape(context, info.loadIcon(packageManager), iconSize),
-                )
+                val component = ComponentName(info.activityInfo.packageName, info.activityInfo.name)
+                val label = info.loadLabel(packageManager).toString()
+                AppInfo(component, label, icons.icon(info, component, label), icons.themed)
             }
             .sortedBy { it.label.lowercase(Locale.getDefault()) }
             .toList()

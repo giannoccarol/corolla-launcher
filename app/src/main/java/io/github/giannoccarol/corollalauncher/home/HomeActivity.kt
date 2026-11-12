@@ -49,6 +49,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import io.github.giannoccarol.corollalauncher.R
 import io.github.giannoccarol.corollalauncher.apps.AppActions
+import io.github.giannoccarol.corollalauncher.apps.AppIcons
 import io.github.giannoccarol.corollalauncher.apps.AppDrawerActivity
 import io.github.giannoccarol.corollalauncher.apps.AppInfo
 import io.github.giannoccarol.corollalauncher.apps.AppRepository
@@ -109,7 +110,8 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
 
     /** What is currently shown, so lists are rebuilt and animated only on a real change. */
     private var shownSources: List<String> = emptyList()
-    private var shownApps: List<String>? = null
+    /** Apps on screen; compared by value, so a reload with new icons redraws them. */
+    private var shownApps: List<AppInfo>? = null
     private var shownTrack: String? = null
     private var shownPlaying: Boolean? = null
     private var shownTint = Color.TRANSPARENT
@@ -951,9 +953,9 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
     private fun renderApps() {
         val dock = AppRepository.dockApps(this)
         val mostUsed = AppRepository.mostUsedApps(this, dock)
-        val keys = (dock + mostUsed).map { it.key }
-        if (keys == shownApps) return
-        shownApps = keys
+        val shown = dock + mostUsed
+        if (shown == shownApps) return
+        shownApps = shown
 
         binding.dockLeft.removeAllViews()
         binding.dockRight.removeAllViews()
@@ -961,7 +963,7 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
         dock.forEachIndexed { index, app ->
             val target = if (index < dock.size / 2 + dock.size % 2) binding.dockLeft else binding.dockRight
             val icon = layoutInflater.inflate(R.layout.item_dock_app, target, false) as ImageView
-            icon.setImageDrawable(app.icon)
+            AppIcons.bind(icon, app)
             icon.contentDescription = app.label
             bindApp(icon, app)
             target.addView(icon)
@@ -971,7 +973,7 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
         binding.mostUsed.removeAllViews()
         for (app in mostUsed) {
             val item = ItemAppCompactBinding.inflate(layoutInflater, binding.mostUsed, false)
-            item.icon.setImageDrawable(app.icon)
+            AppIcons.bind(item.icon, app)
             item.label.text = app.label
             bindApp(item.root, app)
             binding.mostUsed.addView(item.root)

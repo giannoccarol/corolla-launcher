@@ -186,6 +186,9 @@
     <string name="theme_system">Segui il sistema</string>
     <string name="theme_auto_time">Automatico (scuro dalle 18:00 alle 07:00)</string>
     <string name="settings_language">Lingua</string>
+    <string name="settings_icons">Icone delle app</string>
+    <string name="settings_icons_themed">A tema</string>
+    <string name="settings_icons_original">Originali</string>
     <string name="language_system">Predefinita di sistema</string>
     <string name="settings_animations">Animazioni</string>
     <string name="settings_on">Attive</string>
