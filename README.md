@@ -14,8 +14,8 @@ it should run on any landscape Android head unit.
 ## What it does
 
 - **Dashboard home screen** made of cards, full screen, with the system bars hidden:
-  - **Top bar**: your name (configurable), tabs for Home, Navigation (opens the maps app) and
-    Apps, then GPS, Bluetooth and network status, date and time.
+  - **Top bar**: Back, Home and Recent apps keys on the left, tabs for Home, Navigation (opens
+    the maps app) and Apps, then GPS, Bluetooth and network status, date and time.
   - **Navigation card**: "Where to?" search, Home and Work, the last two places searched, and
     the current **speed and heading** from GPS, shown as a digital dash in the spirit of a
     late-90s roadster: a rising bar graph that turns amber past 130 km/h over big LCD digits.
@@ -29,8 +29,8 @@ it should run on any landscape Android head unit.
     launcher's own panels instead of system settings: Wi-Fi switch and nearby networks,
     Bluetooth switch and paired phones, brightness and theme, and volume per stream. Sliders are
     thick and flanked by large minus and plus buttons for use while driving.
-  - **Bottom bar**: Back, Home and Recent apps on the left, four docked apps around the All apps
-    button, volume on the right. The head unit's **Android Auto / CarPlay app** (Phone Link,
+  - **Bottom bar**: your name (configurable) on the left, four docked apps around the All apps
+    button, always centred, and volume on the right. The head unit's **Android Auto / CarPlay app** (Phone Link,
     ZLink, AutoLink, Carlinkit...) is found automatically and always comes first; long press it
     to remove it. "Apri Android Auto" works with the assistant too.
 - **Themed app icons** by default, like Android 13's: every app gets one glyph on a tonal tile
@@ -154,7 +154,7 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
 | --- | --- |
 | Set your name | Tap the name at the top left, or *Settings → Your name* |
 | Open an app | Tap its icon in the bottom bar, in **Most used** or in **All apps** |
-| See recent apps | Square key, bottom left (needs the accessibility service, see above) |
+| See recent apps | Square key, top left (needs the accessibility service, see above) |
 | Show the system bars | Swipe in from the top or bottom edge; they hide again by themselves |
 | Pin or unpin a bottom bar app | Long press the icon |
 | Turn on speed and trip | Tap the speed or car card and allow location |
@@ -244,7 +244,7 @@ app/src/main/java/.../corollalauncher/
   assistant/              voice assistant: speech, text-to-speech, prompt, tool loop, actions
   assistant/tools/        weather, places, location and action tools
   assistant/ai/           AI providers and the HTTP client (ported from Monetine)
-  keys/                   accessibility service behind the dock's system keys
+  keys/                   accessibility service behind the top bar's system keys
   nav/                    navigation intents, recent destinations
   settings/               preferences, languages, settings screen
   theme/                  light/dark handling

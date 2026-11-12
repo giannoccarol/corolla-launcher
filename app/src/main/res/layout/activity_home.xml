@@ -20,49 +20,41 @@
         android:paddingStart="12dp"
         android:paddingEnd="20dp">
 
-        <LinearLayout
-            android:id="@+id/driver"
-            android:layout_width="wrap_content"
-            android:layout_height="44dp"
-            android:layout_marginEnd="6dp"
+        <ImageButton
+            android:id="@+id/keyBack"
+            android:layout_width="52dp"
+            android:layout_height="@dimen/home_top_bar_height"
             android:background="@drawable/bg_touch"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="4dp"
-            android:paddingEnd="10dp">
+            android:contentDescription="@string/back"
+            android:scaleType="center"
+            android:src="@drawable/ic_nav_back"
+            app:tint="@color/text_primary" />
 
-            <TextView
-                android:id="@+id/driverInitial"
-                android:layout_width="34dp"
-                android:layout_height="34dp"
-                android:background="@drawable/bg_avatar"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:importantForAccessibility="no"
-                android:textColor="@color/text_primary"
-                android:textSize="15sp"
-                tools:text="L" />
+        <ImageButton
+            android:id="@+id/keyHome"
+            android:layout_width="52dp"
+            android:layout_height="@dimen/home_top_bar_height"
+            android:background="@drawable/bg_touch"
+            android:contentDescription="@string/nav_key_home"
+            android:scaleType="center"
+            android:src="@drawable/ic_nav_home"
+            app:tint="@color/text_primary" />
 
-            <TextView
-                android:id="@+id/driverName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:ellipsize="end"
-                android:fontFamily="sans-serif-medium"
-                android:maxWidth="160dp"
-                android:maxLines="1"
-                android:textColor="@color/text_primary"
-                android:textSize="16sp"
-                tools:text="Lorenzo" />
-        </LinearLayout>
+        <ImageButton
+            android:id="@+id/keyRecents"
+            android:layout_width="52dp"
+            android:layout_height="@dimen/home_top_bar_height"
+            android:background="@drawable/bg_touch"
+            android:contentDescription="@string/nav_key_recents"
+            android:scaleType="center"
+            android:src="@drawable/ic_nav_recents"
+            app:tint="@color/text_primary" />
 
         <View
-            android:id="@+id/driverDivider"
+            android:id="@+id/keysDivider"
             android:layout_width="1dp"
             android:layout_height="20dp"
+            android:layout_marginStart="4dp"
             android:layout_marginEnd="8dp"
             android:background="@color/line" />
 
@@ -851,50 +843,61 @@
         android:layout_height="1dp"
         android:background="@color/line" />
 
-    <!-- Bottom bar: system keys, docked apps around All apps, volume -->
-    <LinearLayout
+    <!-- Bottom bar: driver name, docked apps around All apps (always centred), volume -->
+    <FrameLayout
         android:id="@+id/dock"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dock_height"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
         android:paddingStart="16dp"
         android:paddingEnd="20dp">
 
-        <ImageButton
-            android:id="@+id/keyBack"
-            android:layout_width="54dp"
+        <LinearLayout
+            android:id="@+id/driver"
+            android:layout_width="wrap_content"
             android:layout_height="56dp"
+            android:layout_gravity="start|center_vertical"
             android:background="@drawable/bg_touch"
-            android:contentDescription="@string/back"
-            android:scaleType="center"
-            android:src="@drawable/ic_nav_back"
-            app:tint="@color/text_primary" />
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="4dp"
+            android:paddingEnd="10dp">
 
-        <ImageButton
-            android:id="@+id/keyHome"
-            android:layout_width="54dp"
-            android:layout_height="56dp"
-            android:background="@drawable/bg_touch"
-            android:contentDescription="@string/nav_key_home"
-            android:scaleType="center"
-            android:src="@drawable/ic_nav_home"
-            app:tint="@color/text_primary" />
+            <TextView
+                android:id="@+id/driverInitial"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_avatar"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:importantForAccessibility="no"
+                android:textColor="@color/text_primary"
+                android:textSize="17sp"
+                tools:text="L" />
 
-        <ImageButton
-            android:id="@+id/keyRecents"
-            android:layout_width="54dp"
-            android:layout_height="56dp"
-            android:background="@drawable/bg_touch"
-            android:contentDescription="@string/nav_key_recents"
-            android:scaleType="center"
-            android:src="@drawable/ic_nav_recents"
-            app:tint="@color/text_primary" />
+            <TextView
+                android:id="@+id/driverName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxWidth="180dp"
+                android:maxLines="1"
+                android:textColor="@color/text_primary"
+                android:textSize="17sp"
+                tools:text="Lorenzo" />
+        </LinearLayout>
 
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
 
         <LinearLayout
             android:id="@+id/dockLeft"
@@ -921,10 +924,15 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal" />
 
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
 
         <ImageButton
             android:id="@+id/volumeDown"
@@ -970,5 +978,6 @@
             android:scaleType="center"
             android:src="@drawable/ic_chevron_right"
             app:tint="@color/text_secondary" />
-    </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
 </LinearLayout>

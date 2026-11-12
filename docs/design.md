@@ -42,12 +42,12 @@ than break. The mockup lives in the design canvas linked above ("Dashboard" artb
 The launcher is **full screen**: the system status and navigation bars are hidden while it is
 in front, and replaced by the top and bottom bars above.
 
-- **Top bar**: the driver's initial and name (tap to edit; "Add your name" when unset), tabs,
+- **Top bar**: system keys drawn as outlines so they read as controls and not as apps, tabs,
   then the status icons. An icon dims to 28 % when its radio is off instead of disappearing,
   so the bar never shifts.
-- **Bottom bar**: system keys drawn as outlines so they read as controls and not as apps; four
+- **Bottom bar**: the driver's initial and name (tap to edit; "Add your name" when unset); four
   docked apps that only change when the driver pins or unpins (stable for muscle memory),
-  around the All apps button; volume.
+  around the All apps button and centred on the screen whatever the name's length; volume.
 - **Most used** is the moving part: by launch count, never repeating a docked app.
 - Values not available yet show an em dash, never a fake zero.
 
@@ -88,7 +88,8 @@ System Roboto. Clock in `sans-serif-light`, titles and buttons in `sans-serif-me
 ## Shapes and sizes
 
 - Cards 24dp radius; tiles 16dp; speed panel 18dp; pills fully rounded; settings rows 18dp.
-- Play button 66dp, previous/next 54dp, system keys 54x56dp, docked apps 52dp, tabs 40dp tall
+- Play button 66dp, previous/next 54dp, system keys 52x50dp (the full height of the top bar),
+  driver avatar 40dp in a 56dp target, docked apps 52dp, tabs 40dp tall
   inside a 50dp bar (the tab row is information first; the whole bar is reachable but small).
 - Bottom bar app icons 52dp with 12dp gaps; Most used 52dp; app grid icons 72dp.
 - Themed icon tiles are rounded squares (24 % radius) with a hairline (`card_border`); the
