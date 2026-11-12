@@ -49,6 +49,8 @@ reachable over adb, and record the answers here.
 - [ ] Does the built-in microphone pick up the driver clearly?
 - [ ] Are the animations smooth on the unit, or should they ship off by default?
 - [ ] Does the unit beep on every touch by itself, and where is that turned off?
+- [ ] Does a Favourites tap place the call (`ACTION_CALL`) through the unit's Bluetooth phone
+      app, or only open a dialer? Are the phone's contacts visible to Android's contact picker?
 
 ## If the default launcher cannot be changed
 

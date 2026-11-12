@@ -605,8 +605,9 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <!-- Favourites: four fixed places, one tap calls -->
             <LinearLayout
-                android:id="@+id/appsCard"
+                android:id="@+id/favoritesCard"
                 android:layout_width="match_parent"
                 android:layout_height="148dp"
                 android:layout_marginTop="12dp"
@@ -617,53 +618,17 @@
                 android:paddingEnd="10dp"
                 android:paddingBottom="12dp">
 
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
+                    android:fontFamily="sans-serif-medium"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="@string/apps_most_used"
-                        android:textColor="@color/text_primary"
-                        android:textSize="15sp" />
-
-                    <LinearLayout
-                        android:id="@+id/allAppsLink"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:background="@drawable/bg_touch"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="4dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-medium"
-                            android:text="@string/apps_all"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="14sp" />
-
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_marginStart="2dp"
-                            android:importantForAccessibility="no"
-                            android:src="@drawable/ic_chevron_right"
-                            app:tint="@color/text_secondary" />
-                    </LinearLayout>
-                </LinearLayout>
+                    android:text="@string/favorites_title"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp" />
 
                 <LinearLayout
-                    android:id="@+id/mostUsed"
+                    android:id="@+id/favorites"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"

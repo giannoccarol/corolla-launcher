@@ -24,7 +24,9 @@ back and clears whatever was above it; pressing Back on it does nothing, on purp
 PackageManager ──▶ AppRepository ──▶ dock (HomeActivity)
                         │       └──▶ grid (AppDrawerActivity)
                         ▼
-              Prefs (pins, launch counts) ──▶ DockSelector
+              Prefs (pins) ──▶ DockSelector
+
+Prefs (favourites) ──▶ Favourites card (HomeActivity) ──▶ Calls ──▶ ACTION_CALL / ACTION_DIAL
 
 MediaSessionManager ──▶ MediaSessionMonitor ──▶ player card (HomeActivity)
 AudioManager ─────────────────────────────────▶ volume, media key fallback
@@ -52,8 +54,17 @@ AudioManager ──────────────────────�
   puts it first in the bottom bar unless the driver removed it (`Prefs.projectionInDock`).
 - `DockSelector` is pure logic and unit tested. Order: pinned apps, then most launched, then
   apps whose package looks like a car essential (maps, music, radio, phone), then the rest.
-- Launch counts are the launcher's own (`Prefs.incrementLaunch`). They only count launches made
-  from this launcher, which avoids the `PACKAGE_USAGE_STATS` permission.
+- The bottom bar holds six apps (`AppRepository.DOCK_SIZE`). Launch counts were dropped with
+  the "Most used" card: the bar deliberately ignores them so it never reshuffles.
+
+### Favourites
+
+- `phone/Favorites` (pure, unit tested) stores four fixed places in `Prefs` as "name\nnumber",
+  cleans numbers for the dialer, and gives initials and a stable hue per name.
+- `phone/Calls` opens the system contact picker for one phone number (`ACTION_PICK` on
+  `Phone.CONTENT_URI`): the result grants read access to that row only, so there is no
+  `READ_CONTACTS`. A tap calls with `ACTION_CALL` once `CALL_PHONE` is granted; the permission
+  is asked on the first tap and, if refused, the dialer opens with the number (`ACTION_DIAL`).
 
 ### Media
 
@@ -161,7 +172,7 @@ mic button / wheel key ─▶ AssistantPanel ─▶ SpeechController (system rec
 The home screen ticks once a second (media progress and trip). `TextView.update()` in
 `HomeActivity` writes a text only when it actually changed; rewriting identical text would
 still cause layout passes and accessibility events, and kept the screen from ever being idle.
-Lists (bottom bar, most used, source chips) are rebuilt only when their content changes.
+Lists (bottom bar, source chips) are rebuilt only when their content changes.
 
 ### Status bar and system keys
 
@@ -213,18 +224,18 @@ Lists (bottom bar, most used, source chips) are rebuilt only when their content 
 
 ## Persistence
 
-Two `SharedPreferences` files, wrapped by `settings/Prefs`:
+One `SharedPreferences` file, wrapped by `settings/Prefs`:
 
 | File | Contents |
 | --- | --- |
-| `launcher` | theme mode, home and work address, pinned apps, icon style |
-| `launch_counts` | launch count per app component |
+| `launcher` | theme mode, home and work address, pinned apps, icon style, favourites |
 
 ## Things that are intentionally absent
 
 - **Compose**: startup and scrolling cost too much on a Cortex-A7 class device.
 - **Wallpaper and app widgets**: the home is a designed surface with a uniform background.
-- **Runtime permissions on start-up**: the only one, location, is asked from a tap. Media
+- **Runtime permissions on start-up**: location and phone calls are each asked from a tap on
+  the feature that needs them. Media
   access and the system keys are special grants the user turns on in system settings.
 - **A map library**: see "Live map" in `docs/head-unit.md` for the options and their cost.
 - **A bundled font**: the system Roboto in light and medium weights keeps the APK small.

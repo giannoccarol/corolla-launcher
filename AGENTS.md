@@ -98,6 +98,7 @@ visible change has been looked at on the emulator in **both themes**.
 | New color | both `values/colors.xml` and `values-night/colors.xml` |
 | New status bar icon | `view_status_bar.xml` (other screens), the top bar in `activity_home.xml`, and `status/StatusBarController.kt` |
 | New home card | `activity_home.xml` plus a `setUp…`/`render…` pair in `HomeActivity` |
+| Favourites or calling | `phone/Favorites.kt` (pure, unit tested), `phone/Calls.kt` |
 | Trip or GPS logic | `trip/TripStats.kt` (pure, unit tested), `trip/TripTracker.kt` |
 | New assistant tool | `assistant/tools/CarTools.kt` (spec + `run` + test); an action tool also needs an `AssistantAction` and `HomeActivity.perform` |
 | New assistant action in the fallback protocol | `assistant/AssistantReply.kt` (parsing + test), `CarAssistant.jsonPrompt` |

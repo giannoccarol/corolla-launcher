@@ -22,14 +22,16 @@ it should run on any landscape Android head unit.
   - **Media card** that follows whatever is playing. Every app with an active media session
     (Spotify, YouTube Music, a podcast app...) appears as a chip; tap one to switch source.
     Title, artist, cover and progress; play/pause/next/previous always work.
-  - **Most used**: the four apps you launch most.
+  - **Favourites**: four people to call with one tap, each on a coloured disc with their
+    initials. Add one from the contacts (the system picker hands over only that contact) or by
+    typing a name and number; long press to change or remove it.
   - **Car card**: a photo of the Corolla sitting on a soft ground shadow, and a **trip computer** (distance, duration, average
     speed) measured from GPS. A trip ends after 20 minutes standing still.
   - **Quick settings**: theme, plus Wi-Fi, Bluetooth, display and audio tiles that open the
     launcher's own panels instead of system settings: Wi-Fi switch and nearby networks,
     Bluetooth switch and paired phones, brightness and theme, and volume per stream. Sliders are
     thick and flanked by large minus and plus buttons for use while driving.
-  - **Bottom bar**: your name (configurable) on the left, four docked apps around the All apps
+  - **Bottom bar**: your name (configurable) on the left, six docked apps around the All apps
     button, always centred, and volume on the right. The head unit's **Android Auto / CarPlay app** (Phone Link,
     ZLink, AutoLink, Carlinkit...) is found automatically and always comes first; long press it
     to remove it. "Apri Android Auto" works with the assistant too.
@@ -152,8 +154,10 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
 
 | Action | How |
 | --- | --- |
-| Set your name | Tap the name at the top left, or *Settings → Your name* |
-| Open an app | Tap its icon in the bottom bar, in **Most used** or in **All apps** |
+| Set your name | Tap the name at the bottom left, or *Settings → Your name* |
+| Open an app | Tap its icon in the bottom bar or in **All apps** |
+| Call a favourite | Tap them on the **Favourites** card; the first time, allow phone calls |
+| Add, change or remove a favourite | Tap an empty place (+), or long press a favourite |
 | See recent apps | Square key, top left (needs the accessibility service, see above) |
 | Show the system bars | Swipe in from the top or bottom edge; they hide again by themselves |
 | Pin or unpin a bottom bar app | Long press the icon |
@@ -223,6 +227,11 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
   silhouette fallback have not been seen with real Spotify, Maps or head unit apps yet; an app
   that gets the wrong symbol needs its package or label added to `IconGlyphs`. Icon pack
   support was tested with a small pack built for the purpose, not with a Play Store pack.
+- **Calls from Favourites were tested only on the emulator's phone.** On a head unit the phone
+  is usually reached over Bluetooth through the unit's own app, which may not accept Android's
+  call request; then the dialer opens instead, or nothing can call and the card says so. The
+  unit's phone book often lives in that Bluetooth app too, not in Android's contacts: if the
+  picker shows nobody, type the name and number.
 - **Hiding the system bar is untested on the unit.** Some firmwares draw their bar as an
   overlay that an app cannot hide.
 - **Animation smoothness is unmeasured on real hardware.** They are built to be cheap, but if

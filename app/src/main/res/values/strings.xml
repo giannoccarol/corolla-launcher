@@ -72,8 +72,6 @@
     <string name="compass_sw">SW</string>
     <string name="compass_w">W</string>
     <string name="compass_nw">NW</string>
-    <string name="apps_most_used">Most used</string>
-    <string name="apps_all">All</string>
     <string name="trip_moving">Driving</string>
     <string name="trip_stopped">Stopped</string>
     <string name="trip_waiting_gps">Waiting for GPS</string>
@@ -219,9 +217,6 @@
     <string name="settings_media_access_off">Not allowed. Tap to open the system settings.</string>
     <string name="settings_default_launcher">Default launcher</string>
     <string name="settings_default_launcher_summary">Choose this app as the home screen</string>
-    <string name="settings_reset_usage">Reset most used apps</string>
-    <string name="settings_reset_usage_summary">Clear the launch counts that fill the dock</string>
-    <string name="settings_reset_done">Launch counts cleared</string>
     <string name="settings_screen_unavailable">This device doesn\'t offer that settings screen</string>
     <string name="settings_section_about">About</string>
     <string name="settings_version">Version %1$s</string>
@@ -230,4 +225,21 @@
     <string name="back">Back</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
+
+    <!-- Favourites card -->
+    <string name="favorites_title">Favourites</string>
+    <string name="favorites_add">Add</string>
+    <string name="favorites_call">Call %1$s</string>
+    <string name="favorites_from_contacts">Choose from contacts</string>
+    <string name="favorites_type">Type name and number</string>
+    <string name="favorites_change">Change</string>
+    <string name="favorites_remove">Remove</string>
+    <string name="favorites_name_title">Name</string>
+    <string name="favorites_name_hint">Mum</string>
+    <string name="favorites_number_title">Phone number</string>
+    <string name="favorites_number_hint">+44 7700 900123</string>
+    <string name="favorites_invalid">Enter a phone number</string>
+    <string name="favorites_unreadable">That contact has no readable number</string>
+    <string name="favorites_no_phone">No app can call %1$s</string>
+    <string name="next">Next</string>
 </resources>

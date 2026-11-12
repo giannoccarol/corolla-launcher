@@ -68,8 +68,6 @@
     <string name="compass_sw">SO</string>
     <string name="compass_w">O</string>
     <string name="compass_nw">NO</string>
-    <string name="apps_most_used">Les plus utilisées</string>
-    <string name="apps_all">Toutes</string>
     <string name="trip_moving">En route</string>
     <string name="trip_stopped">À l\'arrêt</string>
     <string name="trip_waiting_gps">En attente du GPS</string>
@@ -204,9 +202,6 @@
     <string name="settings_media_access_off">Non autorisé. Touchez pour ouvrir les réglages du système.</string>
     <string name="settings_default_launcher">Launcher par défaut</string>
     <string name="settings_default_launcher_summary">Choisir cette appli comme écran d\'accueil</string>
-    <string name="settings_reset_usage">Réinitialiser les applis les plus utilisées</string>
-    <string name="settings_reset_usage_summary">Efface les compteurs de lancement qui remplissent le dock</string>
-    <string name="settings_reset_done">Compteurs de lancement effacés</string>
     <string name="settings_screen_unavailable">Cet appareil ne propose pas cet écran de réglages</string>
     <string name="settings_section_about">À propos</string>
     <string name="settings_version">Version %1$s</string>
@@ -215,4 +210,21 @@
     <string name="back">Retour</string>
     <string name="cancel">Annuler</string>
     <string name="save">Enregistrer</string>
+
+    <!-- Favourites card -->
+    <string name="favorites_title">Favoris</string>
+    <string name="favorites_add">Ajouter</string>
+    <string name="favorites_call">Appeler %1$s</string>
+    <string name="favorites_from_contacts">Choisir dans les contacts</string>
+    <string name="favorites_type">Saisir le nom et le numéro</string>
+    <string name="favorites_change">Modifier</string>
+    <string name="favorites_remove">Retirer</string>
+    <string name="favorites_name_title">Nom</string>
+    <string name="favorites_name_hint">Maman</string>
+    <string name="favorites_number_title">Numéro de téléphone</string>
+    <string name="favorites_number_hint">+33 6 12 34 56 78</string>
+    <string name="favorites_invalid">Saisis un numéro de téléphone</string>
+    <string name="favorites_unreadable">Ce contact n\'a pas de numéro lisible</string>
+    <string name="favorites_no_phone">Aucune appli ne peut appeler %1$s</string>
+    <string name="next">Suivant</string>
 </resources>

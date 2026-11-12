@@ -1,9 +1,10 @@
 package io.github.giannoccarol.corollalauncher.home
 
 import android.Manifest
+import android.accessibilityservice.AccessibilityService
+import android.animation.ArgbEvaluator
 import android.annotation.SuppressLint
 import android.app.SearchManager
-import android.accessibilityservice.AccessibilityService
 import android.bluetooth.BluetoothAdapter
 import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
@@ -11,19 +12,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.animation.ArgbEvaluator
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
+import android.location.LocationManager
 import android.media.AudioManager
 import android.media.MediaMetadata
 import android.media.session.MediaController
 import android.media.session.PlaybackState
-import android.location.LocationManager
-import android.provider.MediaStore
 import android.net.Uri
 import android.net.wifi.WifiManager
 import android.os.Build
@@ -31,8 +29,10 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.provider.MediaStore
 import android.provider.Settings
 import android.speech.RecognizerIntent
+import android.text.InputType
 import android.text.format.DateUtils
 import android.view.KeyEvent
 import android.view.View
@@ -47,12 +47,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import io.github.giannoccarol.corollalauncher.R
 import io.github.giannoccarol.corollalauncher.apps.AppActions
-import io.github.giannoccarol.corollalauncher.apps.AppIcons
 import io.github.giannoccarol.corollalauncher.apps.AppDrawerActivity
+import io.github.giannoccarol.corollalauncher.apps.AppIcons
 import io.github.giannoccarol.corollalauncher.apps.AppInfo
 import io.github.giannoccarol.corollalauncher.apps.AppRepository
+import io.github.giannoccarol.corollalauncher.apps.IconTint
 import io.github.giannoccarol.corollalauncher.assistant.AppMatcher
 import io.github.giannoccarol.corollalauncher.assistant.AssistantAction
 import io.github.giannoccarol.corollalauncher.assistant.AssistantHost
@@ -61,7 +63,7 @@ import io.github.giannoccarol.corollalauncher.assistant.CarContext
 import io.github.giannoccarol.corollalauncher.assistant.MediaCommand
 import io.github.giannoccarol.corollalauncher.assistant.Speaker
 import io.github.giannoccarol.corollalauncher.databinding.ActivityHomeBinding
-import io.github.giannoccarol.corollalauncher.databinding.ItemAppCompactBinding
+import io.github.giannoccarol.corollalauncher.databinding.ItemFavoriteBinding
 import io.github.giannoccarol.corollalauncher.databinding.ItemNavPlaceBinding
 import io.github.giannoccarol.corollalauncher.databinding.ItemQuickTileBinding
 import io.github.giannoccarol.corollalauncher.databinding.ItemRecentDestinationBinding
@@ -70,13 +72,16 @@ import io.github.giannoccarol.corollalauncher.keys.NavKeyService
 import io.github.giannoccarol.corollalauncher.media.MediaKeys
 import io.github.giannoccarol.corollalauncher.media.MediaSessionMonitor
 import io.github.giannoccarol.corollalauncher.nav.NavigationShortcuts
+import io.github.giannoccarol.corollalauncher.nav.RecentDestinations
 import io.github.giannoccarol.corollalauncher.panels.AudioPanel
 import io.github.giannoccarol.corollalauncher.panels.BluetoothPanel
 import io.github.giannoccarol.corollalauncher.panels.DisplayPanel
 import io.github.giannoccarol.corollalauncher.panels.PermissionAsker
 import io.github.giannoccarol.corollalauncher.panels.Sheet
 import io.github.giannoccarol.corollalauncher.panels.WifiPanel
-import io.github.giannoccarol.corollalauncher.nav.RecentDestinations
+import io.github.giannoccarol.corollalauncher.phone.Calls
+import io.github.giannoccarol.corollalauncher.phone.Favorite
+import io.github.giannoccarol.corollalauncher.phone.Favorites
 import io.github.giannoccarol.corollalauncher.settings.Prefs
 import io.github.giannoccarol.corollalauncher.settings.SettingsActivity
 import io.github.giannoccarol.corollalauncher.theme.ThemeManager
@@ -145,6 +150,33 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
         ActivityResultContracts.RequestPermission(),
     ) { refreshPanel() }
 
+    /** The favourite being called while the call permission is asked. */
+    private var pendingCall: Favorite? = null
+
+    private val callRequest = registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        pendingCall?.let { call(it, direct = granted) }
+        pendingCall = null
+    }
+
+    /** The Favourites place being filled from the contact picker. */
+    private var pendingSlot = 0
+
+    private val contactRequest = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+    ) { result ->
+        val uri = result.data?.data
+        if (result.resultCode != RESULT_OK || uri == null) return@registerForActivityResult
+        val picked = Calls.readPicked(this, uri)
+        if (picked == null) {
+            toast(R.string.favorites_unreadable)
+        } else {
+            prefs.setFavorite(pendingSlot, picked)
+            renderFavorites()
+        }
+    }
+
     private val progressTicker = object : Runnable {
         override fun run() {
             renderProgress()
@@ -186,6 +218,7 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
         setUpCar()
         setUpQuickSettings()
         setUpDock()
+        renderFavorites()
 
         AppRepository.addListener(appsListener)
         TripTracker.addListener(tripListener)
@@ -912,7 +945,6 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
 
     private fun setUpDock() {
         binding.allAppsButton.setOnClickListener { openDrawer() }
-        binding.allAppsLink.setOnClickListener { openDrawer() }
         // On the home screen itself Back and Home have nothing to do; they are here so the
         // system keys keep their usual place while the system bar is hidden.
         binding.keyBack.setOnClickListener {
@@ -930,7 +962,7 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
         binding.volumeUp.setOnClickListener { adjustVolume(AudioManager.ADJUST_RAISE) }
         Motion.pressable(
             binding.keyBack, binding.keyHome, binding.keyRecents, binding.allAppsButton,
-            binding.allAppsLink, binding.volumeDown, binding.volumeUp,
+            binding.volumeDown, binding.volumeUp,
         )
     }
 
@@ -952,10 +984,8 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
 
     private fun renderApps() {
         val dock = AppRepository.dockApps(this)
-        val mostUsed = AppRepository.mostUsedApps(this, dock)
-        val shown = dock + mostUsed
-        if (shown == shownApps) return
-        shownApps = shown
+        if (dock == shownApps) return
+        shownApps = dock
 
         binding.dockLeft.removeAllViews()
         binding.dockRight.removeAllViews()
@@ -970,16 +1000,119 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
             icons += icon
         }
 
-        binding.mostUsed.removeAllViews()
-        for (app in mostUsed) {
-            val item = ItemAppCompactBinding.inflate(layoutInflater, binding.mostUsed, false)
-            AppIcons.bind(item.icon, app)
-            item.label.text = app.label
-            bindApp(item.root, app)
-            binding.mostUsed.addView(item.root)
-            icons += item.root
-        }
         Motion.popIn(icons)
+    }
+
+    // endregion
+
+    // region Favourites
+
+    private fun renderFavorites() {
+        binding.favorites.removeAllViews()
+        val dark = ThemeManager.isDark(this)
+        for (slot in 0 until Favorites.SLOTS) {
+            val item = ItemFavoriteBinding.inflate(layoutInflater, binding.favorites, false)
+            val favorite = prefs.favorite(slot)
+            if (favorite == null) {
+                item.add.visibility = View.VISIBLE
+                item.initials.visibility = View.GONE
+                item.label.setText(R.string.favorites_add)
+                item.label.setTextColor(ContextCompat.getColor(this, R.color.text_secondary))
+                item.root.contentDescription = getString(R.string.favorites_add)
+                item.root.setOnClickListener { chooseFavorite(slot) }
+            } else {
+                // Each person keeps a colour, drawn like the themed app icons.
+                val colors = IconTint.colors(Favorites.hue(favorite.name), dark)
+                item.initials.background = GradientDrawable().apply {
+                    shape = GradientDrawable.OVAL
+                    setColor(colors.tile)
+                }
+                item.initials.setTextColor(colors.glyph)
+                item.initials.text = Favorites.initials(favorite.name)
+                item.label.text = favorite.name
+                item.root.contentDescription = getString(R.string.favorites_call, favorite.name)
+                item.root.setOnClickListener { callFavorite(favorite) }
+                item.root.setOnLongClickListener {
+                    manageFavorite(slot, favorite)
+                    true
+                }
+            }
+            Motion.pressable(item.root)
+            binding.favorites.addView(item.root)
+        }
+    }
+
+    /** The call permission is asked on the first tap; without it the dialer opens instead. */
+    private fun callFavorite(favorite: Favorite) {
+        if (Calls.canCallDirectly(this)) {
+            call(favorite, direct = true)
+        } else {
+            pendingCall = favorite
+            callRequest.launch(Manifest.permission.CALL_PHONE)
+        }
+    }
+
+    private fun call(favorite: Favorite, direct: Boolean) {
+        if (!Calls.call(this, favorite.number, direct)) {
+            toast(getString(R.string.favorites_no_phone, favorite.name))
+        }
+    }
+
+    /** From the contacts, or typed in: head units often keep the phone book in their own app. */
+    private fun chooseFavorite(slot: Int) {
+        val options = arrayOf(getString(R.string.favorites_from_contacts), getString(R.string.favorites_type))
+        AlertDialog.Builder(this)
+            .setTitle(R.string.favorites_add)
+            .setItems(options) { _, which ->
+                if (which == 0) pickContact(slot) else typeFavorite(slot)
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    private fun pickContact(slot: Int) {
+        pendingSlot = slot
+        try {
+            contactRequest.launch(Calls.pickIntent())
+        } catch (e: ActivityNotFoundException) {
+            // No contacts app on the unit: typing is the only way.
+            typeFavorite(slot)
+        }
+    }
+
+    private fun typeFavorite(slot: Int) {
+        val current = prefs.favorite(slot)
+        TextPrompt.show(this, R.string.favorites_name_title, R.string.favorites_name_hint, current?.name, R.string.next) { name ->
+            if (name.isEmpty()) return@show
+            TextPrompt.show(
+                this, getString(R.string.favorites_number_title), R.string.favorites_number_hint,
+                current?.number, R.string.save, password = false, inputType = InputType.TYPE_CLASS_PHONE,
+            ) { number ->
+                val favorite = Favorites.decode(Favorites.encode(Favorite(name, number)))
+                if (favorite == null) {
+                    toast(R.string.favorites_invalid)
+                } else {
+                    prefs.setFavorite(slot, favorite)
+                    renderFavorites()
+                }
+            }
+        }
+    }
+
+    private fun manageFavorite(slot: Int, favorite: Favorite) {
+        val options = arrayOf(getString(R.string.favorites_change), getString(R.string.favorites_remove))
+        AlertDialog.Builder(this)
+            .setTitle(favorite.name)
+            .setItems(options) { _, which ->
+                if (which == 0) {
+                    chooseFavorite(slot)
+                } else {
+                    prefs.setFavorite(slot, null)
+                    renderFavorites()
+                }
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
 
     private fun bindApp(view: View, app: AppInfo) {

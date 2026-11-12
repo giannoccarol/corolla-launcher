@@ -31,10 +31,10 @@ than break. The mockup lives in the design canvas linked above ("Dashboard" artb
 │ (▣) Work           › │ ───────── progress    │ 12.4 km  18 min  41 km/h  │  270 dp
 │ ──────────────────── │     ⏮    ▶    ⏭      ├───────────────────────────┤
 │ RECENT               ├───────────────────────┤ [theme] [wi-fi] [bt]      │
-│ ◷ place  ◷ place     │ Most used        All ›│ [display][audio][more]    │
-│ [ 43 km/h   N      ] │ app  app  app  app    │                           │  148 dp
+│ ◷ place  ◷ place     │ Favourites            │ [display][audio][more]    │
+│ [ 43 km/h   N      ] │ (MR) (M)  (+)  (+)    │                           │  148 dp
 ├──────────────────────┴───────────────────────┴───────────────────────────┤
-│ ◁ ○ □            app app [all apps] app app              ‹ volume ›      │  74 dp
+│ (L) Lorenzo   app app app [all apps] app app app         ‹ volume ›      │  74 dp
 └──────────────────────────────────────────────────────────────────────────┘
    ~372 dp                 ~364 dp                    ~252 dp     (12 dp gaps)
 ```
@@ -45,10 +45,12 @@ in front, and replaced by the top and bottom bars above.
 - **Top bar**: system keys drawn as outlines so they read as controls and not as apps, tabs,
   then the status icons. An icon dims to 28 % when its radio is off instead of disappearing,
   so the bar never shifts.
-- **Bottom bar**: the driver's initial and name (tap to edit; "Add your name" when unset); four
+- **Bottom bar**: the driver's initial and name (tap to edit; "Add your name" when unset); six
   docked apps that only change when the driver pins or unpins (stable for muscle memory),
   around the All apps button and centred on the screen whatever the name's length; volume.
-- **Most used** is the moving part: by launch count, never repeating a docked app.
+- **Favourites**: four fixed places, so a person is always where the driver put them. Each
+  disc takes a stable hue from the name, drawn like the themed app icons (`IconTint`). Empty
+  places show a plus. Apps are only in the bottom bar: a second row of apps repeated it.
 - Values not available yet show an em dash, never a fake zero.
 
 ## Colors
@@ -91,7 +93,7 @@ System Roboto. Clock in `sans-serif-light`, titles and buttons in `sans-serif-me
 - Play button 66dp, previous/next 54dp, system keys 52x50dp (the full height of the top bar),
   driver avatar 40dp in a 56dp target, docked apps 52dp, tabs 40dp tall
   inside a 50dp bar (the tab row is information first; the whole bar is reachable but small).
-- Bottom bar app icons 52dp with 12dp gaps; Most used 52dp; app grid icons 72dp.
+- Bottom bar app icons 52dp with 12dp gaps; favourite discs 52dp; app grid icons 72dp.
 - Themed icon tiles are rounded squares (24 % radius) with a hairline (`card_border`); the
   glyph fills 58 % of the tile. With original icons, adaptive icons are redrawn in the same
   shape by `IconShaper`, whatever the device's icon mask.
@@ -119,7 +121,7 @@ Present, refined, never in the way. Curves are Material's: *emphasized decelerat
 | --- | --- | --- |
 | Anything pressed | sinks to 95 % and 82 % opacity, settles back | 90 / 260 ms |
 | Home screen appearing | the three columns and the bottom bar rise 16dp and fade in, staggered 60 ms | 380 ms |
-| Dock and Most used icons | grow from 82 % and fade in, staggered 35 ms | 300 ms |
+| Bottom bar icons | grow from 82 % and fade in, staggered 35 ms | 300 ms |
 | Opening All apps or Settings | rises 4 % and fades in; closing reverses it | 220 / 180 ms |
 | Panels | grow from 94 % and fade in; leave to 97 % faster | 240 / 160 ms |
 | Track change | title and cover rise 6dp and fade in; the card's album wash crossfades | 260 / 320 ms |

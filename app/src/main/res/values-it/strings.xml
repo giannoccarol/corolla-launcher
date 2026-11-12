@@ -68,8 +68,6 @@
     <string name="compass_sw">SO</string>
     <string name="compass_w">O</string>
     <string name="compass_nw">NO</string>
-    <string name="apps_most_used">Più usate</string>
-    <string name="apps_all">Tutte</string>
     <string name="trip_moving">In marcia</string>
     <string name="trip_stopped">Fermo</string>
     <string name="trip_waiting_gps">In attesa del GPS</string>
@@ -204,9 +202,6 @@
     <string name="settings_media_access_off">Non consentito. Tocca per aprire le impostazioni di sistema.</string>
     <string name="settings_default_launcher">Launcher predefinito</string>
     <string name="settings_default_launcher_summary">Scegli questa app come schermata Home</string>
-    <string name="settings_reset_usage">Azzera le app più usate</string>
-    <string name="settings_reset_usage_summary">Cancella i conteggi di avvio che riempiono la dock</string>
-    <string name="settings_reset_done">Conteggi di avvio azzerati</string>
     <string name="settings_screen_unavailable">Questo dispositivo non offre quella schermata di impostazioni</string>
     <string name="settings_section_about">Informazioni</string>
     <string name="settings_version">Versione %1$s</string>
@@ -215,4 +210,21 @@
     <string name="back">Indietro</string>
     <string name="cancel">Annulla</string>
     <string name="save">Salva</string>
+
+    <!-- Favourites card -->
+    <string name="favorites_title">Preferiti</string>
+    <string name="favorites_add">Aggiungi</string>
+    <string name="favorites_call">Chiama %1$s</string>
+    <string name="favorites_from_contacts">Scegli dalla rubrica</string>
+    <string name="favorites_type">Scrivi nome e numero</string>
+    <string name="favorites_change">Cambia</string>
+    <string name="favorites_remove">Rimuovi</string>
+    <string name="favorites_name_title">Nome</string>
+    <string name="favorites_name_hint">Mamma</string>
+    <string name="favorites_number_title">Numero di telefono</string>
+    <string name="favorites_number_hint">+39 333 123 4567</string>
+    <string name="favorites_invalid">Inserisci un numero di telefono</string>
+    <string name="favorites_unreadable">Quel contatto non ha un numero leggibile</string>
+    <string name="favorites_no_phone">Nessuna app può chiamare %1$s</string>
+    <string name="next">Avanti</string>
 </resources>

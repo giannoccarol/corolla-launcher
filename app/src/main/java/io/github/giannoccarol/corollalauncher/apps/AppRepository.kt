@@ -16,11 +16,8 @@ import java.util.concurrent.Executors
  */
 object AppRepository {
 
-    /** Apps in the bottom bar: two on each side of the All apps button. */
-    const val DOCK_SIZE = 4
-
-    /** Apps in the "Most used" card. */
-    const val MOST_USED_SIZE = 4
+    /** Apps in the bottom bar: three on each side of the All apps button. */
+    const val DOCK_SIZE = 6
 
     private val executor = Executors.newSingleThreadExecutor()
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -50,7 +47,7 @@ object AppRepository {
         }
     }
 
-    /** Starts [app] and records the launch. Returns false when the app could not be started. */
+    /** Starts [app]. Returns false when the app could not be started. */
     fun launch(context: Context, app: AppInfo): Boolean {
         val intent = Intent(Intent.ACTION_MAIN)
             .addCategory(Intent.CATEGORY_LAUNCHER)
@@ -58,7 +55,6 @@ object AppRepository {
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
         return try {
             context.startActivity(intent)
-            Prefs(context).incrementLaunch(app.key)
             true
         } catch (e: Exception) {
             false
@@ -85,16 +81,6 @@ object AppRepository {
         val current = apps
         val index = ProjectionApps.find(current.map { ProjectionApps.Candidate(it.component.packageName, it.label) })
         return index?.let(current::get)
-    }
-
-    /** The "Most used" card: by launch count, never repeating an app already in [dock]. */
-    fun mostUsedApps(context: Context, dock: List<AppInfo>): List<AppInfo> {
-        val dockKeys = dock.map { it.key }.toSet()
-        val candidates = apps.filter { it.key !in dockKeys }
-        val byKey = candidates.associateBy { it.key }
-        return DockSelector
-            .select(candidates.map { it.key }, emptyList(), Prefs(context).launchCounts(), MOST_USED_SIZE)
-            .mapNotNull { byKey[it] }
     }
 
     private fun load(context: Context): List<AppInfo> {

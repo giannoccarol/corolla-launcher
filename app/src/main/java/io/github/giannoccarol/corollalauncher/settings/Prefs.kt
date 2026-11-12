@@ -3,6 +3,8 @@ package io.github.giannoccarol.corollalauncher.settings
 import android.content.Context
 import androidx.core.content.edit
 import io.github.giannoccarol.corollalauncher.apps.AppIcons
+import io.github.giannoccarol.corollalauncher.phone.Favorite
+import io.github.giannoccarol.corollalauncher.phone.Favorites
 import io.github.giannoccarol.corollalauncher.theme.ThemeMode
 
 /** Thin typed wrapper over SharedPreferences. Cheap to construct; no caching of its own. */
@@ -10,8 +12,6 @@ class Prefs(context: Context) {
 
     private val settings =
         context.applicationContext.getSharedPreferences("launcher", Context.MODE_PRIVATE)
-    private val counts =
-        context.applicationContext.getSharedPreferences("launch_counts", Context.MODE_PRIVATE)
 
     var themeMode: ThemeMode
         get() = ThemeMode.fromId(settings.getString(KEY_THEME, null))
@@ -77,16 +77,11 @@ class Prefs(context: Context) {
         get() = settings.getString(KEY_ICON_STYLE, null) ?: AppIcons.STYLE_THEMED
         set(value) = settings.edit { putString(KEY_ICON_STYLE, value) }
 
-    fun launchCounts(): Map<String, Int> =
-        counts.all.mapNotNull { (key, value) -> (value as? Int)?.let { key to it } }.toMap()
+    /** The contact in place [slot] (0 until [Favorites.SLOTS]) of the Favourites card. */
+    fun favorite(slot: Int): Favorite? = Favorites.decode(settings.getString(KEY_FAVORITE_PREFIX + slot, null))
 
-    fun incrementLaunch(appKey: String) {
-        counts.edit { putInt(appKey, counts.getInt(appKey, 0) + 1) }
-    }
-
-    fun resetLaunchCounts() {
-        counts.edit { clear() }
-    }
+    fun setFavorite(slot: Int, favorite: Favorite?) =
+        settings.edit { putString(KEY_FAVORITE_PREFIX + slot, Favorites.encode(favorite)) }
 
     private companion object {
         const val KEY_THEME = "theme_mode"
@@ -101,5 +96,6 @@ class Prefs(context: Context) {
         const val KEY_AI_MODEL_PREFIX = "ai_model_"
         const val KEY_SPEAK_REPLIES = "speak_replies"
         const val KEY_ICON_STYLE = "icon_style"
+        const val KEY_FAVORITE_PREFIX = "favorite_"
     }
 }

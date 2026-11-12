@@ -136,10 +136,6 @@ class SettingsActivity : LauncherActivity() {
             R.string.settings_default_launcher,
             getString(R.string.settings_default_launcher_summary),
         ) { open(Settings.ACTION_HOME_SETTINGS) }
-        row(R.string.settings_reset_usage, getString(R.string.settings_reset_usage_summary)) {
-            prefs.resetLaunchCounts()
-            toast(R.string.settings_reset_done)
-        }
 
         section(R.string.settings_section_about)
         row(R.string.settings_data_credits, getString(R.string.settings_data_credits_summary), onClick = null)

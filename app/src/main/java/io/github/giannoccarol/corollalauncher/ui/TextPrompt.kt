@@ -12,7 +12,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import io.github.giannoccarol.corollalauncher.R
 
-/** A one-field dialog, used for destinations and saved addresses. */
+/** A one-field dialog, used for destinations, saved addresses and favourite contacts. */
 object TextPrompt {
 
     fun show(
@@ -22,9 +22,12 @@ object TextPrompt {
         initial: String?,
         @StringRes positiveRes: Int,
         onResult: (String) -> Unit,
-    ) = show(context, context.getString(titleRes), hintRes, initial, positiveRes, password = false, onResult)
+    ) = show(context, context.getString(titleRes), hintRes, initial, positiveRes, password = false, onResult = onResult)
 
-    /** [password] hides the typed text, for Wi-Fi passwords. */
+    /**
+     * [password] hides the typed text, for Wi-Fi passwords; [inputType] picks another keyboard,
+     * such as the phone keypad.
+     */
     fun show(
         context: Context,
         title: CharSequence,
@@ -32,12 +35,15 @@ object TextPrompt {
         initial: String?,
         @StringRes positiveRes: Int,
         password: Boolean,
+        inputType: Int? = null,
         onResult: (String) -> Unit,
     ) {
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_text_prompt, null)
         val input = view.findViewById<EditText>(R.id.input)
         if (password) {
             input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        } else if (inputType != null) {
+            input.inputType = inputType
         }
         input.setHint(hintRes)
         input.setText(initial.orEmpty())
