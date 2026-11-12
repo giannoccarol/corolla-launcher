@@ -57,4 +57,12 @@ class AlbumColorTest {
         assertEquals(0x00123456, AlbumColor.withAlpha(0xFF123456.toInt(), 0f))
         assertEquals(0xFF123456.toInt(), AlbumColor.withAlpha(0x00123456, 1f))
     }
+
+    @Test
+    fun purpleCoversNeverGivePurple() {
+        val violet = AlbumColor.pick(IntArray(64) { argb(120, 40, 220) })!!
+        val magenta = AlbumColor.pick(IntArray(64) { argb(200, 30, 200) })!!
+        for (color in listOf(violet, magenta)) assertTrue(hue(color) !in 240.0..320.0)
+        assertEquals(200.0, AlbumColor.withoutPurple(200.0), 0.0)
+    }
 }

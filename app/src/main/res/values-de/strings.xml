@@ -188,6 +188,7 @@
     <string name="settings_language">Sprache</string>
     <string name="settings_icons">App-Symbole</string>
     <string name="settings_icons_themed">Im Design</string>
+    <string name="settings_icons_mono">Einfarbig</string>
     <string name="settings_icons_original">Original</string>
     <string name="language_system">Systemstandard</string>
     <string name="settings_animations">Animationen</string>

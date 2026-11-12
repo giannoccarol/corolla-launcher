@@ -107,7 +107,7 @@ object AppRepository {
             .map { info ->
                 val component = ComponentName(info.activityInfo.packageName, info.activityInfo.name)
                 val label = info.loadLabel(packageManager).toString()
-                AppInfo(component, label, icons.icon(info, component, label), icons.themed)
+                icons.load(info, component, label)
             }
             .sortedBy { it.label.lowercase(Locale.getDefault()) }
             .toList()

@@ -251,10 +251,11 @@ class SettingsActivity : LauncherActivity() {
             .show()
     }
 
-    /** Themed, original, or one of the icon packs installed from the Play Store. */
+    /** Themed, monochrome, original, or one of the icon packs installed from the Play Store. */
     private fun pickIconStyle() {
         val packs = IconPack.installed(this)
-        val styles = listOf(AppIcons.STYLE_THEMED, AppIcons.STYLE_ORIGINAL) + packs.map { it.packageName }
+        val styles = listOf(AppIcons.STYLE_THEMED, AppIcons.STYLE_MONO, AppIcons.STYLE_ORIGINAL) +
+            packs.map { it.packageName }
         AlertDialog.Builder(this)
             .setTitle(R.string.settings_icons)
             .setSingleChoiceItems(
@@ -274,6 +275,7 @@ class SettingsActivity : LauncherActivity() {
     private fun iconStyleLabel(style: String, packs: List<IconPack.Installed>): String = when (style) {
         AppIcons.STYLE_ORIGINAL -> getString(R.string.settings_icons_original)
         AppIcons.STYLE_THEMED -> getString(R.string.settings_icons_themed)
+        AppIcons.STYLE_MONO -> getString(R.string.settings_icons_mono)
         else -> packs.firstOrNull { it.packageName == style }?.label
             ?: getString(R.string.settings_icons_themed)
     }

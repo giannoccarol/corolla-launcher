@@ -16,19 +16,23 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.widget.ImageView
+import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import io.github.giannoccarol.corollalauncher.R
+import io.github.giannoccarol.corollalauncher.theme.ThemeManager
 import kotlin.math.max
 import kotlin.math.roundToInt
 
 /**
  * App icons in the chosen style:
  *
- *  - themed (the default): one monochrome glyph per app on a tonal tile, like Android 13's
- *    themed icons. The glyph is the app's own monochrome layer when it has one (Android 13+),
- *    else a bundled logo or symbol ([IconGlyphs]), else the silhouette of its adaptive
- *    foreground, else its initial. Glyphs are kept as alpha masks and coloured when bound, so
- *    they follow the light and dark theme without a reload.
+ *  - themed (the default): one glyph per app on a tonal tile, like Android 13's themed
+ *    icons, in the app's own hue taken from its icon ([IconTint]); grey apps stay neutral.
+ *    The glyph is the app's own monochrome layer when it has one (Android 13+), else a bundled
+ *    logo or symbol ([IconGlyphs]), else the silhouette of its adaptive foreground, else its
+ *    initial. Glyphs are kept as alpha masks and coloured when bound, so they follow the light
+ *    and dark theme without a reload.
+ *  - mono: the same glyphs, all in the launcher's accent colours.
  *  - original: the apps' own icons, in one shape ([IconShaper]).
  *  - an installed icon pack: its drawables, and the pack's background, mask and overlay for
  *    apps it does not cover.
@@ -37,6 +41,10 @@ object AppIcons {
 
     const val STYLE_THEMED = "themed"
     const val STYLE_ORIGINAL = "original"
+    const val STYLE_MONO = "mono"
+
+    /** Icons are sampled at this size to find the app's colour. */
+    private const val HUE_SAMPLE = 12
 
     /** Bundled glyphs are drawn in this fraction of the tile, centred. */
     private const val GLYPH_BOX = 0.58f
@@ -52,22 +60,25 @@ object AppIcons {
         private val size = context.resources.getDimensionPixelSize(R.dimen.app_icon_bitmap)
         private val pm = context.packageManager
         private val pack: IconPack? = style
-            .takeIf { it != STYLE_THEMED && it != STYLE_ORIGINAL }
+            .takeIf { it != STYLE_THEMED && it != STYLE_ORIGINAL && it != STYLE_MONO }
             ?.let { IconPack.load(context, it) }
 
-        /** True when [icon] returns alpha masks to be drawn with [bind]. */
-        val themed: Boolean = pack == null && style != STYLE_ORIGINAL
+        /** Glyphs drawn on tiles by [bind], rather than finished icons. */
+        private val themed: Boolean = pack == null && style != STYLE_ORIGINAL
 
-        fun icon(info: ResolveInfo, component: ComponentName, label: String): Drawable {
-            pack?.let { return packIcon(it, info, component) }
-            if (!themed) return IconShaper.shape(context, info.loadIcon(pm), size)
-            return BitmapDrawable(context.resources, glyph(info, component.packageName, label))
+        /** Themed glyphs in each app's own colour rather than the accent. */
+        private val colored: Boolean = themed && style != STYLE_MONO
+
+        fun load(info: ResolveInfo, component: ComponentName, label: String): AppInfo {
+            pack?.let { return AppInfo(component, label, packIcon(it, info, component)) }
+            val original = info.loadIcon(pm)
+            if (!themed) return AppInfo(component, label, IconShaper.shape(context, original, size))
+            val glyph = BitmapDrawable(context.resources, glyph(original, component.packageName, label))
+            return AppInfo(component, label, glyph, themed = true, colored = colored, hue = if (colored) hueOf(original) else null)
         }
 
-        private fun glyph(info: ResolveInfo, packageName: String, label: String): Bitmap {
-            var original: Drawable? = null
+        private fun glyph(original: Drawable, packageName: String, label: String): Bitmap {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                original = info.loadIcon(pm)
                 (original as? AdaptiveIconDrawable)?.monochrome?.let { layer ->
                     return mask { drawLayer(it, layer) }
                 }
@@ -76,8 +87,19 @@ object AppIcons {
                 ?.let(GlyphResources::drawable)
                 ?.let { ContextCompat.getDrawable(context, it) }
                 ?.let { glyph -> return mask { drawBox(it, glyph) } }
-            silhouette(original ?: info.loadIcon(pm))?.let { return it }
+            silhouette(original)?.let { return it }
             return letter(label)
+        }
+
+        /** The app's colour, from a thumbnail of its full icon. */
+        private fun hueOf(icon: Drawable): Float? {
+            val thumb = Bitmap.createBitmap(HUE_SAMPLE, HUE_SAMPLE, Bitmap.Config.ARGB_8888)
+            icon.setBounds(0, 0, HUE_SAMPLE, HUE_SAMPLE)
+            icon.draw(Canvas(thumb))
+            val pixels = IntArray(HUE_SAMPLE * HUE_SAMPLE)
+            thumb.getPixels(pixels, 0, HUE_SAMPLE, 0, 0, HUE_SAMPLE, HUE_SAMPLE)
+            thumb.recycle()
+            return IconTint.hueOf(pixels)
         }
 
         private fun silhouette(icon: Drawable): Bitmap? {
@@ -167,16 +189,24 @@ object AppIcons {
             return
         }
         val context = view.context
+        val hue = app.hue
+        val (tileColor, glyphColor) = when {
+            !app.colored -> color(context, R.color.icon_tile) to color(context, R.color.icon_glyph)
+            hue == null -> color(context, R.color.icon_tile_neutral) to color(context, R.color.icon_glyph_neutral)
+            else -> IconTint.colors(hue, ThemeManager.isDark(context)).let { it.tile to it.glyph }
+        }
         val size = max(1, app.icon.intrinsicWidth)
         val tile = GradientDrawable().apply {
             cornerRadius = size * IconShaper.CORNER_FRACTION
-            setColor(ContextCompat.getColor(context, R.color.icon_tile))
+            setColor(tileColor)
             val hairline = max(1, (context.resources.displayMetrics.density * 0.75f).roundToInt())
             setStroke(hairline, ContextCompat.getColor(context, R.color.card_border))
             setSize(size, size)
         }
         val glyph = (app.icon.constantState?.newDrawable(context.resources) ?: app.icon).mutate()
-        glyph.setTint(ContextCompat.getColor(context, R.color.icon_glyph))
+        glyph.setTint(glyphColor)
         view.setImageDrawable(LayerDrawable(arrayOf(tile, glyph)))
     }
+
+    private fun color(context: Context, @ColorRes id: Int) = ContextCompat.getColor(context, id)
 }

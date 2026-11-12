@@ -188,6 +188,7 @@
     <string name="settings_language">Langue</string>
     <string name="settings_icons">Icônes des applis</string>
     <string name="settings_icons_themed">Thématiques</string>
+    <string name="settings_icons_mono">Monochromes</string>
     <string name="settings_icons_original">D\'origine</string>
     <string name="language_system">Langue du système</string>
     <string name="settings_animations">Animations</string>

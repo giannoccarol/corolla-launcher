@@ -33,12 +33,14 @@ it should run on any landscape Android head unit.
     button, volume on the right. The head unit's **Android Auto / CarPlay app** (Phone Link,
     ZLink, AutoLink, Carlinkit...) is found automatically and always comes first; long press it
     to remove it. "Apri Android Auto" works with the assistant too.
-- **Themed app icons** by default, like Android 13's: every app gets one monochrome glyph on
-  a tile in the theme's colours, so the bottom bar and the app grid look like one set. Well-known
+- **Themed app icons** by default, like Android 13's: every app gets one glyph on a tonal tile
+  in its own colour (green for Spotify, red for YouTube, grey for grey apps), pale in the light
+  theme and deep in the dark one, so the bottom bar and the app grid look like one set. Well-known
   apps (Spotify, Google Maps, Waze, YouTube Music, WhatsApp, Android Auto...) show their logo;
   head unit apps get a symbol for what they do (Radio, Music, Bluetooth, Settings...), matched
   by their label in five languages; the rest show their own logo's silhouette or their initial.
-  *Settings → App icons* switches to the apps' original icons or to any **icon pack** installed
+  *Settings → App icons* switches to monochrome glyphs in the accent colour, to the apps'
+  original icons, or to any **icon pack** installed
   from the Play Store (the appfilter.xml format Nova, ADW and Lawnchair read).
 - **Voice assistant** (Assistant button in the top bar, or the steering wheel voice button):
   speak or type, hear the answer. It works with tools, so it can look things up and then act

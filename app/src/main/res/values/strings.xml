@@ -203,6 +203,7 @@
     <string name="settings_language">Language</string>
     <string name="settings_icons">App icons</string>
     <string name="settings_icons_themed">Themed</string>
+    <string name="settings_icons_mono">Monochrome</string>
     <string name="settings_icons_original">Original</string>
     <string name="language_system">System default</string>
     <string name="settings_animations">Animations</string>

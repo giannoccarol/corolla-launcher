@@ -18,6 +18,9 @@
     <!-- Themed app icons: a tonal tile and a glyph of the same hue, like Android's themed icons. -->
     <color name="icon_tile">#DCE5F7</color>
     <color name="icon_glyph">#1A4BBF</color>
+    <!-- Themed icons of apps without a colour of their own (grey icons). -->
+    <color name="icon_tile_neutral">#E3E6EA</color>
+    <color name="icon_glyph_neutral">#3A4049</color>
     <!-- Speed gauge: segments past the motorway limit, and unlit LCD segments. -->
     <color name="gauge_warn">#D9820B</color>
     <color name="gauge_ghost">#0E0F141E</color>

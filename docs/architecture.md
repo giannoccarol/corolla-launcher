@@ -35,8 +35,9 @@ AudioManager ──────────────────────�
 - `AppRepository` is a process-wide object. It loads launchable activities on a background
   thread, builds their icons once (`AppIcons.Loader`), and notifies listeners on the main thread.
 - `AppIcons` makes the icon in the style set in *Settings → App icons*:
-  - themed (default): an `ALPHA_8` mask per app, put on a tile and tinted by `AppIcons.bind`
-    with the current theme's colours. The glyph is chosen by `IconGlyphs` (pure, unit tested:
+  - themed (default): an `ALPHA_8` mask per app plus the app's hue (`IconTint`, pure, unit
+    tested), put on a tile and tinted by `AppIcons.bind` with colours for the current theme;
+    "mono" uses the accent colours instead. The glyph is chosen by `IconGlyphs` (pure, unit tested:
     exact packages, brand names in labels, then label words in five languages, then package
     fragments); `IconSilhouette` (pure) decides whether an adaptive foreground is usable;
   - original: `IconShaper` gives adaptive icons one rounded-square shape;

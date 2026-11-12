@@ -46,7 +46,17 @@ object AlbumColor {
     /** Keeps the hue, settles saturation and brightness into a range that reads as a tint. */
     private fun calm(r: Int, g: Int, b: Int): Int {
         val (hue, saturation, value) = hsv(r, g, b)
-        return rgb(hue, saturation.coerceIn(0.35, 0.75), value.coerceIn(0.45, 0.85))
+        return rgb(withoutPurple(hue), saturation.coerceIn(0.35, 0.75), value.coerceIn(0.45, 0.85))
+    }
+
+    /**
+     * The owner wants no purple anywhere, including colours taken from covers and app icons:
+     * violet hues move to blue, magenta ones to pink.
+     */
+    fun withoutPurple(hue: Double): Double = when {
+        hue < PURPLE_FROM || hue > PURPLE_TO -> hue
+        hue < (PURPLE_FROM + PURPLE_TO) / 2 -> BLUE
+        else -> PINK
     }
 
     /** Hue in degrees, saturation and value in 0..1. */
@@ -87,6 +97,10 @@ object AlbumColor {
     fun withAlpha(color: Int, alpha: Float): Int =
         ((alpha.coerceIn(0f, 1f) * 255).toInt() shl 24) or (color and 0x00FFFFFF)
 
+    private const val PURPLE_FROM = 240.0
+    private const val PURPLE_TO = 320.0
+    private const val BLUE = 225.0
+    private const val PINK = 340.0
     private const val BUCKETS = 12
     private const val MIN_ALPHA = 128
     private const val MIN_VALUE = 0.18
