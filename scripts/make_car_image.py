@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Builds the car card picture from art/corolla-e120.png: adds a ground shadow and writes one
+"""Builds the car card picture from art/corolla-e120.png: crops it to the car and writes one
 pre-scaled, lightly sharpened WebP per screen density.
 
-The shadow is computed from the photo's own silhouette, so it follows the 3/4 perspective:
+With --shadow it also lays a ground shadow under the car (the owner turned it off after the
+first drive). The shadow is computed from the photo's own silhouette, so it follows the 3/4
+perspective:
 
   1. find where each visible wheel touches the ground (the lowest opaque pixels);
   2. infer the hidden fourth wheel, which makes the car's footprint on the ground;
@@ -10,7 +12,7 @@ The shadow is computed from the photo's own silhouette, so it follows the 3/4 pe
      the body, and tight contact shadows under the tyres;
   4. put the car on top.
 
-Run from the repository root:  python3 scripts/make_car_image.py   (needs Pillow)
+Run from the repository root:  python3 scripts/make_car_image.py [--shadow]   (needs Pillow)
 Pass --preview PATH to also write the result over the dark and light card colours.
 """
 
@@ -28,6 +30,8 @@ RES = ROOT / "app" / "src" / "main" / "res"
 DENSITIES = {"mdpi": 216, "hdpi": 324, "xhdpi": 432, "xxhdpi": 648}
 DARK_CARD = (19, 21, 24, 255)
 LIGHT_CARD = (241, 243, 245, 255)
+# Alpha below this is invisible on either card colour, so it does not count when cropping.
+VISIBLE_ALPHA = 6
 
 
 def bottoms(alpha: Image.Image) -> list[int | None]:
@@ -98,18 +102,23 @@ def shadow_for(car: Image.Image) -> Image.Image:
     return shadow
 
 
-def build() -> Image.Image:
+def build(shadow: bool) -> Image.Image:
     car = Image.open(SOURCE).convert("RGBA")
-    car = car.crop(car.getchannel("A").getbbox())
+    # The cut-out photo has faint alpha noise far from the car: crop to the visible part.
+    car = car.crop(car.getchannel("A").point(lambda a: 255 if a > VISIBLE_ALPHA else 0).getbbox())
+    if not shadow:
+        return car
     # Room below and on the sides for the shadow to fade out.
     pad_x, pad_bottom = int(car.width * 0.03), int(car.height * 0.06)
     canvas = Image.new("RGBA", (car.width + 2 * pad_x, car.height + pad_bottom), (0, 0, 0, 0))
     canvas.alpha_composite(car, (pad_x, 0))
-    shadow = shadow_for(canvas)
     result = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
-    result.alpha_composite(shadow)
+    result.alpha_composite(shadow_for(canvas))
     result.alpha_composite(canvas)
-    return result.crop(result.getchannel("A").getbbox())
+    # Crop to what can actually be seen: the shadow's blur leaves alpha 1-2 values far from the
+    # car, which would otherwise keep a wide empty band (12 % of the height above the roof).
+    visible = result.getchannel("A").point(lambda a: 255 if a > VISIBLE_ALPHA else 0)
+    return result.crop(visible.getbbox())
 
 
 def export(picture: Image.Image) -> None:
@@ -127,8 +136,12 @@ def export(picture: Image.Image) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--preview", type=Path, help="also write a dark/light preview PNG here")
+    parser.add_argument(
+        "--shadow", action="store_true",
+        help="add the ground shadow (off since the first drive: the owner prefers the car alone)",
+    )
     args = parser.parse_args()
-    picture = build()
+    picture = build(args.shadow)
     export(picture)
     if args.preview:
         small = picture.resize((640, round(picture.height * 640 / picture.width)), Image.LANCZOS)

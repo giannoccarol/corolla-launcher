@@ -22,7 +22,7 @@ it should run on any landscape Android head unit.
   - **Favourites**: four people to call with one tap, each on a coloured disc with their
     initials. Add one from the contacts (the system picker hands over only that contact) or by
     typing a name and number; long press to change or remove it.
-  - **Car card**: a photo of the Corolla sitting on a soft ground shadow, and a **trip computer** (distance, duration, average
+  - **Car card**: a large photo of the Corolla, and a **trip computer** (distance, duration, average
     speed) measured from GPS. A trip ends after 20 minutes standing still. Under it, the current
     **speed and heading**, shown as a digital dash in the spirit of a late-90s roadster: a
     rising bar graph that turns amber past 130 km/h over big LCD digits.

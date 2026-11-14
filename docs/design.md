@@ -202,13 +202,20 @@ roadster's digital dash (an inspiration, not a copy of any maker's artwork):
 ## Car photo
 
 `art/corolla-e120.png` is the source (transparent background).
-`scripts/make_car_image.py` builds the app's picture from it: it finds the three visible tyre
-contact points, infers the hidden fourth, and lays a ground shadow under the car in three
-layers (wide soft ambient shadow over the footprint, darker core under the body, tight contact
-patches under the tyres), so the shadow follows the 3/4 perspective. It then writes one WebP
-per density in `res/drawable-{mdpi,hdpi,xhdpi,xxhdpi}/car_corolla.webp`, sized for the 216 dp
-it is drawn at, with a light unsharp mask (letting Android shrink one large bitmap made it look
-soft). Run it again whenever the source photo changes:
+`scripts/make_car_image.py` builds the app's picture from it. It crops to the visible pixels
+(the cut-out has faint alpha noise far from the car, which left a wide empty band and made the
+car look small) and writes one WebP per density in
+`res/drawable-{mdpi,hdpi,xhdpi,xxhdpi}/car_corolla.webp`, sized for the ~216 dp it is drawn
+at, with a light unsharp mask (letting Android shrink one large bitmap made it look soft).
+
+The car has no ground shadow since the first drive: the owner preferred it alone, and it is
+bigger without the margin the shadow needed. `--shadow` still builds one from the photo's
+silhouette (three tyre contact points plus the inferred fourth, then an ambient layer, a core
+under the body and contact patches under the tyres, following the 3/4 perspective).
+
+In the car card the photo reaches into the card's side padding (`clipToPadding="false"`), so
+it is as wide as the card allows without being cut. Run the script again whenever the source
+photo changes:
 
 ```bash
 python3 scripts/make_car_image.py --preview /tmp/car.png
