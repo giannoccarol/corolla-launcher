@@ -18,32 +18,36 @@ code can be changed without reopening it.
 
 ## Canvas
 
-Designed on **1024 x 600 dp** (a 7" head unit at 160 dpi, where 1 dp = 1 px). Side columns
-have fixed proportions and the centre takes the rest, so other landscape sizes stretch rather
-than break. The mockup lives in the design canvas linked above ("Dashboard" artboards).
+The panel is assumed to be 1024 x 600 px, but the launcher picks its own density
+(`ui/UiScale`): the screen's short side is laid out as 600 dp (Normal), 520 dp (Large, the
+default) or 460 dp (Extra large), and everything in dp and sp scales with it. Columns and bars
+have weights rather than fixed widths, so every size and any landscape panel fits; the layout
+must work from about 780 x 460 dp up. At Large on a 1024 x 600 panel:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
-│ (L) Lorenzo │ [Home] Navigation  Apps        gps bt net │ date  TIME     │  50 dp
-├──────────────────────┬───────────────────────┬───────────────────────────┤
-│ [ Where to?        ] │ [chips]               │ Corolla          Driving  │
-│ (⌂) Home           › │ cover  title / artist │   [ car photo ]           │
-│ (▣) Work           › │ ───────── progress    │ 12.4 km  18 min  41 km/h  │  270 dp
-│ ──────────────────── │     ⏮    ▶    ⏭      ├───────────────────────────┤
-│ RECENT               ├───────────────────────┤ [theme] [wi-fi] [bt]      │
-│ ◷ place  ◷ place     │ Favourites            │ [display][audio][more]    │
-│ [ 43 km/h   N      ] │ (MR) (M)  (+)  (+)    │                           │  148 dp
-├──────────────────────┴───────────────────────┴───────────────────────────┤
-│ (L) Lorenzo   app app app [all apps] app app app         ‹ volume ›      │  74 dp
+│ ◁ ○ □ │ Navigation  (Assistant)          gps bt net │ date  TIME         │  50 dp
+├────────────────────────┬────────────────────────┬────────────────────────┤
+│ [chips]                │ Corolla        Driving │ [theme]   [wi-fi]      │
+│ cover  title / artist  │   [ car photo ]        │                        │
+│ ───────── progress     │ 12.4 km 18 min 41 km/h │ [bt]      [display]    │
+│      ⏮    ▶    ⏭       ├────────────────────────┤                        │
+├────────────────────────┤ ▁▂▃▄▅▆ 43 km/h   N     │ [audio]   [more]       │
+│ (M)  (MR)  (+)  (+)    │                        │                        │
+├────────────────────────┴────────────────────────┴────────────────────────┤
+│ (L) Lorenzo   app app app [all apps] app app app          ‹ volume ›     │  74 dp
 └──────────────────────────────────────────────────────────────────────────┘
-   ~372 dp                 ~364 dp                    ~252 dp     (12 dp gaps)
+   weight 125               weight 100               weight 75   (12 dp gaps)
 ```
+
+There is no map or destinations card: the first test in the car showed too much on screen
+for the size of the text, and the maps app is one tap away (Navigation, or the assistant).
 
 The launcher is **full screen**: the system status and navigation bars are hidden while it is
 in front, and replaced by the top and bottom bars above.
 
-- **Top bar**: system keys drawn as outlines so they read as controls and not as apps, tabs,
-  then the status icons. An icon dims to 28 % when its radio is off instead of disappearing,
+- **Top bar**: system keys drawn as outlines so they read as controls and not as apps, the
+  Navigation and Assistant buttons, then the status icons. An icon dims to 28 % when its radio is off instead of disappearing,
   so the bar never shifts.
 - **Bottom bar**: the driver's initial and name (tap to edit; "Add your name" when unset); six
   docked apps that only change when the driver pins or unpins (stable for muscle memory),
@@ -91,9 +95,9 @@ System Roboto. Clock in `sans-serif-light`, titles and buttons in `sans-serif-me
 
 - Cards 24dp radius; tiles 16dp; speed panel 18dp; pills fully rounded; settings rows 18dp.
 - Play button 66dp, previous/next 54dp, system keys 52x50dp (the full height of the top bar),
-  driver avatar 40dp in a 56dp target, docked apps 52dp, tabs 40dp tall
-  inside a 50dp bar (the tab row is information first; the whole bar is reachable but small).
-- Bottom bar app icons 52dp with 12dp gaps; favourite discs 52dp; app grid icons 72dp.
+  driver avatar 40dp in a 56dp target, docked apps 52dp, top bar buttons 40dp tall inside a
+  50dp bar. All of these grow with the interface size (about x1.15 at Large).
+- Bottom bar app icons 52dp with 8dp gaps; favourite discs 52dp; app grid icons 72dp.
 - Themed icon tiles are rounded squares (24 % radius) with a hairline (`card_border`); the
   glyph fills 58 % of the tile. With original icons, adaptive icons are redrawn in the same
   shape by `IconShaper`, whatever the device's icon mask.

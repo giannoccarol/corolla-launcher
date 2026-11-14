@@ -14,11 +14,8 @@ it should run on any landscape Android head unit.
 ## What it does
 
 - **Dashboard home screen** made of cards, full screen, with the system bars hidden:
-  - **Top bar**: Back, Home and Recent apps keys on the left, tabs for Home, Navigation (opens
-    the maps app) and Apps, then GPS, Bluetooth and network status, date and time.
-  - **Navigation card**: "Where to?" search, Home and Work, the last two places searched, and
-    the current **speed and heading** from GPS, shown as a digital dash in the spirit of a
-    late-90s roadster: a rising bar graph that turns amber past 130 km/h over big LCD digits.
+  - **Top bar**: Back, Home and Recent apps keys on the left, Navigation (opens the maps app)
+    and the Assistant, then GPS, Bluetooth and network status, date and time.
   - **Media card** that follows whatever is playing. Every app with an active media session
     (Spotify, YouTube Music, a podcast app...) appears as a chip; tap one to switch source.
     Title, artist, cover and progress; play/pause/next/previous always work.
@@ -26,7 +23,9 @@ it should run on any landscape Android head unit.
     initials. Add one from the contacts (the system picker hands over only that contact) or by
     typing a name and number; long press to change or remove it.
   - **Car card**: a photo of the Corolla sitting on a soft ground shadow, and a **trip computer** (distance, duration, average
-    speed) measured from GPS. A trip ends after 20 minutes standing still.
+    speed) measured from GPS. A trip ends after 20 minutes standing still. Under it, the current
+    **speed and heading**, shown as a digital dash in the spirit of a late-90s roadster: a
+    rising bar graph that turns amber past 130 km/h over big LCD digits.
   - **Quick settings**: theme, plus Wi-Fi, Bluetooth, display and audio tiles that open the
     launcher's own panels instead of system settings: Wi-Fi switch and nearby networks,
     Bluetooth switch and paired phones, brightness and theme, and volume per stream. Sliders are
@@ -44,6 +43,12 @@ it should run on any landscape Android head unit.
   *Settings → App icons* switches to monochrome glyphs in the accent colour, to the apps'
   original icons, or to any **icon pack** installed
   from the Play Store (the appfilter.xml format Nova, ADW and Lawnchair read).
+- **One size knob for everything**: *Settings → Interface size* (Normal, Large, Extra large)
+  scales text, buttons, icons and bars together, whatever resolution and density the unit
+  reports. Large is the default: the first test in the car found the original size too small.
+- **Device info** (*Settings → About*): screen, Android version, the Android Auto app found,
+  and the media sessions and notifications it publishes, to photograph when something does
+  not work on the unit.
 - **Voice assistant** (Assistant button in the top bar, or the steering wheel voice button):
   speak or type, hear the answer. It works with tools, so it can look things up and then act
   ("find a petrol station near here and take me there"):
@@ -99,7 +104,8 @@ python3 scripts/check_translations.py # every language has every string
 
 ## Try it on an emulator
 
-`scripts/emulator.sh` creates an emulator shaped like the head unit (1024x600, 160 dpi):
+`scripts/emulator.sh` creates an emulator shaped like the head unit (1024x600, 160 dpi; the
+launcher then scales itself to the chosen interface size):
 
 ```bash
 scripts/emulator.sh create   # once; needs the "system-images;android-30;default;x86_64" image
@@ -227,6 +233,12 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
   silhouette fallback have not been seen with real Spotify, Maps or head unit apps yet; an app
   that gets the wrong symbol needs its package or label added to `IconGlyphs`. Icon pack
   support was tested with a small pack built for the purpose, not with a Play Store pack.
+- **Music played through Android Auto does not show in the media card** (seen in the car).
+  The head unit's projection app apparently publishes no media session, so nothing tells the
+  launcher what is playing. *Settings → Device info*, opened while Android Auto plays and with
+  notification access on, shows what that app does publish; the fix depends on it.
+- **The interface size was tuned on the emulator.** Large lays the screen's short side out as
+  520 dp, Extra large as 460 dp; the player's playing state was not seen at the new sizes.
 - **Calls from Favourites were tested only on the emulator's phone.** On a head unit the phone
   is usually reached over Bluetooth through the unit's own app, which may not accept Android's
   call request; then the dialer opens instead, or nothing can call and the card says so. The
@@ -254,7 +266,7 @@ app/src/main/java/.../corollalauncher/
   assistant/tools/        weather, places, location and action tools
   assistant/ai/           AI providers and the HTTP client (ported from Monetine)
   keys/                   accessibility service behind the top bar's system keys
-  nav/                    navigation intents, recent destinations
+  nav/                    navigation intents
   settings/               preferences, languages, settings screen
   theme/                  light/dark handling
   ui/                     base activity, full-screen handling, text dialog, motion
@@ -279,7 +291,6 @@ two reviewers for head unit constraints and translations.
 
 ## Roadmap
 
-- A live map in the navigation card (see the discussion in [docs/head-unit.md](docs/head-unit.md)).
 - Turn-by-turn hints read from the navigation app's notification.
 - Configurable cards: choose and arrange them (weather, radio presets).
 - Accent color and night hours in Settings.

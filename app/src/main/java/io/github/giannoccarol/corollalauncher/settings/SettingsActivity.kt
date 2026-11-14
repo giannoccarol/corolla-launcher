@@ -26,6 +26,7 @@ import io.github.giannoccarol.corollalauncher.theme.ThemeMode
 import io.github.giannoccarol.corollalauncher.ui.LauncherActivity
 import io.github.giannoccarol.corollalauncher.ui.Motion
 import io.github.giannoccarol.corollalauncher.ui.TextPrompt
+import io.github.giannoccarol.corollalauncher.ui.UiScale
 
 /** A plain list of rows, rebuilt on every resume so summaries always show the current value. */
 class SettingsActivity : LauncherActivity() {
@@ -73,6 +74,7 @@ class SettingsActivity : LauncherActivity() {
         row(R.string.settings_icons, iconStyleLabel(prefs.iconStyle, IconPack.installed(this))) {
             pickIconStyle()
         }
+        row(R.string.settings_ui_size, getString(uiSizeLabel(prefs.uiSize))) { pickUiSize() }
         row(
             R.string.settings_animations,
             getString(if (prefs.animations) R.string.settings_on else R.string.settings_off),
@@ -138,6 +140,15 @@ class SettingsActivity : LauncherActivity() {
         ) { open(Settings.ACTION_HOME_SETTINGS) }
 
         section(R.string.settings_section_about)
+        row(R.string.settings_device_info, getString(R.string.settings_device_info_summary)) {
+            AlertDialog.Builder(this)
+                .setTitle(R.string.settings_device_info)
+                .setMessage(DeviceInfo.text(this))
+                .setPositiveButton(R.string.close, null)
+                .show()
+                .findViewById<TextView>(android.R.id.message)
+                ?.setTextIsSelectable(true)
+        }
         row(R.string.settings_data_credits, getString(R.string.settings_data_credits_summary), onClick = null)
         row(
             R.string.app_name,
@@ -245,6 +256,32 @@ class SettingsActivity : LauncherActivity() {
             }
             .setNegativeButton(R.string.cancel, null)
             .show()
+    }
+
+    /** Every screen redraws at the new size; open ones catch up when they come back. */
+    private fun pickUiSize() {
+        val sizes = UiScale.UiSize.entries
+        AlertDialog.Builder(this)
+            .setTitle(R.string.settings_ui_size)
+            .setSingleChoiceItems(
+                sizes.map { getString(uiSizeLabel(it)) }.toTypedArray(),
+                sizes.indexOf(prefs.uiSize),
+            ) { dialog, which ->
+                dialog.dismiss()
+                if (prefs.uiSize == sizes[which]) return@setSingleChoiceItems
+                prefs.uiSize = sizes[which]
+                AppRepository.reload(this)
+                recreate()
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    @StringRes
+    private fun uiSizeLabel(size: UiScale.UiSize): Int = when (size) {
+        UiScale.UiSize.NORMAL -> R.string.ui_size_normal
+        UiScale.UiSize.LARGE -> R.string.ui_size_large
+        UiScale.UiSize.EXTRA_LARGE -> R.string.ui_size_extra_large
     }
 
     /** Themed, monochrome, original, or one of the icon packs installed from the Play Store. */

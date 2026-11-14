@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Home screen -->
-    <string name="home_where_to">Wohin?</string>
-    <string name="home_home">Zuhause</string>
-    <string name="home_work">Arbeit</string>
     <string name="home_all_apps">Alle Apps</string>
 
     <!-- Media player -->
@@ -33,10 +30,7 @@
     <string name="app_launch_failed">%1$s konnte nicht geöffnet werden</string>
 
     <!-- Navigation dialogs -->
-    <string name="nav_destination_title">Wohin?</string>
-    <string name="nav_destination_hint">Adresse oder Ort</string>
     <string name="nav_address_hint">Straße, Stadt</string>
-    <string name="nav_go">Los</string>
     <string name="nav_no_app">Keine Navigations-App installiert</string>
 
     <!-- System keys in the dock -->
@@ -51,13 +45,8 @@
     <string name="nav_keys_service_description">Lässt die Tasten Zurück, Startbildschirm und Letzte Apps im Dock funktionieren. Liest nicht, was auf dem Bildschirm steht.</string>
 
     <!-- Dashboard -->
-    <string name="tab_home">Start</string>
     <string name="tab_navigation">Navigation</string>
-    <string name="tab_apps">Apps</string>
     <string name="driver_add_name">Namen hinzufügen</string>
-    <string name="nav_tap_to_set">Zum Festlegen tippen</string>
-    <string name="nav_recent">Zuletzt</string>
-    <string name="nav_recent_empty">Gesuchte Orte erscheinen hier.</string>
     <string name="speed_heading">Richtung</string>
     <string name="speed_tap_to_enable">Tippen, um den Standort zu aktivieren</string>
     <string name="compass_n">N</string>
@@ -227,4 +216,23 @@
     <string name="favorites_unreadable">Dieser Kontakt hat keine lesbare Nummer</string>
     <string name="favorites_no_phone">Keine App kann %1$s anrufen</string>
     <string name="next">Weiter</string>
+
+    <!-- Interface size and device info -->
+    <string name="settings_ui_size">Größe der Oberfläche</string>
+    <string name="ui_size_normal">Normal</string>
+    <string name="ui_size_large">Groß</string>
+    <string name="ui_size_extra_large">Sehr groß</string>
+    <string name="settings_device_info">Geräteinfo</string>
+    <string name="settings_device_info_summary">Bildschirm, Android und Medien: zum Fotografieren, wenn etwas nicht funktioniert</string>
+    <string name="diag_model">Modell: %1$s</string>
+    <string name="diag_android">Android %1$s (API %2$d)</string>
+    <string name="diag_screen">Bildschirm: %1$d × %2$d px, %3$d dpi</string>
+    <string name="diag_interface">Oberfläche: %1$d dpi, %2$d × %3$d dp</string>
+    <string name="diag_projection">Android-Auto-App: %1$s</string>
+    <string name="diag_not_found">nicht gefunden</string>
+    <string name="diag_access_on">Benachrichtigungszugriff: an</string>
+    <string name="diag_access_off">Benachrichtigungszugriff: aus (einschalten, um die Mediendetails zu sehen)</string>
+    <string name="diag_sessions">Mediensitzungen:</string>
+    <string name="diag_notifications">Benachrichtigungen von %1$s:</string>
+    <string name="diag_none">keine</string>
 </resources>

@@ -68,9 +68,11 @@ AudioManager ──────────────────────�
 
 ### Media
 
-- `MediaListenerService` is an empty `NotificationListenerService`. Android only lets an app
-  enumerate other apps' media sessions if it owns an enabled notification listener; the
-  service exists to hold that grant and does nothing else.
+- `MediaListenerService` is a `NotificationListenerService` that reacts to nothing. Android
+  only lets an app enumerate other apps' media sessions if it owns an enabled notification
+  listener; the service exists to hold that grant. Its one read, `notificationsOf`, lists the
+  Android Auto app's notifications when the driver opens *Settings → Device info*, to show
+  them on screen; nothing is stored or sent.
 - `MediaSessionMonitor` keeps one `MediaController` per app with an active session, registers a
   callback on each, and exposes `current`: the user's pick, else whichever is playing, else the
   first. `HomeActivity` re-renders on every change and ticks the progress bar once a second
@@ -187,6 +189,17 @@ Lists (bottom bar, source chips) are rebuilt only when their content changes.
   an app trigger Back, Home and Recents. It subscribes to no event types and cannot retrieve
   window content; it only calls `performGlobalAction`. It is off until the user enables it,
   and `HomeActivity` explains how when Recents is tapped without it.
+
+### Interface size
+
+- `ui/UiScale` replaces the density the firmware reports: the panel's real short side (from
+  `Display.getRealMetrics`, bars included) becomes 600, 520 or 460 dp depending on
+  `Prefs.uiSize`. `LauncherActivity.attachBaseContext` wraps every screen with that
+  configuration, and `AppRepository` renders icons with it so they stay sharp. A screen that
+  was in the background when the size changed recreates itself in `onResume`.
+- `settings/DeviceInfo` builds the *Device info* text: model, Android version, real and
+  interface density, the projection app, media sessions and the projection app's
+  notifications.
 
 ### Theme
 

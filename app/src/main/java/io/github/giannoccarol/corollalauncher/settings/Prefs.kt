@@ -6,6 +6,7 @@ import io.github.giannoccarol.corollalauncher.apps.AppIcons
 import io.github.giannoccarol.corollalauncher.phone.Favorite
 import io.github.giannoccarol.corollalauncher.phone.Favorites
 import io.github.giannoccarol.corollalauncher.theme.ThemeMode
+import io.github.giannoccarol.corollalauncher.ui.UiScale
 
 /** Thin typed wrapper over SharedPreferences. Cheap to construct; no caching of its own. */
 class Prefs(context: Context) {
@@ -30,13 +31,6 @@ class Prefs(context: Context) {
         get() = settings.getString(KEY_DRIVER_NAME, null)?.takeIf { it.isNotBlank() }
         set(value) = settings.edit { putString(KEY_DRIVER_NAME, value?.trim()) }
 
-    /** Destinations typed in "Where to?", newest first. */
-    var recentDestinations: List<String>
-        get() = settings.getString(KEY_RECENT_DESTINATIONS, null)
-            ?.split('\n')
-            ?.filter { it.isNotEmpty() }
-            .orEmpty()
-        set(value) = settings.edit { putString(KEY_RECENT_DESTINATIONS, value.joinToString("\n")) }
 
     /** The assistant's AI provider; its API key lives in the assistant's KeyVault. */
     var aiProviderId: String?
@@ -77,6 +71,11 @@ class Prefs(context: Context) {
         get() = settings.getString(KEY_ICON_STYLE, null) ?: AppIcons.STYLE_THEMED
         set(value) = settings.edit { putString(KEY_ICON_STYLE, value) }
 
+    /** How large the whole interface is drawn; see [UiScale]. */
+    var uiSize: UiScale.UiSize
+        get() = UiScale.UiSize.fromId(settings.getString(KEY_UI_SIZE, null))
+        set(value) = settings.edit { putString(KEY_UI_SIZE, value.id) }
+
     /** The contact in place [slot] (0 until [Favorites.SLOTS]) of the Favourites card. */
     fun favorite(slot: Int): Favorite? = Favorites.decode(settings.getString(KEY_FAVORITE_PREFIX + slot, null))
 
@@ -91,11 +90,11 @@ class Prefs(context: Context) {
         const val KEY_ANIMATIONS = "animations"
         const val KEY_PROJECTION_IN_DOCK = "projection_in_dock"
         const val KEY_DRIVER_NAME = "driver_name"
-        const val KEY_RECENT_DESTINATIONS = "recent_destinations"
         const val KEY_AI_PROVIDER = "ai_provider"
         const val KEY_AI_MODEL_PREFIX = "ai_model_"
         const val KEY_SPEAK_REPLIES = "speak_replies"
         const val KEY_ICON_STYLE = "icon_style"
         const val KEY_FAVORITE_PREFIX = "favorite_"
+        const val KEY_UI_SIZE = "ui_size"
     }
 }

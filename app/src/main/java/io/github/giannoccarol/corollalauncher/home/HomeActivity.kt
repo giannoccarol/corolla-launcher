@@ -64,15 +64,12 @@ import io.github.giannoccarol.corollalauncher.assistant.MediaCommand
 import io.github.giannoccarol.corollalauncher.assistant.Speaker
 import io.github.giannoccarol.corollalauncher.databinding.ActivityHomeBinding
 import io.github.giannoccarol.corollalauncher.databinding.ItemFavoriteBinding
-import io.github.giannoccarol.corollalauncher.databinding.ItemNavPlaceBinding
 import io.github.giannoccarol.corollalauncher.databinding.ItemQuickTileBinding
-import io.github.giannoccarol.corollalauncher.databinding.ItemRecentDestinationBinding
 import io.github.giannoccarol.corollalauncher.databinding.ItemTripStatBinding
 import io.github.giannoccarol.corollalauncher.keys.NavKeyService
 import io.github.giannoccarol.corollalauncher.media.MediaKeys
 import io.github.giannoccarol.corollalauncher.media.MediaSessionMonitor
 import io.github.giannoccarol.corollalauncher.nav.NavigationShortcuts
-import io.github.giannoccarol.corollalauncher.nav.RecentDestinations
 import io.github.giannoccarol.corollalauncher.panels.AudioPanel
 import io.github.giannoccarol.corollalauncher.panels.BluetoothPanel
 import io.github.giannoccarol.corollalauncher.panels.DisplayPanel
@@ -213,7 +210,7 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
         })
 
         setUpTopBar()
-        setUpNavigation()
+        setUpSpeedPanel()
         setUpPlayer()
         setUpCar()
         setUpQuickSettings()
@@ -222,7 +219,7 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
 
         AppRepository.addListener(appsListener)
         TripTracker.addListener(tripListener)
-        Motion.enter(binding.navCard, binding.centerColumn, binding.rightColumn, binding.dock)
+        Motion.enter(binding.centerColumn, binding.rightColumn, binding.quickSettings, binding.dock)
         if (savedInstanceState == null) handleVoiceIntent(intent)
     }
 
@@ -267,7 +264,6 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
         TripService.start(this)
         handler.post(progressTicker)
         renderDriver()
-        renderPlaces()
         renderVolume()
         renderApps()
         renderQuickSettings()
@@ -304,15 +300,12 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
 
     private fun setUpTopBar() {
         binding.driver.setOnClickListener { editDriverName() }
-        binding.tabHome.setOnClickListener { Motion.pop(binding.cards) }
         binding.tabNavigation.setOnClickListener {
             if (!NavigationShortcuts.openMap(this)) toast(R.string.nav_no_app)
         }
-        binding.tabApps.setOnClickListener { openDrawer() }
         binding.assistantButton.setOnClickListener { openAssistant() }
         Motion.pressable(
-            binding.driver, binding.tabHome, binding.tabNavigation, binding.tabApps,
-            binding.assistantButton,
+            binding.driver, binding.tabNavigation, binding.assistantButton,
         )
     }
 
@@ -344,92 +337,13 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
 
     // endregion
 
-    // region Navigation card
+    // region Speed panel
 
-    private fun setUpNavigation() {
-        binding.whereTo.setOnClickListener {
-            TextPrompt.show(
-                this, R.string.nav_destination_title, R.string.nav_destination_hint,
-                initial = null, positiveRes = R.string.nav_go,
-            ) { query ->
-                if (query.isEmpty()) return@show
-                prefs.recentDestinations = RecentDestinations.push(prefs.recentDestinations, query)
-                renderPlaces()
-                if (!NavigationShortcuts.search(this, query)) toast(R.string.nav_no_app)
-            }
-        }
-
-        setUpPlace(binding.navHome, R.drawable.ic_home, R.string.home_home,
-            { prefs.homeAddress }, ::editHomeAddress)
-        setUpPlace(binding.navWork, R.drawable.ic_work, R.string.home_work,
-            { prefs.workAddress }, ::editWorkAddress)
-
+    private fun setUpSpeedPanel() {
         binding.speedPanel.setOnClickListener {
             if (!TripTracker.hasPermission(this)) askForLocation()
         }
-        Motion.pressable(binding.whereTo, binding.navHome.root, binding.navWork.root, binding.speedPanel)
-    }
-
-    private fun setUpPlace(
-        place: ItemNavPlaceBinding,
-        @DrawableRes icon: Int,
-        @StringRes title: Int,
-        address: () -> String?,
-        edit: () -> Unit,
-    ) {
-        place.icon.setImageResource(icon)
-        place.title.setText(title)
-        place.root.setOnClickListener { goTo(address(), edit) }
-        place.root.setOnLongClickListener { edit(); true }
-    }
-
-    private fun renderPlaces() {
-        val tapToSet = getString(R.string.nav_tap_to_set)
-        binding.navHome.subtitle.text = prefs.homeAddress ?: tapToSet
-        binding.navWork.subtitle.text = prefs.workAddress ?: tapToSet
-
-        binding.recentList.removeAllViews()
-        val recents = prefs.recentDestinations.take(RECENTS_SHOWN)
-        for (destination in recents) {
-            val row = ItemRecentDestinationBinding.inflate(layoutInflater, binding.recentList, false)
-            row.label.text = destination
-            row.root.setOnClickListener {
-                prefs.recentDestinations = RecentDestinations.push(prefs.recentDestinations, destination)
-                if (!NavigationShortcuts.navigateTo(this, destination)) toast(R.string.nav_no_app)
-                renderPlaces()
-            }
-            Motion.pressable(row.root)
-            binding.recentList.addView(row.root)
-        }
-        binding.recentEmpty.visibility = if (recents.isEmpty()) View.VISIBLE else View.GONE
-    }
-
-    /** Navigates to a saved address, or asks for it the first time. */
-    private fun goTo(address: String?, askForAddress: () -> Unit) {
-        when {
-            address.isNullOrBlank() -> askForAddress()
-            !NavigationShortcuts.navigateTo(this, address) -> toast(R.string.nav_no_app)
-        }
-    }
-
-    private fun editHomeAddress() {
-        TextPrompt.show(
-            this, R.string.settings_home_address, R.string.nav_address_hint,
-            prefs.homeAddress, R.string.save,
-        ) {
-            prefs.homeAddress = it.ifEmpty { null }
-            renderPlaces()
-        }
-    }
-
-    private fun editWorkAddress() {
-        TextPrompt.show(
-            this, R.string.settings_work_address, R.string.nav_address_hint,
-            prefs.workAddress, R.string.save,
-        ) {
-            prefs.workAddress = it.ifEmpty { null }
-            renderPlaces()
-        }
+        Motion.pressable(binding.speedPanel)
     }
 
     // endregion
@@ -533,8 +447,6 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
 
     override fun perform(action: AssistantAction): String? = when (action) {
         is AssistantAction.Navigate -> {
-            prefs.recentDestinations = RecentDestinations.push(prefs.recentDestinations, action.destination)
-            renderPlaces()
             if (NavigationShortcuts.navigateTo(this, action.destination)) null else getString(R.string.nav_no_app)
         }
         AssistantAction.NavigateHome -> navigateSaved(prefs.homeAddress, R.string.assistant_no_home)
@@ -728,6 +640,8 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
                 if (hasAccess) R.string.media_nothing_playing_hint else R.string.media_access_hint,
             )
             binding.emptyAction.visibility = if (hasAccess) View.GONE else View.VISIBLE
+            // The button says enough when access is missing; the hint only explains silence.
+            binding.emptyHint.visibility = if (hasAccess) View.VISIBLE else View.GONE
             showPlaying(false, animate = false)
             tintFromCover(null)
             shownTrack = null
@@ -1179,7 +1093,6 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
         const val TINT_ALPHA_DARK = 0.34f
         const val TINT_ALPHA_LIGHT = 0.2f
         const val TICK_MS = 1000L
-        const val RECENTS_SHOWN = 2
 
         /** Not in the public SDK, but what the system sends for the VOICE_ASSIST key. */
         const val ACTION_VOICE_ASSIST = "android.intent.action.VOICE_ASSIST"

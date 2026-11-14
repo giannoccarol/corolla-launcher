@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import io.github.giannoccarol.corollalauncher.settings.Prefs
+import io.github.giannoccarol.corollalauncher.ui.UiScale
 import java.util.Locale
 import java.util.concurrent.CopyOnWriteArraySet
 import java.util.concurrent.Executors
@@ -85,7 +86,8 @@ object AppRepository {
 
     private fun load(context: Context): List<AppInfo> {
         val packageManager = context.packageManager
-        val icons = AppIcons.Loader(context, Prefs(context).iconStyle)
+        // Icons are rendered at the interface size, so they stay sharp when it is enlarged.
+        val icons = AppIcons.Loader(UiScale.wrap(context), Prefs(context).iconStyle)
         val launcherIntent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
         return packageManager.queryIntentActivities(launcherIntent, 0)
             .asSequence()

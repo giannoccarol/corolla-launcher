@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Home screen -->
-    <string name="home_where_to">¿Adónde vamos?</string>
-    <string name="home_home">Casa</string>
-    <string name="home_work">Trabajo</string>
     <string name="home_all_apps">Todas las apps</string>
 
     <!-- Media player -->
@@ -33,10 +30,7 @@
     <string name="app_launch_failed">No se ha podido abrir %1$s</string>
 
     <!-- Navigation dialogs -->
-    <string name="nav_destination_title">¿Adónde vamos?</string>
-    <string name="nav_destination_hint">Dirección o lugar</string>
     <string name="nav_address_hint">Calle, ciudad</string>
-    <string name="nav_go">Ir</string>
     <string name="nav_no_app">No hay ninguna app de navegación instalada</string>
 
     <!-- System keys in the dock -->
@@ -51,13 +45,8 @@
     <string name="nav_keys_service_description">Hace que funcionen los botones Atrás, Inicio y Apps recientes del dock. No lee lo que aparece en pantalla.</string>
 
     <!-- Dashboard -->
-    <string name="tab_home">Inicio</string>
     <string name="tab_navigation">Navegación</string>
-    <string name="tab_apps">Apps</string>
     <string name="driver_add_name">Añade tu nombre</string>
-    <string name="nav_tap_to_set">Toca para definir</string>
-    <string name="nav_recent">Recientes</string>
-    <string name="nav_recent_empty">Los lugares que busques aparecerán aquí.</string>
     <string name="speed_heading">Dirección</string>
     <string name="speed_tap_to_enable">Toca para activar la ubicación</string>
     <string name="compass_n">N</string>
@@ -227,4 +216,23 @@
     <string name="favorites_unreadable">Ese contacto no tiene un número legible</string>
     <string name="favorites_no_phone">Ninguna app puede llamar a %1$s</string>
     <string name="next">Siguiente</string>
+
+    <!-- Interface size and device info -->
+    <string name="settings_ui_size">Tamaño de la interfaz</string>
+    <string name="ui_size_normal">Normal</string>
+    <string name="ui_size_large">Grande</string>
+    <string name="ui_size_extra_large">Muy grande</string>
+    <string name="settings_device_info">Información del dispositivo</string>
+    <string name="settings_device_info_summary">Pantalla, Android y multimedia: para fotografiar cuando algo no funciona</string>
+    <string name="diag_model">Modelo: %1$s</string>
+    <string name="diag_android">Android %1$s (API %2$d)</string>
+    <string name="diag_screen">Pantalla: %1$d × %2$d px, %3$d dpi</string>
+    <string name="diag_interface">Interfaz: %1$d dpi, %2$d × %3$d dp</string>
+    <string name="diag_projection">App de Android Auto: %1$s</string>
+    <string name="diag_not_found">no encontrada</string>
+    <string name="diag_access_on">Acceso a notificaciones: activado</string>
+    <string name="diag_access_off">Acceso a notificaciones: desactivado (actívalo para ver los detalles multimedia)</string>
+    <string name="diag_sessions">Sesiones multimedia:</string>
+    <string name="diag_notifications">Notificaciones de %1$s:</string>
+    <string name="diag_none">ninguna</string>
 </resources>

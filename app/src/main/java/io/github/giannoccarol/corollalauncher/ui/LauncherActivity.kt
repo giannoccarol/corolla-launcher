@@ -1,8 +1,10 @@
 package io.github.giannoccarol.corollalauncher.ui
 
+import android.content.Context
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import io.github.giannoccarol.corollalauncher.R
+import io.github.giannoccarol.corollalauncher.settings.Prefs
 import io.github.giannoccarol.corollalauncher.status.StatusBarController
 
 /**
@@ -12,6 +14,11 @@ import io.github.giannoccarol.corollalauncher.status.StatusBarController
 abstract class LauncherActivity : AppCompatActivity() {
 
     private var statusBar: StatusBarController? = null
+
+    /** Every screen is drawn at the interface size chosen in Settings. */
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(UiScale.wrap(newBase))
+    }
 
     /** Call once from `onCreate`, after `setContentView`. */
     protected fun setUpWindow(root: View, includeIme: Boolean = false) {
@@ -24,6 +31,12 @@ abstract class LauncherActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         statusBar?.start()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // The interface size changed while this screen was in the background.
+        if (resources.configuration.densityDpi != UiScale.densityDpi(this, Prefs(this).uiSize)) recreate()
     }
 
     override fun onStop() {

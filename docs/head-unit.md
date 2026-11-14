@@ -16,7 +16,7 @@ whenever the real unit tells us something.
 
 | Assumption | Why | Where it matters |
 | --- | --- | --- |
-| Screen is 1024x600 at 160 dpi | Typical for 7" units | Layout was designed and tested at this size |
+| Screen is about 1024x600 px | Typical for 7" units | Only the emulator; `UiScale` adapts the density to any panel |
 | Real Android version is 8-10 | Cheap units often report a newer version than they run | `minSdk` 24 |
 | Real RAM is 1-2 GB | Same reason | No heavy libraries, icons cached once |
 | The unit lets a third-party launcher be the default | Usually true | Whole project |
@@ -69,7 +69,7 @@ Some firmwares pin their own launcher. Things to try, least invasive first:
 
 ## Live map in the home screen (not built yet)
 
-Two ways to put a real map in the navigation card, both used in the owner's Cruscotto project
+Two ways to put a real map on the home screen (there is no map card at the moment), both used in the owner's Cruscotto project
 (`~/Documenti/Projects/Cruscotto`, `car/GoogleCarMap.kt` and `car/NavPanes.kt`):
 
 | | Google Maps SDK | MapLibre + OpenFreeMap |
@@ -88,4 +88,8 @@ navigation notification with the notification listener the app already has, as C
 
 ## Findings log
 
-Nothing yet: the unit has not been connected.
+- **2026-11 first drive (owner's report, no adb)**: everything looked too small and crowded,
+  the bars squashed. The map card was dropped and the interface size added, Large by default.
+  Music played through Android Auto did not appear in the media card. *Settings → Device info*
+  now shows the facts to collect next without a cable: screen, Android version, projection
+  app, media sessions and its notifications while it plays.

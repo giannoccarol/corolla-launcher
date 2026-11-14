@@ -5,9 +5,6 @@
     <string name="app_name" translatable="false">Corolla Launcher</string>
 
     <!-- Home screen -->
-    <string name="home_where_to">Where to?</string>
-    <string name="home_home">Home</string>
-    <string name="home_work">Work</string>
     <string name="home_all_apps">All apps</string>
 
     <!-- Media player -->
@@ -37,10 +34,7 @@
     <string name="app_launch_failed">Couldn\'t open %1$s</string>
 
     <!-- Navigation dialogs -->
-    <string name="nav_destination_title">Where to?</string>
-    <string name="nav_destination_hint">Address or place</string>
     <string name="nav_address_hint">Street, city</string>
-    <string name="nav_go">Go</string>
     <string name="nav_no_app">No navigation app installed</string>
 
     <!-- System keys in the dock -->
@@ -55,13 +49,8 @@
     <string name="nav_keys_service_description">Makes the Back, Home and Recent apps buttons in the dock work. It does not read what is on screen.</string>
 
     <!-- Dashboard -->
-    <string name="tab_home">Home</string>
     <string name="tab_navigation">Navigation</string>
-    <string name="tab_apps">Apps</string>
     <string name="driver_add_name">Add your name</string>
-    <string name="nav_tap_to_set">Tap to set</string>
-    <string name="nav_recent">Recent</string>
-    <string name="nav_recent_empty">Places you search for appear here.</string>
     <string name="speed_heading">Heading</string>
     <string name="speed_tap_to_enable">Tap to turn on location</string>
     <string name="compass_n">N</string>
@@ -242,4 +231,23 @@
     <string name="favorites_unreadable">That contact has no readable number</string>
     <string name="favorites_no_phone">No app can call %1$s</string>
     <string name="next">Next</string>
+
+    <!-- Interface size and device info -->
+    <string name="settings_ui_size">Interface size</string>
+    <string name="ui_size_normal">Normal</string>
+    <string name="ui_size_large">Large</string>
+    <string name="ui_size_extra_large">Extra large</string>
+    <string name="settings_device_info">Device info</string>
+    <string name="settings_device_info_summary">Screen, Android and media details, to photograph when something does not work</string>
+    <string name="diag_model">Model: %1$s</string>
+    <string name="diag_android">Android %1$s (API %2$d)</string>
+    <string name="diag_screen">Screen: %1$d × %2$d px, %3$d dpi</string>
+    <string name="diag_interface">Interface: %1$d dpi, %2$d × %3$d dp</string>
+    <string name="diag_projection">Android Auto app: %1$s</string>
+    <string name="diag_not_found">not found</string>
+    <string name="diag_access_on">Notification access: on</string>
+    <string name="diag_access_off">Notification access: off (turn it on to see the media details)</string>
+    <string name="diag_sessions">Media sessions:</string>
+    <string name="diag_notifications">Notifications from %1$s:</string>
+    <string name="diag_none">none</string>
 </resources>
