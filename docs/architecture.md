@@ -203,8 +203,23 @@ Lists (bottom bar, source chips) are rebuilt only when their content changes.
 
 ### Theme
 
-- `Theme.Launcher` extends `Theme.AppCompat.DayNight.NoActionBar`. Colors are defined twice
-  with identical names: `values/colors.xml` (light) and `values-night/colors.xml` (dark).
+- `Base.Theme.Launcher` extends `Theme.AppCompat.DayNight.NoActionBar`; `Theme.Launcher`
+  (Classic) and `Theme.Launcher.Ambra` add their palettes, defined again in
+  `values-night/themes.xml` for dark. Every colour is a `c_*` theme attribute and
+  `res/color/<name>.xml` points `@color/<name>` at it, so layouts, drawables and Kotlin keep
+  using the same names. Gradient colours and plain colour backgrounds use `?attr/c_*`
+  directly: a themed colour state list does not resolve there before Android 10.
+- `theme/LauncherTheme` applies the chosen `ThemeStyle` and a font overlay
+  (`ThemeOverlay.Launcher.Font.*`, setting `fontRegular`, `fontMedium`, `fontLight`) in
+  `LauncherActivity.onCreate`, before the views exist; a screen whose theme or font changed
+  while it was in the background recreates itself in `onResume`. Canvas text reads the theme's
+  typefaces through `ui/ThemeFonts`.
+- The home screen has one layout per theme. `activity_home_ambra.xml` has every id of
+  `activity_home.xml` with the same view types, so `ActivityHomeBinding.bind()` serves both;
+  the Amber-only views (Android Auto button, Controls button, quick settings scrim) are found
+  by id and skipped when absent. `SpeedGauge` draws an LCD or a dial (`app:gaugeStyle`).
+- Only the launcher icon background keeps a fixed colour (`values/colors.xml`): other
+  launchers draw it without our theme.
 - `ThemeManager.apply()` maps the saved `ThemeMode` to an AppCompat night mode. It is called at
   process start, on every home screen start, and on each minute tick so the time-based mode
   switches on its own. AppCompat recreates the activities when the mode actually changes.

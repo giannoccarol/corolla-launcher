@@ -235,4 +235,18 @@
     <string name="diag_sessions">Sessions multimédias :</string>
     <string name="diag_notifications">Notifications de %1$s :</string>
     <string name="diag_none">aucune</string>
+
+    <!-- Themes and the Amber home -->
+    <string name="settings_section_themes">Thèmes</string>
+    <string name="settings_theme_mode">Clair ou sombre</string>
+    <string name="settings_font">Police</string>
+    <string name="font_auto">Automatique (celle du thème)</string>
+    <string name="font_system">Système</string>
+    <string name="theme_style_classic">Classique</string>
+    <string name="theme_style_ambra">Ambre</string>
+    <string name="home_controls">Commandes</string>
+    <string name="home_now_playing">En lecture</string>
+    <string name="home_open_android_auto">Ouvrir Android Auto</string>
+    <string name="home_no_android_auto">Aucune appli Android Auto trouvée sur cet appareil</string>
+    <string name="settings_fonts_credits">Polices</string>
 </resources>

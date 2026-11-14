@@ -5,7 +5,9 @@ import androidx.core.content.edit
 import io.github.giannoccarol.corollalauncher.apps.AppIcons
 import io.github.giannoccarol.corollalauncher.phone.Favorite
 import io.github.giannoccarol.corollalauncher.phone.Favorites
+import io.github.giannoccarol.corollalauncher.theme.FontChoice
 import io.github.giannoccarol.corollalauncher.theme.ThemeMode
+import io.github.giannoccarol.corollalauncher.theme.ThemeStyle
 import io.github.giannoccarol.corollalauncher.ui.UiScale
 
 /** Thin typed wrapper over SharedPreferences. Cheap to construct; no caching of its own. */
@@ -71,6 +73,15 @@ class Prefs(context: Context) {
         get() = settings.getString(KEY_ICON_STYLE, null) ?: AppIcons.STYLE_THEMED
         set(value) = settings.edit { putString(KEY_ICON_STYLE, value) }
 
+    /** The look of the app; light or dark is [themeMode]. */
+    var themeStyle: ThemeStyle
+        get() = ThemeStyle.fromId(settings.getString(KEY_THEME_STYLE, null))
+        set(value) = settings.edit { putString(KEY_THEME_STYLE, value.id) }
+
+    var fontChoice: FontChoice
+        get() = FontChoice.fromId(settings.getString(KEY_FONT, null))
+        set(value) = settings.edit { putString(KEY_FONT, value.id) }
+
     /** How large the whole interface is drawn; see [UiScale]. */
     var uiSize: UiScale.UiSize
         get() = UiScale.UiSize.fromId(settings.getString(KEY_UI_SIZE, null))
@@ -96,5 +107,7 @@ class Prefs(context: Context) {
         const val KEY_ICON_STYLE = "icon_style"
         const val KEY_FAVORITE_PREFIX = "favorite_"
         const val KEY_UI_SIZE = "ui_size"
+        const val KEY_THEME_STYLE = "theme_style"
+        const val KEY_FONT = "font"
     }
 }

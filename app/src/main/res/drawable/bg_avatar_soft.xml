@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The driver's initial in the Amber bottom bar: a disc in the accent's soft tone. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <solid android:color="?attr/c_tile_on_bg" />
+</shape>

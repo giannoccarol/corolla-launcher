@@ -1,36 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Light palette. The dark palette lives in values-night/colors.xml with the same names.
-     Rule: the theme is uniform, so every surface is defined in both files. -->
+<!-- Interface colours are theme attributes (values/attrs.xml, res/color/, values*/themes.xml).
+     Only colours drawn outside the app's theme live here. -->
 <resources>
-    <color name="bg">#FFFFFF</color>
-    <color name="surface">#F1F3F5</color>
-    <color name="surface_2">#E3E6EA</color>
-    <color name="text_primary">#15171A</color>
-    <color name="text_secondary">#59606B</color>
-    <color name="line">#1A0F141E</color>
-    <color name="track">#D5D9DF</color>
-    <color name="ripple">#1F000000</color>
-    <color name="chip_on_bg">#15171A</color>
-    <color name="chip_on_text">#FFFFFF</color>
-    <color name="chip_off_text">#59606B</color>
-    <color name="tile_on_bg">#D4DFF5</color>
-    <color name="tile_on_text">#1A4BBF</color>
-    <!-- Themed app icons: a tonal tile and a glyph of the same hue, like Android's themed icons. -->
-    <color name="icon_tile">#DCE5F7</color>
-    <color name="icon_glyph">#1A4BBF</color>
-    <!-- Themed icons of apps without a colour of their own (grey icons). -->
-    <color name="icon_tile_neutral">#E3E6EA</color>
-    <color name="icon_glyph_neutral">#3A4049</color>
-    <!-- Speed gauge: segments past the motorway limit, and unlit LCD segments. -->
-    <color name="gauge_warn">#D9820B</color>
-    <color name="gauge_ghost">#0E0F141E</color>
-    <color name="card_highlight">#99FFFFFF</color>
-    <color name="card_border">#0F0F141E</color>
-    <color name="sheet_surface">#F2F6F7F9</color>
-    <color name="sheet_border">#140F141E</color>
-    <color name="scrim">#59000000</color>
-
-    <!-- Same in both themes. -->
-    <color name="accent">#3B76F6</color>
-    <color name="on_accent">#FFFFFF</color>
+    <!-- The launcher icon is drawn by other launchers, which know nothing of our themes. -->
+    <color name="launcher_icon_bg">#3B76F6</color>
 </resources>

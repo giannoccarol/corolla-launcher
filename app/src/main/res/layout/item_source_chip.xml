@@ -6,7 +6,7 @@
     android:background="@drawable/bg_chip"
     android:clickable="true"
     android:focusable="true"
-    android:fontFamily="sans-serif-medium"
+    android:fontFamily="?attr/fontMedium"
     android:gravity="center"
     android:maxLines="1"
     android:paddingStart="18dp"

@@ -235,4 +235,18 @@
     <string name="diag_sessions">Mediensitzungen:</string>
     <string name="diag_notifications">Benachrichtigungen von %1$s:</string>
     <string name="diag_none">keine</string>
+
+    <!-- Themes and the Amber home -->
+    <string name="settings_section_themes">Designs</string>
+    <string name="settings_theme_mode">Hell oder dunkel</string>
+    <string name="settings_font">Schriftart</string>
+    <string name="font_auto">Automatisch (passend zum Design)</string>
+    <string name="font_system">System</string>
+    <string name="theme_style_classic">Klassisch</string>
+    <string name="theme_style_ambra">Bernstein</string>
+    <string name="home_controls">Steuerung</string>
+    <string name="home_now_playing">Wird gespielt</string>
+    <string name="home_open_android_auto">Android Auto öffnen</string>
+    <string name="home_no_android_auto">Keine Android-Auto-App auf diesem Gerät gefunden</string>
+    <string name="settings_fonts_credits">Schriften</string>
 </resources>

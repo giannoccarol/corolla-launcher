@@ -1,23 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- DayNight: AppCompat swaps values/ and values-night/ colors when the mode changes. -->
-    <style name="Theme.Launcher" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <!-- Common to every theme. Colours come from the c_* attributes each theme below sets;
+         values-night/themes.xml repeats the themes with their dark palettes. -->
+    <style name="Base.Theme.Launcher" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="colorPrimary">@color/accent</item>
         <item name="colorAccent">@color/accent</item>
-        <item name="android:windowBackground">@color/bg</item>
-        <item name="android:colorBackground">@color/bg</item>
+        <item name="android:windowBackground">?attr/c_bg</item>
+        <item name="android:colorBackground">?attr/c_bg</item>
         <item name="android:textColorPrimary">@color/text_primary</item>
         <item name="android:textColorSecondary">@color/text_secondary</item>
         <item name="android:textColorHint">@color/text_secondary</item>
         <item name="alertDialogTheme">@style/Theme.Launcher.Dialog</item>
+        <!-- The default typeface of every text, dialogs included; fontMedium for emphasis. -->
+        <item name="android:fontFamily">?attr/fontRegular</item>
+        <item name="fontFamily">?attr/fontRegular</item>
+        <item name="iconCornerFraction">0.24</item>
+        <item name="cardRadius">@dimen/card_radius</item>
+        <item name="fontRegular">sans-serif</item>
+        <item name="fontMedium">sans-serif-medium</item>
+        <item name="fontLight">sans-serif-light</item>
         <!-- No click sounds. A theme-level value is the default for every view inflated with
              it, so nothing in the app beeps when touched. -->
         <item name="android:soundEffectsEnabled">false</item>
     </style>
 
+    <!-- Classic: neutral greys and blue, the original look. -->
+    <style name="Theme.Launcher" parent="Base.Theme.Launcher">
+        <item name="c_bg">#FFFFFF</item>
+        <item name="c_surface">#F1F3F5</item>
+        <item name="c_surface_2">#E3E6EA</item>
+        <item name="c_text_primary">#15171A</item>
+        <item name="c_text_secondary">#59606B</item>
+        <item name="c_line">#1A0F141E</item>
+        <item name="c_track">#D5D9DF</item>
+        <item name="c_ripple">#1F000000</item>
+        <item name="c_chip_on_bg">#15171A</item>
+        <item name="c_chip_on_text">#FFFFFF</item>
+        <item name="c_chip_off_text">#59606B</item>
+        <item name="c_tile_on_bg">#D4DFF5</item>
+        <item name="c_tile_on_text">#1A4BBF</item>
+        <item name="c_icon_tile">#DCE5F7</item>
+        <item name="c_icon_glyph">#1A4BBF</item>
+        <item name="c_icon_tile_neutral">#E3E6EA</item>
+        <item name="c_icon_glyph_neutral">#3A4049</item>
+        <item name="c_gauge_warn">#D9820B</item>
+        <item name="c_gauge_ghost">#0E0F141E</item>
+        <item name="c_card_highlight">#99FFFFFF</item>
+        <item name="c_card_border">#0F0F141E</item>
+        <item name="c_sheet_surface">#F2F6F7F9</item>
+        <item name="c_sheet_border">#140F141E</item>
+        <item name="c_scrim">#59000000</item>
+        <item name="c_accent">#3B76F6</item>
+        <item name="c_on_accent">#FFFFFF</item>
+        <item name="c_glow">#00000000</item>
+        <item name="c_glow_soft">#00000000</item>
+        <item name="c_glow_strong">#00000000</item>
+        <item name="c_glass">#E3E6EA</item>
+        <item name="c_glass_top">#F1F3F5</item>
+        <item name="c_glass_bottom">#F1F3F5</item>
+        <item name="c_ring">#59606B</item>
+    </style>
+
+    <!-- Amber: warm sand and orange in light, near-black and amber in dark, glass cards. -->
+    <style name="Theme.Launcher.Ambra" parent="Theme.Launcher">
+        <item name="iconCornerFraction">0.5</item>
+        <item name="cardRadius">30dp</item>
+        <item name="c_bg">#EFEBE6</item>
+        <item name="c_surface">#FBFAF8</item>
+        <item name="c_surface_2">#E7E2DC</item>
+        <item name="c_text_primary">#1C1A18</item>
+        <item name="c_text_secondary">#67615A</item>
+        <item name="c_line">#1A3C2814</item>
+        <item name="c_track">#DCD6CE</item>
+        <item name="c_ripple">#1F3C2814</item>
+        <item name="c_chip_on_bg">#1C1A18</item>
+        <item name="c_chip_on_text">#FFFFFF</item>
+        <item name="c_chip_off_text">#67615A</item>
+        <item name="c_tile_on_bg">#FBE1D3</item>
+        <item name="c_tile_on_text">#A63F14</item>
+        <item name="c_icon_tile">#F8E4D8</item>
+        <item name="c_icon_glyph">#A63F14</item>
+        <item name="c_icon_tile_neutral">#E7E2DC</item>
+        <item name="c_icon_glyph_neutral">#3D3833</item>
+        <item name="c_gauge_warn">#C2410C</item>
+        <item name="c_gauge_ghost">#1A3C2814</item>
+        <item name="c_card_highlight">#CCFFFFFF</item>
+        <item name="c_card_border">#143C2814</item>
+        <item name="c_sheet_surface">#F7FBFAF8</item>
+        <item name="c_sheet_border">#1A3C2814</item>
+        <item name="c_scrim">#59000000</item>
+        <item name="c_accent">#F26B3A</item>
+        <item name="c_on_accent">#1D1405</item>
+        <item name="c_glow">#38F26B3A</item>
+        <item name="c_glow_soft">#E6FFFFFF</item>
+        <item name="c_glow_strong">#66F26B3A</item>
+        <item name="c_glass">#0D1C1814</item>
+        <item name="c_glass_top">#FFFDFCFB</item>
+        <item name="c_glass_bottom">#FFF7F5F2</item>
+        <item name="c_ring">#731C1814</item>
+    </style>
+
+    <!-- Typeface overlays, applied over either theme from Settings → Themes → Font. -->
+    <style name="ThemeOverlay.Launcher.Font.System" parent="">
+        <item name="fontRegular">sans-serif</item>
+        <item name="fontMedium">sans-serif-medium</item>
+        <item name="fontLight">sans-serif-light</item>
+    </style>
+    <style name="ThemeOverlay.Launcher.Font.Manrope" parent="">
+        <item name="fontRegular">@font/manrope_regular</item>
+        <item name="fontMedium">@font/manrope_semibold</item>
+        <item name="fontLight">@font/manrope_light</item>
+    </style>
+    <style name="ThemeOverlay.Launcher.Font.Nunito" parent="">
+        <item name="fontRegular">@font/nunito_regular</item>
+        <item name="fontMedium">@font/nunito_semibold</item>
+        <item name="fontLight">@font/nunito_light</item>
+    </style>
+
     <style name="Theme.Launcher.Dialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">
         <item name="colorAccent">@color/accent</item>
         <item name="android:windowBackground">@drawable/bg_dialog</item>
+        <item name="android:fontFamily">?attr/fontRegular</item>
         <item name="android:soundEffectsEnabled">false</item>
         <item name="android:textColorPrimary">@color/text_primary</item>
         <item name="android:textColorSecondary">@color/text_secondary</item>

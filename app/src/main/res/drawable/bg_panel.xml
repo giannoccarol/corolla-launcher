@@ -13,7 +13,7 @@
             <gradient
                 android:angle="270"
                 android:endColor="#00000000"
-                android:startColor="@color/card_highlight" />
+                android:startColor="?attr/c_card_highlight" />
             <corners android:radius="18dp" />
         </shape>
     </item>

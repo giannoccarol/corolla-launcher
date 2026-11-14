@@ -250,4 +250,19 @@
     <string name="diag_sessions">Media sessions:</string>
     <string name="diag_notifications">Notifications from %1$s:</string>
     <string name="diag_none">none</string>
+
+    <!-- Themes and the Amber home -->
+    <string name="settings_section_themes">Themes</string>
+    <string name="settings_theme_mode">Light or dark</string>
+    <string name="settings_font">Font</string>
+    <string name="font_auto">Automatic (the theme\'s own)</string>
+    <string name="font_system">System</string>
+    <string name="theme_style_classic">Classic</string>
+    <string name="theme_style_ambra">Amber</string>
+    <string name="home_controls">Controls</string>
+    <string name="home_now_playing">Now playing</string>
+    <string name="home_open_android_auto">Open Android Auto</string>
+    <string name="home_no_android_auto">No Android Auto app found on this unit</string>
+    <string name="settings_fonts_credits">Fonts</string>
+    <string name="settings_fonts_credits_summary" translatable="false">Manrope · Nunito, SIL Open Font License 1.1 (licenses in the app\'s assets)</string>
 </resources>

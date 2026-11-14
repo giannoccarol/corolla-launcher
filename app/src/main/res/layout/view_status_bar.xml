@@ -17,7 +17,7 @@
         android:fontFeatureSettings="tnum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
+        android:fontFamily="?attr/fontMedium"
         android:format12Hour="h:mm"
         android:format24Hour="H:mm"
         android:textColor="@color/text_primary"

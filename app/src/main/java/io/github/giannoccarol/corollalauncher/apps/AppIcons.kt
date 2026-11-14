@@ -15,6 +15,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
+import android.util.TypedValue
 import android.widget.ImageView
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
@@ -197,7 +198,8 @@ object AppIcons {
         }
         val size = max(1, app.icon.intrinsicWidth)
         val tile = GradientDrawable().apply {
-            cornerRadius = size * IconShaper.CORNER_FRACTION
+            // Rounded squares in Classic, circles in Amber (theme attribute iconCornerFraction).
+            cornerRadius = size * cornerFraction(context)
             setColor(tileColor)
             val hairline = max(1, (context.resources.displayMetrics.density * 0.75f).roundToInt())
             setStroke(hairline, ContextCompat.getColor(context, R.color.card_border))
@@ -209,4 +211,15 @@ object AppIcons {
     }
 
     private fun color(context: Context, @ColorRes id: Int) = ContextCompat.getColor(context, id)
+
+    private fun cornerFraction(context: Context): Float {
+        val value = TypedValue()
+        return if (context.theme.resolveAttribute(R.attr.iconCornerFraction, value, true) &&
+            value.type == TypedValue.TYPE_FLOAT
+        ) {
+            value.float
+        } else {
+            IconShaper.CORNER_FRACTION
+        }
+    }
 }

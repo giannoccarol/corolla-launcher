@@ -36,8 +36,11 @@ visible change has been looked at on the emulator in **both themes**.
 1. **No hardcoded user-facing text.** Every string goes in `res/values/strings.xml` (English)
    and in **every** `values-xx/strings.xml`. Run the translation check.
 2. **The theme is uniform.** Never hardcode a color in a layout or in Kotlin. Use the named
-   colors, and define any new color in both `values/colors.xml` and `values-night/colors.xml`.
-   A screen must never mix light and dark surfaces.
+   colors (`@color/x`, which follow the theme). A new color is a `c_x` attribute in
+   `values/attrs.xml`, a `res/color/x.xml` pointing at it, and a value in all four palettes:
+   Classic and Amber in `values/themes.xml` (light) and `values-night/themes.xml` (dark). In
+   gradients and `android:background`, use `?attr/c_x` directly. A screen must never mix light
+   and dark surfaces.
 3. **No purple.** The owner does not want it anywhere in the UI.
 4. **It is used while driving.** Touch targets are at least 48dp, primary ones 56dp or more.
    Text on the home screen is at least 13sp, and anything read at a glance is much larger.
@@ -95,9 +98,11 @@ visible change has been looked at on the emulator in **both themes**.
 | New icon | vector drawable in `res/drawable/`, white fill, tinted in the layout |
 | App gets the wrong themed glyph | its package or label in `apps/IconGlyphs.kt` (+ test) |
 | New themed glyph | `scripts/import_glyphs.py` (Simple Icons or Material Icons), then `apps/GlyphResources.kt` and a rule in `IconGlyphs` |
-| New color | both `values/colors.xml` and `values-night/colors.xml` |
+| New color | `c_` attribute in `values/attrs.xml`, `res/color/<name>.xml`, the four palettes in `values*/themes.xml` |
+| New theme | a `Theme.Launcher.X` in both `values*/themes.xml`, a `ThemeStyle` entry in `theme/LauncherTheme.kt` |
+| New bundled font | `scripts/make_fonts.py`, a `ThemeOverlay.Launcher.Font.X`, a `FontChoice`, its licence in `licenses/` |
 | New status bar icon | `view_status_bar.xml` (other screens), the top bar in `activity_home.xml`, and `status/StatusBarController.kt` |
-| New home card | `activity_home.xml` plus a `setUp…`/`render…` pair in `HomeActivity` |
+| New home card | `activity_home.xml` and `activity_home_ambra.xml` (same ids and view types in both) plus a `setUp…`/`render…` pair in `HomeActivity` |
 | Favourites or calling | `phone/Favorites.kt` (pure, unit tested), `phone/Calls.kt` |
 | Trip or GPS logic | `trip/TripStats.kt` (pure, unit tested), `trip/TripTracker.kt` |
 | New assistant tool | `assistant/tools/CarTools.kt` (spec + `run` + test); an action tool also needs an `AssistantAction` and `HomeActivity.perform` |

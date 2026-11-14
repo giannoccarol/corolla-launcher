@@ -17,12 +17,16 @@ import kotlin.math.pow
 import kotlin.math.roundToInt
 
 /**
- * The speed readout, in the spirit of a late-90s Japanese roadster's digital dash: a bar graph
- * of segments that rise from left to right and light up with the speed, over italic
- * seven-segment digits whose unlit segments stay faintly visible, like an LCD.
+ * The speed readout, in one of two styles (`app:gaugeStyle`):
  *
- * Drawn on a canvas, only when the value changes; the bar glides to the new speed, the digits
- * change at once, as on a real LCD.
+ *  - `lcd` (Classic): in the spirit of a late-90s Japanese roadster's digital dash, a bar graph
+ *    of segments that rise from left to right and light up with the speed, over italic
+ *    seven-segment digits whose unlit segments stay faintly visible, like an LCD.
+ *  - `dial` (Amber): a ring of ticks open at the bottom, lit up to the speed, around a large
+ *    thin number in the theme's light typeface.
+ *
+ * Drawn on a canvas, only when the value changes; the bar or ring glides to the new speed, the
+ * number changes at once.
  */
 class SpeedGauge @JvmOverloads constructor(
     context: Context,
@@ -45,6 +49,37 @@ class SpeedGauge @JvmOverloads constructor(
         color = ContextCompat.getColor(context, R.color.text_secondary)
         textSize = sp(14f)
     }
+
+    private val dial: Boolean = context.obtainStyledAttributes(attrs, R.styleable.SpeedGauge).run {
+        val style = getInt(R.styleable.SpeedGauge_gaugeStyle, STYLE_LCD)
+        recycle()
+        style == STYLE_DIAL
+    }
+    private val tickOn = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        strokeCap = Paint.Cap.ROUND
+        strokeWidth = 2.6f * density
+    }
+    private val tickOff = Paint(tickOn).apply {
+        color = ContextCompat.getColor(context, R.color.gauge_ghost)
+        strokeWidth = 2.2f * density
+    }
+    private val bigNumber = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = ContextCompat.getColor(context, R.color.text_primary)
+        textAlign = Paint.Align.CENTER
+        typeface = ThemeFonts.typeface(context, R.attr.fontLight, "sans-serif-light")
+    }
+    private val dialUnit = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = ContextCompat.getColor(context, R.color.text_secondary)
+        textAlign = Paint.Align.CENTER
+        typeface = ThemeFonts.typeface(context, R.attr.fontRegular, "sans-serif")
+    }
+
+    /** Tick end points (x1, y1, x2, y2 per tick), computed once per size. */
+    private var tickLines = FloatArray(0)
+    private var dialCx = 0f
+    private var dialCy = 0f
+    private var dialRadius = 0f
 
     private val segment = RectF()
     private val digitPaths = Array(DIGITS) { Array(7) { Path() } }
@@ -93,13 +128,70 @@ class SpeedGauge @JvmOverloads constructor(
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         layoutWidth = w
-        buildDigits()
+        if (dial) buildDial() else buildDigits()
     }
 
     override fun onDraw(canvas: Canvas) {
-        drawBar(canvas)
-        drawDigits(canvas)
+        if (dial) {
+            drawDial(canvas)
+        } else {
+            drawBar(canvas)
+            drawDigits(canvas)
+        }
     }
+
+    // region Dial
+
+    private fun buildDial() {
+        val w = (width - paddingLeft - paddingRight).toFloat()
+        val h = (height - paddingTop - paddingBottom).toFloat()
+        // The ring is open at the bottom, so it can sit a little lower than the centre.
+        dialRadius = minOf(w / 2f, h / (1f + Gauge.DIAL_BOTTOM_EXTENT)) * 0.96f
+        dialCx = paddingLeft + w / 2f
+        dialCy = paddingTop + (h - dialRadius * (1f + Gauge.DIAL_BOTTOM_EXTENT)) / 2f + dialRadius
+        tickLines = FloatArray(4 * (Gauge.DIAL_TICKS + 1))
+        for (i in 0..Gauge.DIAL_TICKS) {
+            val angle = Math.toRadians(Gauge.dialAngle(i).toDouble())
+            val inner = dialRadius * (if (Gauge.isMajorTick(i)) 0.86f else 0.91f)
+            val cos = kotlin.math.cos(angle).toFloat()
+            val sin = kotlin.math.sin(angle).toFloat()
+            tickLines[4 * i] = dialCx + dialRadius * cos
+            tickLines[4 * i + 1] = dialCy + dialRadius * sin
+            tickLines[4 * i + 2] = dialCx + inner * cos
+            tickLines[4 * i + 3] = dialCy + inner * sin
+        }
+        bigNumber.textSize = dialRadius * 0.62f
+        dialUnit.textSize = dialRadius * 0.16f
+    }
+
+    private fun drawDial(canvas: Canvas) {
+        if (tickLines.isEmpty()) return
+        val lit = Gauge.dialLit(barSpeed, MAX_SPEED)
+        for (i in 0..Gauge.DIAL_TICKS) {
+            val paint = when {
+                i < lit.full -> onPaintFor(i)
+                else -> tickOff
+            }
+            canvas.drawLine(tickLines[4 * i], tickLines[4 * i + 1], tickLines[4 * i + 2], tickLines[4 * i + 3], paint)
+            if (i == lit.full && lit.partial in 0.01f..0.99f) {
+                val partial = onPaintFor(i)
+                val alpha = partial.alpha
+                partial.alpha = (alpha * lit.partial).roundToInt()
+                canvas.drawLine(tickLines[4 * i], tickLines[4 * i + 1], tickLines[4 * i + 2], tickLines[4 * i + 3], partial)
+                partial.alpha = alpha
+            }
+        }
+        val text = speed?.toString() ?: "—"
+        canvas.drawText(text, dialCx, dialCy + bigNumber.textSize * 0.34f, bigNumber)
+        canvas.drawText(unitText, dialCx, dialCy + dialRadius * 0.46f, dialUnit)
+    }
+
+    private fun onPaintFor(index: Int): Paint {
+        tickOn.color = if (Gauge.dialTickSpeed(index, MAX_SPEED) >= WARN_SPEED) warn.color else lit.color
+        return tickOn
+    }
+
+    // endregion
 
     // region Bar graph
 
@@ -194,6 +286,8 @@ class SpeedGauge @JvmOverloads constructor(
         private const val DIGIT_ASPECT = 0.52f
         private const val SKEW = 0.1f
         private val SCALE = floatArrayOf(0f, 60f, 120f, 180f)
+        private const val STYLE_LCD = 0
+        private const val STYLE_DIAL = 1
     }
 }
 
@@ -212,6 +306,30 @@ object Gauge {
     /** Segment [index] covers speeds at or above [warnAt]. */
     fun isWarning(index: Int, segments: Int, max: Float, warnAt: Float): Boolean =
         (index * max / segments) >= warnAt
+
+    /** Ticks on the dial, plus one for zero; every ninth (each 30 km/h of 180) is longer. */
+    const val DIAL_TICKS = 54
+    private const val DIAL_START = 135f
+    private const val DIAL_SWEEP = 270f
+
+    /** How far below the centre the ring reaches, as a fraction of its radius (sin 45°). */
+    const val DIAL_BOTTOM_EXTENT = 0.7072f
+
+    /** Angle of tick [index] in degrees, clockwise from 3 o'clock: 135° (bottom left) to 405°. */
+    fun dialAngle(index: Int): Float = DIAL_START + DIAL_SWEEP * index / DIAL_TICKS
+
+    fun isMajorTick(index: Int): Boolean = index % 9 == 0
+
+    /** The speed tick [index] stands for. */
+    fun dialTickSpeed(index: Int, max: Float): Float = max * index / DIAL_TICKS
+
+    /** Ticks lit for [speed]: tick 0 lights at any speed above zero, the next fades in. */
+    fun dialLit(speed: Float, max: Float): Lit {
+        if (speed <= 0f) return Lit(0, 0f)
+        val exact = (speed.coerceAtMost(max) / max) * DIAL_TICKS
+        val full = exact.toInt()
+        return Lit(full + 1, if (full >= DIAL_TICKS) 0f else exact - full)
+    }
 
     /** Segments grow from [low] to [high], slowly at first. */
     fun segmentHeight(index: Int, segments: Int, low: Float, high: Float): Float =

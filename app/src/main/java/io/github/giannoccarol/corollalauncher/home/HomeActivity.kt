@@ -34,6 +34,7 @@ import android.provider.Settings
 import android.speech.RecognizerIntent
 import android.text.InputType
 import android.text.format.DateUtils
+import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
 import android.widget.ImageView
@@ -82,6 +83,7 @@ import io.github.giannoccarol.corollalauncher.phone.Favorites
 import io.github.giannoccarol.corollalauncher.settings.Prefs
 import io.github.giannoccarol.corollalauncher.settings.SettingsActivity
 import io.github.giannoccarol.corollalauncher.theme.ThemeManager
+import io.github.giannoccarol.corollalauncher.theme.ThemeStyle
 import io.github.giannoccarol.corollalauncher.theme.ThemeMode
 import io.github.giannoccarol.corollalauncher.trip.Compass
 import io.github.giannoccarol.corollalauncher.trip.TripService
@@ -192,21 +194,29 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
         }
     }
 
+    @SuppressLint("InflateParams") // The activity's root view: setContentView gives it its parent.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityHomeBinding.inflate(layoutInflater)
+        prefs = Prefs(this)
+        // Amber has its own layout with the same ids, so one binding serves both.
+        binding = if (prefs.themeStyle == ThemeStyle.AMBRA) {
+            ActivityHomeBinding.bind(layoutInflater.inflate(R.layout.activity_home_ambra, null))
+        } else {
+            ActivityHomeBinding.inflate(layoutInflater)
+        }
         setContentView(binding.root)
         setUpWindow(binding.root)
 
-        prefs = Prefs(this)
         audio = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         media = MediaSessionMonitor(this, ::renderMedia)
         toggles = QuickToggles(this)
         speaker = Speaker(this)
 
-        // A launcher is the bottom of the back stack: Back must do nothing here.
+        // A launcher is the bottom of the back stack: Back only closes the Amber quick settings.
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() = Unit
+            override fun handleOnBackPressed() {
+                if (prefs.themeStyle == ThemeStyle.AMBRA) showQuickSettings(false)
+            }
         })
 
         setUpTopBar()
@@ -215,11 +225,16 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
         setUpCar()
         setUpQuickSettings()
         setUpDock()
+        setUpAmberExtras()
         renderFavorites()
 
         AppRepository.addListener(appsListener)
         TripTracker.addListener(tripListener)
-        Motion.enter(binding.centerColumn, binding.rightColumn, binding.quickSettings, binding.dock)
+        if (prefs.themeStyle == ThemeStyle.AMBRA) {
+            Motion.enter(binding.carCard, binding.centerColumn, binding.rightColumn, binding.dock)
+        } else {
+            Motion.enter(binding.centerColumn, binding.rightColumn, binding.quickSettings, binding.dock)
+        }
         if (savedInstanceState == null) handleVoiceIntent(intent)
     }
 
@@ -332,6 +347,46 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
         ) {
             prefs.driverName = it.ifEmpty { null }
             renderDriver()
+        }
+    }
+
+    // endregion
+
+    // region Amber extras
+
+    /**
+     * Views only the Amber layout has: the Android Auto button in the car card, and the
+     * Controls button that opens quick settings over the cards. Absent in Classic.
+     */
+    private fun setUpAmberExtras() {
+        binding.root.findViewById<View>(R.id.androidAutoButton)?.let { button ->
+            button.setOnClickListener {
+                val app = AppRepository.projectionApp()
+                when {
+                    app == null -> toast(R.string.home_no_android_auto)
+                    !AppRepository.launch(this, app) -> toast(getString(R.string.app_launch_failed, app.label))
+                }
+            }
+            Motion.pressable(button)
+        }
+        val scrim = binding.root.findViewById<View>(R.id.quickSettingsScrim) ?: return
+        binding.root.findViewById<View>(R.id.controlsButton)?.let { button ->
+            button.setOnClickListener { showQuickSettings(binding.quickSettings.visibility != View.VISIBLE) }
+            Motion.pressable(button)
+        }
+        scrim.setOnClickListener { showQuickSettings(false) }
+    }
+
+    private fun showQuickSettings(show: Boolean) {
+        val scrim = binding.root.findViewById<View>(R.id.quickSettingsScrim) ?: return
+        if (show) {
+            scrim.visibility = View.VISIBLE
+            binding.quickSettings.visibility = View.VISIBLE
+            Motion.fadeIn(scrim)
+            Motion.popIn(listOf(binding.quickSettings))
+        } else {
+            scrim.visibility = View.GONE
+            binding.quickSettings.visibility = View.GONE
         }
     }
 
@@ -595,12 +650,17 @@ class HomeActivity : LauncherActivity(), PermissionAsker, AssistantHost {
     private fun setUpPlayer() {
         binding.cover.clipToOutline = true
         // The card's own background with a gradient tint on top, coloured from the cover.
-        val radius = resources.getDimension(R.dimen.card_radius)
+        val radius = TypedValue().let { value ->
+            if (theme.resolveAttribute(R.attr.cardRadius, value, true)) {
+                value.getDimension(resources.displayMetrics)
+            } else {
+                resources.getDimension(R.dimen.card_radius)
+            }
+        }
         albumTint = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf(Color.TRANSPARENT, Color.TRANSPARENT))
             .apply { cornerRadius = radius }
-        binding.mediaCard.background = LayerDrawable(
-            arrayOf(ContextCompat.getDrawable(this, R.drawable.bg_card)!!, albumTint),
-        )
+        // Each theme's layout gives the card its own background; the cover tint goes on top.
+        binding.mediaCard.background = LayerDrawable(arrayOf(binding.mediaCard.background, albumTint))
         binding.prevButton.setOnClickListener {
             transport(KeyEvent.KEYCODE_MEDIA_PREVIOUS) { it.transportControls.skipToPrevious() }
         }

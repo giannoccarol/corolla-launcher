@@ -7,6 +7,7 @@ it should run on any landscape Android head unit.
 | Dark (default) | Light |
 | --- | --- |
 | ![Home screen, dark theme](docs/screenshots/home-dark.png) | ![Home screen, light theme](docs/screenshots/home-light.png) |
+| ![Home screen, Amber theme, dark](docs/screenshots/home-amber-dark.png) | ![Home screen, Amber theme, light](docs/screenshots/home-amber-light.png) |
 
 > **Status: 0.3.0, tested on an emulator only.** The app has not run on the real head unit
 > yet. See [Known limits](#known-limits) and [docs/head-unit.md](docs/head-unit.md).
@@ -43,6 +44,10 @@ it should run on any landscape Android head unit.
   *Settings → App icons* switches to monochrome glyphs in the accent colour, to the apps'
   original icons, or to any **icon pack** installed
   from the Play Store (the appfilter.xml format Nova, ADW and Lawnchair read).
+- **Two themes**, each light and dark (*Settings → Themes*): **Classic**, the original look,
+  and **Amber**, glass cards lit by a warm glow, large thin numbers, a speed dial and its own
+  home layout with an Android Auto button and quick settings behind a Controls button. The
+  font is a choice too: the theme's own, the system's, Manrope or Nunito.
 - **One size knob for everything**: *Settings → Interface size* (Normal, Large, Extra large)
   scales text, buttons, icons and bars together, whatever resolution and density the unit
   reports. Large is the default: the first test in the car found the original size too small.
@@ -237,6 +242,8 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
   The head unit's projection app apparently publishes no media session, so nothing tells the
   launcher what is playing. *Settings → Device info*, opened while Android Auto plays and with
   notification access on, shows what that app does publish; the fix depends on it.
+- **The Amber theme and the bundled fonts were checked only on the emulator**, and the player's
+  playing state was not seen in Amber (no music app on the emulator image).
 - **The interface size was tuned on the emulator.** Large lays the screen's short side out as
   520 dp, Extra large as 460 dp; the player's playing state was not seen at the new sizes.
 - **Calls from Favourites were tested only on the emulator's phone.** On a head unit the phone
@@ -311,6 +318,14 @@ two reviewers for head unit constraints and translations.
   - symbols from Google's [Material Icons](https://github.com/google/material-design-icons),
     filled style, through the [@material-design-icons/svg](https://github.com/marella/material-design-icons)
     package (0.14.15), Apache License 2.0.
+- Typefaces [Manrope](https://github.com/googlefonts/manrope) (The Manrope Project Authors) and
+  [Nunito](https://github.com/googlefonts/nunito) (The Nunito Project Authors), SIL Open Font
+  License 1.1 (`licenses/OFL-Manrope.txt`, `licenses/OFL-Nunito.txt`), from
+  [google/fonts](https://github.com/google/fonts); cut to static Latin subsets by
+  `scripts/make_fonts.py`.
+- The Amber theme was drawn from two dashboard references the owner shared (a light car
+  dashboard named "Truetrack" and a set of dark in-car widgets); colours, layout and artwork
+  are the project's own, nothing was copied.
 - The themed icon style follows Android 13's themed icons; the icon pack format is the
   appfilter.xml convention started by ADW Launcher and shared by Nova, Lawnchair and others.
 - The layout takes general inspiration from modern in-car interfaces (card dashboard, large

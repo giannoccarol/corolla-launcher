@@ -57,9 +57,41 @@ in front, and replaced by the top and bottom bars above.
   places show a plus. Apps are only in the bottom bar: a second row of apps repeated it.
 - Values not available yet show an em dash, never a fake zero.
 
+## Themes
+
+Two themes, each with a light and a dark palette, chosen in *Settings → Themes*:
+
+- **Classic**: neutral greys and blue, flat cards, the system font, the LCD speed readout. The
+  tables below are its palette.
+- **Amber** (*Ambra*): near-black with an amber glow in dark, warm sand with an orange glow in
+  light. Glass cards (lighter at the top, hairline edge, 30dp corners), round glass buttons, a
+  floating bottom bar, large thin numbers in Manrope Light, a speed dial of 54 ticks open at
+  the bottom, a field of dots under the car, a disc and a ring play button in the player. It
+  has its own home layout (`activity_home_ambra.xml`): car with trip figures and an Android
+  Auto button, speed dial over favourites, the player as a full column, quick settings over the
+  cards from a Controls button.
+
+| Amber | Light | Dark |
+| --- | --- | --- |
+| `bg` | `#EFEBE6` | `#07090C` |
+| `surface` | `#FBFAF8` | `#14161A` |
+| `text_primary` | `#1C1A18` | `#F5F3F0` |
+| `text_secondary` | `#67615A` | `#A29D96` |
+| `accent` | `#F26B3A` | `#F2A33A` |
+| `on_accent` | `#1D1405` | `#1D1405` |
+| `glow` (screen) | orange at 22 % | amber at 20 % |
+
+Text on the accent is dark brown in both: white on amber or orange fails contrast.
+
+The font is a separate choice: Automatic (system for Classic, Manrope for Amber), System,
+Manrope or Nunito. Manrope and Nunito are bundled at Light, Regular and SemiBold
+(`res/font/`, built by `scripts/make_fonts.py`).
+
 ## Colors
 
-Defined in `res/values/colors.xml` and `res/values-night/colors.xml` under the same names.
+Every colour is a theme attribute `c_<name>` (`values/attrs.xml`) with a value in each palette
+(`values/themes.xml` for light, `values-night/themes.xml` for dark), reached through
+`@color/<name>` (`res/color/<name>.xml`). The Classic palette:
 
 | Name | Light | Dark | Used for |
 | --- | --- | --- | --- |

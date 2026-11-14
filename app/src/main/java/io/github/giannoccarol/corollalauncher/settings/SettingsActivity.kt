@@ -22,7 +22,10 @@ import io.github.giannoccarol.corollalauncher.databinding.ActivitySettingsBindin
 import io.github.giannoccarol.corollalauncher.keys.NavKeyService
 import io.github.giannoccarol.corollalauncher.theme.ThemeManager
 import io.github.giannoccarol.corollalauncher.trip.TripTracker
+import io.github.giannoccarol.corollalauncher.theme.FontChoice
 import io.github.giannoccarol.corollalauncher.theme.ThemeMode
+import io.github.giannoccarol.corollalauncher.theme.ThemeStyle
+import io.github.giannoccarol.corollalauncher.ui.ThemeTransition
 import io.github.giannoccarol.corollalauncher.ui.LauncherActivity
 import io.github.giannoccarol.corollalauncher.ui.Motion
 import io.github.giannoccarol.corollalauncher.ui.TextPrompt
@@ -59,6 +62,11 @@ class SettingsActivity : LauncherActivity() {
         binding.list.removeAllViews()
         val notSet = getString(R.string.settings_not_set)
 
+        section(R.string.settings_section_themes)
+        row(R.string.settings_theme, getString(prefs.themeStyle.labelRes)) { pickThemeStyle() }
+        row(R.string.settings_theme_mode, getString(prefs.themeMode.labelRes)) { pickTheme() }
+        row(R.string.settings_font, fontLabel(prefs.fontChoice)) { pickFont() }
+
         section(R.string.settings_section_appearance)
         row(R.string.settings_driver_name, prefs.driverName ?: notSet) {
             TextPrompt.show(
@@ -69,7 +77,6 @@ class SettingsActivity : LauncherActivity() {
                 render()
             }
         }
-        row(R.string.settings_theme, getString(prefs.themeMode.labelRes)) { pickTheme() }
         row(R.string.settings_language, languageLabel(Languages.currentTag())) { pickLanguage() }
         row(R.string.settings_icons, iconStyleLabel(prefs.iconStyle, IconPack.installed(this))) {
             pickIconStyle()
@@ -150,6 +157,7 @@ class SettingsActivity : LauncherActivity() {
                 ?.setTextIsSelectable(true)
         }
         row(R.string.settings_data_credits, getString(R.string.settings_data_credits_summary), onClick = null)
+        row(R.string.settings_fonts_credits, getString(R.string.settings_fonts_credits_summary), onClick = null)
         row(
             R.string.app_name,
             getString(R.string.settings_version, BuildConfig.VERSION_NAME),
@@ -176,10 +184,51 @@ class SettingsActivity : LauncherActivity() {
         binding.list.addView(view)
     }
 
+    /** Classic or Amber. Every screen picks it up: this one now, the others when they resume. */
+    private fun pickThemeStyle() {
+        val styles = ThemeStyle.entries
+        AlertDialog.Builder(this)
+            .setTitle(R.string.settings_theme)
+            .setSingleChoiceItems(
+                styles.map { getString(it.labelRes) }.toTypedArray(),
+                styles.indexOf(prefs.themeStyle),
+            ) { dialog, which ->
+                dialog.dismiss()
+                if (prefs.themeStyle == styles[which]) return@setSingleChoiceItems
+                ThemeTransition.capture(this)
+                prefs.themeStyle = styles[which]
+                recreate()
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    private fun pickFont() {
+        val fonts = FontChoice.entries
+        AlertDialog.Builder(this)
+            .setTitle(R.string.settings_font)
+            .setSingleChoiceItems(fonts.map(::fontLabel).toTypedArray(), fonts.indexOf(prefs.fontChoice)) { dialog, which ->
+                dialog.dismiss()
+                if (prefs.fontChoice == fonts[which]) return@setSingleChoiceItems
+                prefs.fontChoice = fonts[which]
+                recreate()
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    /** Typeface names are proper names, the same in every language. */
+    private fun fontLabel(font: FontChoice): String = when (font) {
+        FontChoice.AUTO -> getString(R.string.font_auto)
+        FontChoice.SYSTEM -> getString(R.string.font_system)
+        FontChoice.MANROPE -> "Manrope"
+        FontChoice.NUNITO -> "Nunito"
+    }
+
     private fun pickTheme() {
         val modes = ThemeMode.entries
         AlertDialog.Builder(this)
-            .setTitle(R.string.settings_theme)
+            .setTitle(R.string.settings_theme_mode)
             .setSingleChoiceItems(
                 modes.map { getString(it.labelRes) }.toTypedArray(),
                 modes.indexOf(prefs.themeMode),

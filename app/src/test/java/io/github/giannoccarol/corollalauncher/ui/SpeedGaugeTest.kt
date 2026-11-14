@@ -59,4 +59,25 @@ class SpeedGaugeTest {
         assertEquals(6, Integer.bitCount(SevenSegment.mask(0)))
         assertEquals(0, SevenSegment.mask(0) and SevenSegment.DASH)
     }
+
+    @Test
+    fun dialLightsTicksUpToTheSpeed() {
+        assertEquals(Gauge.Lit(0, 0f), Gauge.dialLit(0f, 180f))
+        // Any movement lights the zero tick.
+        assertEquals(1, Gauge.dialLit(0.5f, 180f).full)
+        // 90 of 180 km/h: half of 54 ticks, plus the zero tick.
+        assertEquals(28, Gauge.dialLit(90f, 180f).full)
+        assertEquals(Gauge.Lit(Gauge.DIAL_TICKS + 1, 0f), Gauge.dialLit(250f, 180f))
+    }
+
+    @Test
+    fun dialRunsFromBottomLeftToBottomRight() {
+        assertEquals(135f, Gauge.dialAngle(0), 0.001f)
+        assertEquals(405f, Gauge.dialAngle(Gauge.DIAL_TICKS), 0.001f)
+        assertTrue(Gauge.isMajorTick(0))
+        assertTrue(Gauge.isMajorTick(27))
+        assertFalse(Gauge.isMajorTick(10))
+        // The tick for 130 km/h and above draws in the warning colour.
+        assertEquals(130f, Gauge.dialTickSpeed(39, 180f), 0.001f)
+    }
 }

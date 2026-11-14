@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Amber play button: a glass disc inside a clear ring. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <solid android:color="?attr/c_glass" />
+    <stroke
+        android:width="2dp"
+        android:color="?attr/c_ring" />
+</shape>

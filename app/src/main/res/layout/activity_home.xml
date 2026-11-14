@@ -56,7 +56,7 @@
             android:layout_height="20dp"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="8dp"
-            android:background="@color/line" />
+            android:background="?attr/c_line" />
 
         <LinearLayout
             android:id="@+id/tabNavigation"
@@ -111,7 +111,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:fontFamily="sans-serif-medium"
+                android:fontFamily="?attr/fontMedium"
                 android:text="@string/assistant_title"
                 android:textColor="@color/on_accent"
                 android:textSize="15sp" />
@@ -153,7 +153,7 @@
             android:layout_height="20dp"
             android:layout_marginStart="14dp"
             android:layout_marginEnd="14dp"
-            android:background="@color/line" />
+            android:background="?attr/c_line" />
 
         <TextClock
             android:id="@+id/statusDate"
@@ -169,7 +169,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:fontFamily="sans-serif-medium"
+            android:fontFamily="?attr/fontMedium"
             android:format12Hour="h:mm"
             android:format24Hour="H:mm"
             android:textColor="@color/text_primary"
@@ -260,7 +260,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:ellipsize="end"
-                                    android:fontFamily="sans-serif-medium"
+                                    android:fontFamily="?attr/fontMedium"
                                     android:maxLines="2"
                                     android:textColor="@color/text_primary"
                                     android:textSize="21sp"
@@ -328,7 +328,7 @@
                             android:id="@+id/emptyTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-medium"
+                            android:fontFamily="?attr/fontMedium"
                             android:gravity="center"
                             android:text="@string/media_nothing_playing"
                             android:textColor="@color/text_primary"
@@ -352,7 +352,7 @@
                             android:background="@drawable/bg_pill_accent"
                             android:clickable="true"
                             android:focusable="true"
-                            android:fontFamily="sans-serif-medium"
+                            android:fontFamily="?attr/fontMedium"
                             android:gravity="center"
                             android:paddingStart="22dp"
                             android:paddingEnd="22dp"
@@ -460,7 +460,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-medium"
+                        android:fontFamily="?attr/fontMedium"
                         android:text="@string/car_name"
                         android:textColor="@color/text_primary"
                         android:textSize="15sp" />
@@ -553,7 +553,7 @@
                         android:id="@+id/headingValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-medium"
+                        android:fontFamily="?attr/fontMedium"
                         android:gravity="end"
                         android:maxLines="3"
                         android:textColor="@color/text_primary"
@@ -660,7 +660,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/line" />
+        android:background="?attr/c_line" />
 
     <!-- Bottom bar: driver name, docked apps around All apps (always centred), volume -->
     <!-- Three zones: the sides share what the apps leave, so the apps stay centred and a long
@@ -699,7 +699,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@drawable/bg_avatar"
-                android:fontFamily="sans-serif-medium"
+                android:fontFamily="?attr/fontMedium"
                 android:gravity="center"
                 android:importantForAccessibility="no"
                 android:textColor="@color/text_primary"
@@ -712,7 +712,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:ellipsize="end"
-                android:fontFamily="sans-serif-medium"
+                android:fontFamily="?attr/fontMedium"
                 android:maxWidth="180dp"
                 android:maxLines="1"
                 android:textColor="@color/text_primary"
@@ -793,7 +793,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:fontFamily="sans-serif-medium"
+                android:fontFamily="?attr/fontMedium"
                 android:textColor="@color/text_primary"
                 android:textSize="19sp"
                 tools:text="12" />

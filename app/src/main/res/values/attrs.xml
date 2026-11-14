@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Theme attributes. Every colour is one of these, so a theme (Classic, Amber) and its light
+     and dark variants each give it their own value; res/color/<name>.xml points at it. -->
+<resources>
+    <attr name="c_bg" format="color" />
+    <attr name="c_surface" format="color" />
+    <attr name="c_surface_2" format="color" />
+    <attr name="c_text_primary" format="color" />
+    <attr name="c_text_secondary" format="color" />
+    <attr name="c_line" format="color" />
+    <attr name="c_track" format="color" />
+    <attr name="c_ripple" format="color" />
+    <attr name="c_chip_on_bg" format="color" />
+    <attr name="c_chip_on_text" format="color" />
+    <attr name="c_chip_off_text" format="color" />
+    <attr name="c_tile_on_bg" format="color" />
+    <attr name="c_tile_on_text" format="color" />
+    <attr name="c_icon_tile" format="color" />
+    <attr name="c_icon_glyph" format="color" />
+    <attr name="c_icon_tile_neutral" format="color" />
+    <attr name="c_icon_glyph_neutral" format="color" />
+    <attr name="c_gauge_warn" format="color" />
+    <attr name="c_gauge_ghost" format="color" />
+    <attr name="c_card_highlight" format="color" />
+    <attr name="c_card_border" format="color" />
+    <attr name="c_sheet_surface" format="color" />
+    <attr name="c_sheet_border" format="color" />
+    <attr name="c_scrim" format="color" />
+    <attr name="c_accent" format="color" />
+    <attr name="c_on_accent" format="color" />
+
+    <!-- Amber's glass and light; Classic sets them to plain surfaces or transparent. -->
+    <attr name="c_glow" format="color" />
+    <attr name="c_glow_soft" format="color" />
+    <attr name="c_glow_strong" format="color" />
+    <attr name="c_glass" format="color" />
+    <attr name="c_glass_top" format="color" />
+    <attr name="c_glass_bottom" format="color" />
+    <attr name="c_ring" format="color" />
+
+    <!-- Typefaces: a font resource, or a system family name such as "sans-serif-medium". -->
+    <attr name="fontRegular" format="reference|string" />
+    <attr name="fontMedium" format="reference|string" />
+    <attr name="fontLight" format="reference|string" />
+
+    <!-- Corner radius of the home cards, for tints drawn over them in code. -->
+    <attr name="cardRadius" format="dimension" />
+
+    <!-- App icon tiles: corner radius as a fraction of the size (0.5 is a circle). -->
+    <attr name="iconCornerFraction" format="float" />
+
+    <declare-styleable name="SpeedGauge">
+        <!-- An LCD bar graph (Classic) or a ring of ticks with a large number (Amber). -->
+        <attr name="gaugeStyle" format="enum">
+            <enum name="lcd" value="0" />
+            <enum name="dial" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>

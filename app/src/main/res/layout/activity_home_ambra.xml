@@ -1,0 +1,892 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The home dashboard in the Amber theme. It has every id of activity_home.xml, with the same
+     view types, so HomeActivity binds it with ActivityHomeBinding; the extras (Android Auto
+     button, Controls button, quick settings overlay) are looked up by id. Layout: car with the
+     Android Auto button, speed dial over favourites, the player as a full column; quick
+     settings open over the cards from the Controls button. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_screen_ambra"
+    android:orientation="vertical">
+
+    <!-- Top bar: glass keys, one glass pill of actions, status and a large thin clock. -->
+    <LinearLayout
+        android:id="@+id/statusBar"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingEnd="20dp">
+
+        <ImageButton
+            android:id="@+id/keyBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_glass_round"
+            android:contentDescription="@string/back"
+            android:scaleType="center"
+            android:src="@drawable/ic_nav_back"
+            app:tint="@color/text_primary" />
+
+        <ImageButton
+            android:id="@+id/keyHome"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_glass_round"
+            android:contentDescription="@string/nav_key_home"
+            android:scaleType="center"
+            android:src="@drawable/ic_nav_home"
+            app:tint="@color/text_primary" />
+
+        <ImageButton
+            android:id="@+id/keyRecents"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_glass_round"
+            android:contentDescription="@string/nav_key_recents"
+            android:scaleType="center"
+            android:src="@drawable/ic_nav_recents"
+            app:tint="@color/text_primary" />
+
+        <View
+            android:id="@+id/keysDivider"
+            android:layout_width="14dp"
+            android:layout_height="1dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_glass_pill"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <LinearLayout
+                android:id="@+id/tabNavigation"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_touch"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="14dp"
+                android:paddingEnd="16dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_gps"
+                    app:tint="@color/text_primary" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="?attr/fontMedium"
+                    android:text="@string/tab_navigation"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/controlsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_touch"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="14dp"
+                android:paddingEnd="16dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_settings"
+                    app:tint="@color/text_primary" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="?attr/fontMedium"
+                    android:text="@string/home_controls"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/assistantButton"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/bg_pill_accent"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="18dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_mic"
+                    app:tint="@color/on_accent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="?attr/fontMedium"
+                    android:text="@string/assistant_title"
+                    android:textColor="@color/on_accent"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/statusGps"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_gps"
+            app:tint="@color/text_secondary" />
+
+        <ImageView
+            android:id="@+id/statusBluetooth"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:layout_marginStart="12dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_bluetooth"
+            app:tint="@color/text_secondary" />
+
+        <ImageView
+            android:id="@+id/statusNetwork"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:layout_marginStart="12dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_wifi"
+            app:tint="@color/text_secondary" />
+
+        <TextClock
+            android:id="@+id/statusDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            tools:text="Sat 14 Nov" />
+
+        <TextClock
+            android:id="@+id/statusTime"
+            android:fontFeatureSettings="tnum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:fontFamily="?attr/fontLight"
+            android:format12Hour="h:mm"
+            android:format24Hour="H:mm"
+            android:includeFontPadding="false"
+            android:textColor="@color/text_primary"
+            android:textSize="28sp"
+            tools:text="12:45" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/cards"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:paddingStart="14dp"
+            android:paddingTop="2dp"
+            android:paddingEnd="14dp"
+            android:paddingBottom="10dp">
+
+            <!-- The car: photo over a field of dots, trip figures, Android Auto. -->
+            <LinearLayout
+                android:id="@+id/carCard"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="120"
+                android:background="@drawable/bg_glass_card"
+                android:clickable="true"
+                android:clipToPadding="false"
+                android:focusable="true"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="?attr/fontMedium"
+                        android:text="@string/car_name"
+                        android:textColor="@color/text_primary"
+                        android:textSize="21sp" />
+
+                    <TextView
+                        android:id="@+id/tripState"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_chip_soft"
+                        android:ellipsize="end"
+                        android:fontFamily="?attr/fontMedium"
+                        android:maxLines="1"
+                        android:paddingStart="12dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="5dp"
+                        android:textColor="@color/tile_on_text"
+                        android:textSize="13sp"
+                        tools:text="Driving" />
+                </LinearLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="-10dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="-10dp"
+                    android:layout_weight="1">
+
+                    <io.github.giannoccarol.corollalauncher.ui.DotFieldView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/car_photo_description"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/car_corolla" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <include
+                        android:id="@+id/statDistance"
+                        layout="@layout/item_trip_stat_ambra"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <include
+                        android:id="@+id/statDuration"
+                        layout="@layout/item_trip_stat_ambra"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <include
+                        android:id="@+id/statAverage"
+                        layout="@layout/item_trip_stat_ambra"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/androidAutoButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="58dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_pill_accent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="22dp"
+                    android:paddingEnd="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:fontFamily="?attr/fontMedium"
+                        android:maxLines="1"
+                        android:text="@string/home_open_android_auto"
+                        android:textColor="@color/on_accent"
+                        android:textSize="18sp" />
+
+                    <ImageView
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:background="@drawable/bg_round_on_accent"
+                        android:importantForAccessibility="no"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_arrow_up_right"
+                        app:tint="@color/accent" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Speed dial over the favourites. -->
+            <LinearLayout
+                android:id="@+id/centerColumn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="12dp"
+                android:layout_weight="92"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:id="@+id/speedPanel"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_glass_card"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="12dp">
+
+                    <io.github.giannoccarol.corollalauncher.ui.SpeedGauge
+                        android:id="@+id/speedGauge"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="14dp"
+                        app:gaugeStyle="dial" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|center_horizontal"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/headingValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="?attr/fontMedium"
+                            android:gravity="center"
+                            android:maxLines="2"
+                            android:textColor="@color/accent"
+                            android:textSize="15sp"
+                            tools:text="NE" />
+
+                        <TextView
+                            android:id="@+id/headingLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:text="@string/speed_heading"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+                </FrameLayout>
+
+                <LinearLayout
+                    android:id="@+id/favoritesCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_glass_card"
+                    android:orientation="vertical"
+                    android:paddingStart="8dp"
+                    android:paddingTop="12dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:fontFamily="?attr/fontMedium"
+                        android:text="@string/favorites_title"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="14sp" />
+
+                    <LinearLayout
+                        android:id="@+id/favorites"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- The player, a whole column: disc, title, progress, ring play button. -->
+            <LinearLayout
+                android:id="@+id/rightColumn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="12dp"
+                android:layout_weight="110"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/mediaCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_glass_music"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingStart="16dp"
+                    android:paddingTop="14dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="12dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="36dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="8dp"
+                            android:fontFamily="?attr/fontMedium"
+                            android:maxLines="1"
+                            android:text="@string/home_now_playing"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="14sp" />
+
+                        <HorizontalScrollView
+                            android:id="@+id/sourcesScroll"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:scrollbars="none"
+                            android:visibility="gone">
+
+                            <LinearLayout
+                                android:id="@+id/sources"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal" />
+                        </HorizontalScrollView>
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1">
+
+                        <LinearLayout
+                            android:id="@+id/mediaContent"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <ImageView
+                                android:id="@+id/cover"
+                                android:layout_width="104dp"
+                                android:layout_height="104dp"
+                                android:background="@drawable/bg_disc_cover"
+                                android:contentDescription="@string/media_cover"
+                                android:scaleType="centerCrop" />
+
+                            <TextView
+                                android:id="@+id/trackTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:ellipsize="end"
+                                android:fontFamily="?attr/fontMedium"
+                                android:gravity="center"
+                                android:maxLines="2"
+                                android:textColor="@color/text_primary"
+                                android:textSize="20sp"
+                                tools:text="Track title" />
+
+                            <TextView
+                                android:id="@+id/trackArtist"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:ellipsize="end"
+                                android:gravity="center"
+                                android:maxLines="1"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="15sp"
+                                tools:text="Artist" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/elapsed"
+                                    android:fontFeatureSettings="tnum"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="13sp"
+                                    tools:text="1:24" />
+
+                                <ProgressBar
+                                    android:id="@+id/progress"
+                                    style="?android:attr/progressBarStyleHorizontal"
+                                    android:layout_width="0dp"
+                                    android:layout_height="4dp"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_marginEnd="10dp"
+                                    android:layout_weight="1"
+                                    android:max="1000"
+                                    android:progressDrawable="@drawable/progress_media" />
+
+                                <TextView
+                                    android:id="@+id/total"
+                                    android:fontFeatureSettings="tnum"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="13sp"
+                                    tools:text="3:52" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/mediaEmpty"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp">
+
+                            <TextView
+                                android:id="@+id/emptyTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="?attr/fontMedium"
+                                android:gravity="center"
+                                android:text="@string/media_nothing_playing"
+                                android:textColor="@color/text_primary"
+                                android:textSize="19sp" />
+
+                            <TextView
+                                android:id="@+id/emptyHint"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:gravity="center"
+                                android:text="@string/media_nothing_playing_hint"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/emptyAction"
+                                android:layout_width="wrap_content"
+                                android:layout_height="48dp"
+                                android:layout_marginTop="12dp"
+                                android:background="@drawable/bg_pill_accent"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:fontFamily="?attr/fontMedium"
+                                android:gravity="center"
+                                android:paddingStart="22dp"
+                                android:paddingEnd="22dp"
+                                android:text="@string/media_allow"
+                                android:textColor="@color/on_accent"
+                                android:textSize="15sp"
+                                android:visibility="gone" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:id="@+id/prevButton"
+                            android:layout_width="52dp"
+                            android:layout_height="52dp"
+                            android:background="@drawable/bg_touch"
+                            android:contentDescription="@string/media_previous"
+                            android:scaleType="center"
+                            android:src="@drawable/ic_prev"
+                            app:tint="@color/text_primary" />
+
+                        <ImageButton
+                            android:id="@+id/playButton"
+                            android:layout_width="66dp"
+                            android:layout_height="66dp"
+                            android:layout_marginStart="18dp"
+                            android:layout_marginEnd="18dp"
+                            android:background="@drawable/bg_ring"
+                            android:contentDescription="@string/media_play_pause"
+                            android:scaleType="center"
+                            android:src="@drawable/ic_play"
+                            app:tint="@color/text_primary" />
+
+                        <ImageButton
+                            android:id="@+id/nextButton"
+                            android:layout_width="52dp"
+                            android:layout_height="52dp"
+                            android:background="@drawable/bg_touch"
+                            android:contentDescription="@string/media_next"
+                            android:scaleType="center"
+                            android:src="@drawable/ic_next"
+                            app:tint="@color/text_primary" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Quick settings, opened over the cards by the Controls button. -->
+        <View
+            android:id="@+id/quickSettingsScrim"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/scrim"
+            android:clickable="true"
+            android:focusable="false"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/quickSettings"
+            android:layout_width="360dp"
+            android:layout_height="300dp"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/bg_sheet"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <include
+                    android:id="@+id/qsTheme"
+                    layout="@layout/item_quick_tile"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1" />
+
+                <include
+                    android:id="@+id/qsWifi"
+                    layout="@layout/item_quick_tile"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1" />
+
+                <include
+                    android:id="@+id/qsBluetooth"
+                    layout="@layout/item_quick_tile"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <include
+                    android:id="@+id/qsDisplay"
+                    layout="@layout/item_quick_tile"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1" />
+
+                <include
+                    android:id="@+id/qsAudio"
+                    layout="@layout/item_quick_tile"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1" />
+
+                <include
+                    android:id="@+id/qsMore"
+                    layout="@layout/item_quick_tile"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- Bottom bar: a floating glass pill, three zones like the Classic one. -->
+    <LinearLayout
+        android:id="@+id/dock"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/bg_glass_bar"
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/driver"
+                android:layout_width="wrap_content"
+                android:layout_height="56dp"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_touch"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="2dp"
+                android:paddingEnd="10dp">
+
+                <TextView
+                    android:id="@+id/driverInitial"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_avatar_soft"
+                    android:fontFamily="?attr/fontMedium"
+                    android:gravity="center"
+                    android:importantForAccessibility="no"
+                    android:textColor="@color/tile_on_text"
+                    android:textSize="18sp"
+                    tools:text="L" />
+
+                <TextView
+                    android:id="@+id/driverName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:ellipsize="end"
+                    android:fontFamily="?attr/fontMedium"
+                    android:maxWidth="180dp"
+                    android:maxLines="1"
+                    android:textColor="@color/text_primary"
+                    android:textSize="17sp"
+                    tools:text="Lorenzo" />
+            </LinearLayout>
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/dockLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+
+            <ImageButton
+                android:id="@+id/allAppsButton"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_round_solid"
+                android:contentDescription="@string/home_all_apps"
+                android:padding="15dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_apps"
+                app:tint="@color/bg" />
+
+            <LinearLayout
+                android:id="@+id/dockRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end|center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/volumeDown"
+                android:layout_width="48dp"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_touch"
+                android:contentDescription="@string/volume_down"
+                android:scaleType="center"
+                android:src="@drawable/ic_minus"
+                app:tint="@color/text_secondary" />
+
+            <TextView
+                android:id="@+id/volumeValue"
+                android:fontFeatureSettings="tnum"
+                android:layout_width="44dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="?attr/fontLight"
+                android:gravity="center"
+                android:textColor="@color/text_primary"
+                android:textSize="24sp"
+                tools:text="5" />
+
+            <ImageButton
+                android:id="@+id/volumeUp"
+                android:layout_width="48dp"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_touch"
+                android:contentDescription="@string/volume_up"
+                android:scaleType="center"
+                android:src="@drawable/ic_plus"
+                app:tint="@color/text_secondary" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

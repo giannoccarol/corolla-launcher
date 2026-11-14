@@ -235,4 +235,18 @@
     <string name="diag_sessions">Sessioni multimediali:</string>
     <string name="diag_notifications">Notifiche di %1$s:</string>
     <string name="diag_none">nessuna</string>
+
+    <!-- Themes and the Amber home -->
+    <string name="settings_section_themes">Temi</string>
+    <string name="settings_theme_mode">Chiaro o scuro</string>
+    <string name="settings_font">Carattere</string>
+    <string name="font_auto">Automatico (quello del tema)</string>
+    <string name="font_system">Di sistema</string>
+    <string name="theme_style_classic">Classico</string>
+    <string name="theme_style_ambra">Ambra</string>
+    <string name="home_controls">Controlli</string>
+    <string name="home_now_playing">In riproduzione</string>
+    <string name="home_open_android_auto">Apri Android Auto</string>
+    <string name="home_no_android_auto">Nessuna app Android Auto trovata su questa autoradio</string>
+    <string name="settings_fonts_credits">Caratteri</string>
 </resources>
