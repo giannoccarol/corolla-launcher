@@ -73,7 +73,7 @@
     <string name="qs_audio">Audio</string>
     <string name="qs_more">Más</string>
     <string name="settings_driver_name">Tu nombre</string>
-    <string name="settings_driver_name_hint">Aparece arriba a la izquierda</string>
+    <string name="settings_driver_name_hint">Se muestra abajo a la izquierda</string>
     <string name="settings_location">Ubicación</string>
     <string name="settings_location_on">Permitida: se miden la velocidad y el viaje</string>
     <string name="settings_location_off">No permitida. Toca para abrir los ajustes de la app.</string>
@@ -249,4 +249,26 @@
     <string name="home_open_android_auto">Abrir Android Auto</string>
     <string name="home_no_android_auto">No se ha encontrado ninguna app de Android Auto en esta unidad</string>
     <string name="settings_fonts_credits">Fuentes</string>
+
+    <!-- Phone setup page -->
+    <string name="settings_section_quick">Configuración rápida</string>
+    <string name="settings_phone_setup">Configurar desde el móvil</string>
+    <string name="settings_phone_setup_summary">Escanea un código QR y cambia estos ajustes en el navegador del móvil</string>
+    <string name="phone_setup_qr_description">Código QR con la dirección de la página de configuración</string>
+    <string name="phone_setup_instructions">Escanéalo con la cámara del móvil. El móvil debe estar en la misma Wi-Fi que la unidad, o la unidad en el punto de acceso del móvil.</string>
+    <string name="phone_setup_no_network">La unidad no está conectada a ninguna red. Conéctala a la Wi-Fi o al punto de acceso del móvil y vuelve a intentarlo.</string>
+    <string name="phone_setup_waiting">Esperando al móvil…</string>
+    <string name="phone_setup_opened">La página está abierta en el móvil</string>
+    <string name="phone_setup_saved">Ajustes guardados desde el móvil a las %1$s</string>
+    <string name="phone_setup_stopped">Detenido: el enlace ya no funciona.</string>
+    <string name="phone_setup_stop">Detener</string>
+    <string name="phone_setup_restart">Volver a empezar</string>
+    <string name="web_intro">Los cambios se aplican al guardar. Esta página solo funciona mientras la pantalla de configuración esté abierta en la unidad.</string>
+    <string name="web_saved">Guardado</string>
+    <string name="web_problems">Guardado, pero hay campos que corregir: mira abajo.</string>
+    <string name="web_link_expired">Este enlace ya no funciona. En la unidad, abre Ajustes → Configurar desde el móvil y escanea el nuevo código.</string>
+    <string name="web_key_set">Hay una clave guardada (termina en %1$s). Déjalo vacío para conservarla.</string>
+    <string name="web_key_none">No hay ninguna clave guardada para este proveedor.</string>
+    <string name="web_key_remove">Quitar la clave guardada</string>
+    <string name="web_favorite_n">Favorito %1$d</string>
 </resources>

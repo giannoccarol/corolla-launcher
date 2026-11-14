@@ -73,7 +73,7 @@
     <string name="qs_audio">Audio</string>
     <string name="qs_more">Altro</string>
     <string name="settings_driver_name">Il tuo nome</string>
-    <string name="settings_driver_name_hint">Compare in alto a sinistra</string>
+    <string name="settings_driver_name_hint">Compare in basso a sinistra</string>
     <string name="settings_location">Posizione</string>
     <string name="settings_location_on">Consentita: velocità e viaggio vengono misurati</string>
     <string name="settings_location_off">Non consentita. Tocca per aprire le impostazioni dell\'app.</string>
@@ -249,4 +249,26 @@
     <string name="home_open_android_auto">Apri Android Auto</string>
     <string name="home_no_android_auto">Nessuna app Android Auto trovata su questa autoradio</string>
     <string name="settings_fonts_credits">Caratteri</string>
+
+    <!-- Phone setup page -->
+    <string name="settings_section_quick">Configurazione rapida</string>
+    <string name="settings_phone_setup">Configura dal telefono</string>
+    <string name="settings_phone_setup_summary">Inquadra un codice QR e cambia queste impostazioni dal browser del telefono</string>
+    <string name="phone_setup_qr_description">Codice QR con l\'indirizzo della pagina di configurazione</string>
+    <string name="phone_setup_instructions">Inquadralo con la fotocamera del telefono. Il telefono deve essere sulla stessa rete Wi-Fi dell\'autoradio, oppure l\'autoradio sull\'hotspot del telefono.</string>
+    <string name="phone_setup_no_network">L\'autoradio non è connessa a una rete. Collegala al Wi-Fi o all\'hotspot del telefono e riprova.</string>
+    <string name="phone_setup_waiting">In attesa del telefono…</string>
+    <string name="phone_setup_opened">La pagina è aperta sul telefono</string>
+    <string name="phone_setup_saved">Impostazioni salvate dal telefono alle %1$s</string>
+    <string name="phone_setup_stopped">Fermato: il collegamento non funziona più.</string>
+    <string name="phone_setup_stop">Ferma</string>
+    <string name="phone_setup_restart">Riavvia</string>
+    <string name="web_intro">Le modifiche si applicano appena salvi. Questa pagina funziona solo finché la schermata di configurazione è aperta sull\'autoradio.</string>
+    <string name="web_saved">Salvato</string>
+    <string name="web_problems">Salvato, ma alcuni campi vanno corretti: vedi sotto.</string>
+    <string name="web_link_expired">Questo collegamento non funziona più. Sull\'autoradio apri Impostazioni → Configura dal telefono e inquadra il nuovo codice.</string>
+    <string name="web_key_set">È salvata una chiave (finisce con %1$s). Lascia vuoto per tenerla.</string>
+    <string name="web_key_none">Nessuna chiave salvata per questo provider.</string>
+    <string name="web_key_remove">Rimuovi la chiave salvata</string>
+    <string name="web_favorite_n">Preferito %1$d</string>
 </resources>

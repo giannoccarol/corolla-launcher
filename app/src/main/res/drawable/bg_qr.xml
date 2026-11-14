@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The QR code's tile: always light, so every phone camera reads the code. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="?attr/c_qr_light" />
+    <corners android:radius="24dp" />
+</shape>

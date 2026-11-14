@@ -85,6 +85,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.recyclerview)
+    implementation(libs.qrcodegen)
 
     testImplementation(libs.junit4)
     testImplementation(libs.org.json)

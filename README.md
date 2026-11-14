@@ -51,6 +51,14 @@ it should run on any landscape Android head unit.
 - **One size knob for everything**: *Settings → Interface size* (Normal, Large, Extra large)
   scales text, buttons, icons and bars together, whatever resolution and density the unit
   reports. Large is the default: the first test in the car found the original size too small.
+- **Set up from your phone** (*Settings → Quick setup*): the unit shows a QR code; scan it
+  with the phone's camera and a page served by the launcher itself opens in the phone's
+  browser, to change the name, addresses, favourites, theme, font, size, icons and the
+  assistant's provider, model and API key without typing on the unit. Nothing to install, any
+  phone works. The phone must be on the same network (the unit on the phone's hotspot, or both
+  on home Wi-Fi). The page works only while that screen is open, needs the one-time code in
+  the QR, and stops after 10 minutes of silence or 20 wrong codes; keys are never sent back to
+  the phone (only their last four characters, as in Settings).
 - **Device info** (*Settings → About*): screen, Android version, the Android Auto app found,
   and the media sessions and notifications it publishes, to photograph when something does
   not work on the unit.
@@ -167,6 +175,7 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
 | --- | --- |
 | Set your name | Tap the name at the bottom left, or *Settings → Your name* |
 | Open an app | Tap its icon in the bottom bar or in **All apps** |
+| Change settings from the phone | *Settings → Set up from your phone*, scan the QR code |
 | Call a favourite | Tap them on the **Favourites** card; the first time, allow phone calls |
 | Add, change or remove a favourite | Tap an empty place (+), or long press a favourite |
 | See recent apps | Square key, top left (needs the accessibility service, see above) |
@@ -242,6 +251,10 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
   The head unit's projection app apparently publishes no media session, so nothing tells the
   launcher what is playing. *Settings → Device info*, opened while Android Auto plays and with
   notification access on, shows what that app does publish; the fix depends on it.
+- **Phone setup was tested only from the computer's browser through the emulator** (adb port
+  forwarding), not from a phone on the unit's network. Hotspot set-ups that isolate clients
+  from each other will block it; the page is plain HTTP on the local network, protected by the
+  one-time code rather than encryption, so use it on networks you trust.
 - **The Amber theme and the bundled fonts were checked only on the emulator**, and the player's
   playing state was not seen in Amber (no music app on the emulator image).
 - **The interface size was tuned on the emulator.** Large lays the screen's short side out as
@@ -274,6 +287,7 @@ app/src/main/java/.../corollalauncher/
   assistant/ai/           AI providers and the HTTP client (ported from Monetine)
   keys/                   accessibility service behind the top bar's system keys
   nav/                    navigation intents
+  remote/                 phone setup page: local server, form, QR screen
   settings/               preferences, languages, settings screen
   theme/                  light/dark handling
   ui/                     base activity, full-screen handling, text dialog, motion
@@ -318,6 +332,8 @@ two reviewers for head unit constraints and translations.
   - symbols from Google's [Material Icons](https://github.com/google/material-design-icons),
     filled style, through the [@material-design-icons/svg](https://github.com/marella/material-design-icons)
     package (0.14.15), Apache License 2.0.
+- QR codes by Project Nayuki's [QR Code generator library](https://github.com/nayuki/QR-Code-generator)
+  (`io.nayuki:qrcodegen` 1.8.0), MIT License.
 - Typefaces [Manrope](https://github.com/googlefonts/manrope) (The Manrope Project Authors) and
   [Nunito](https://github.com/googlefonts/nunito) (The Nunito Project Authors), SIL Open Font
   License 1.1 (`licenses/OFL-Manrope.txt`, `licenses/OFL-Nunito.txt`), from

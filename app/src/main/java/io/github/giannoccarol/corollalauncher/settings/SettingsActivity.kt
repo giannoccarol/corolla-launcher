@@ -20,6 +20,7 @@ import io.github.giannoccarol.corollalauncher.assistant.ai.AiProvider
 import io.github.giannoccarol.corollalauncher.assistant.ai.AiProviders
 import io.github.giannoccarol.corollalauncher.databinding.ActivitySettingsBinding
 import io.github.giannoccarol.corollalauncher.keys.NavKeyService
+import io.github.giannoccarol.corollalauncher.remote.PhoneSetupActivity
 import io.github.giannoccarol.corollalauncher.theme.ThemeManager
 import io.github.giannoccarol.corollalauncher.trip.TripTracker
 import io.github.giannoccarol.corollalauncher.theme.FontChoice
@@ -61,6 +62,11 @@ class SettingsActivity : LauncherActivity() {
     private fun render() {
         binding.list.removeAllViews()
         val notSet = getString(R.string.settings_not_set)
+
+        section(R.string.settings_section_quick)
+        row(R.string.settings_phone_setup, getString(R.string.settings_phone_setup_summary)) {
+            Motion.open(this, Intent(this, PhoneSetupActivity::class.java))
+        }
 
         section(R.string.settings_section_themes)
         row(R.string.settings_theme, getString(prefs.themeStyle.labelRes)) { pickThemeStyle() }

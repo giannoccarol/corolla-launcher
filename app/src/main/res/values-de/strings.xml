@@ -73,7 +73,7 @@
     <string name="qs_audio">Audio</string>
     <string name="qs_more">Mehr</string>
     <string name="settings_driver_name">Dein Name</string>
-    <string name="settings_driver_name_hint">Wird oben links angezeigt</string>
+    <string name="settings_driver_name_hint">Wird unten links angezeigt</string>
     <string name="settings_location">Standort</string>
     <string name="settings_location_on">Erlaubt: Geschwindigkeit und Fahrt werden gemessen</string>
     <string name="settings_location_off">Nicht erlaubt. Tippe, um die App-Einstellungen zu öffnen.</string>
@@ -249,4 +249,26 @@
     <string name="home_open_android_auto">Android Auto öffnen</string>
     <string name="home_no_android_auto">Keine Android-Auto-App auf diesem Gerät gefunden</string>
     <string name="settings_fonts_credits">Schriften</string>
+
+    <!-- Phone setup page -->
+    <string name="settings_section_quick">Schnelleinrichtung</string>
+    <string name="settings_phone_setup">Vom Handy einrichten</string>
+    <string name="settings_phone_setup_summary">QR-Code scannen und diese Einstellungen im Browser des Handys ändern</string>
+    <string name="phone_setup_qr_description">QR-Code mit der Adresse der Einrichtungsseite</string>
+    <string name="phone_setup_instructions">Mit der Handykamera scannen. Das Handy muss im selben WLAN wie das Gerät sein oder das Gerät im Hotspot des Handys.</string>
+    <string name="phone_setup_no_network">Das Gerät ist mit keinem Netz verbunden. Verbinde es mit dem WLAN oder dem Hotspot des Handys und versuche es erneut.</string>
+    <string name="phone_setup_waiting">Warte auf das Handy…</string>
+    <string name="phone_setup_opened">Die Seite ist auf dem Handy geöffnet</string>
+    <string name="phone_setup_saved">Einstellungen vom Handy gespeichert um %1$s</string>
+    <string name="phone_setup_stopped">Beendet: Der Link funktioniert nicht mehr.</string>
+    <string name="phone_setup_stop">Beenden</string>
+    <string name="phone_setup_restart">Neu starten</string>
+    <string name="web_intro">Änderungen gelten sofort nach dem Speichern. Diese Seite funktioniert nur, solange der Einrichtungsbildschirm auf dem Gerät offen ist.</string>
+    <string name="web_saved">Gespeichert</string>
+    <string name="web_problems">Gespeichert, aber einige Felder müssen korrigiert werden: siehe unten.</string>
+    <string name="web_link_expired">Dieser Link funktioniert nicht mehr. Öffne auf dem Gerät Einstellungen → Vom Handy einrichten und scanne den neuen Code.</string>
+    <string name="web_key_set">Ein Schlüssel ist gespeichert (endet auf %1$s). Leer lassen, um ihn zu behalten.</string>
+    <string name="web_key_none">Für diesen Anbieter ist kein Schlüssel gespeichert.</string>
+    <string name="web_key_remove">Gespeicherten Schlüssel entfernen</string>
+    <string name="web_favorite_n">Favorit %1$d</string>
 </resources>

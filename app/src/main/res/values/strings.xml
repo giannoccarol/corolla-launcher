@@ -77,7 +77,7 @@
     <string name="qs_audio">Audio</string>
     <string name="qs_more">More</string>
     <string name="settings_driver_name">Your name</string>
-    <string name="settings_driver_name_hint">Shown at the top left</string>
+    <string name="settings_driver_name_hint">Shown at the bottom left</string>
     <string name="settings_location">Location</string>
     <string name="settings_location_on">Allowed: speed and trip are measured</string>
     <string name="settings_location_off">Not allowed. Tap to open the app settings.</string>
@@ -265,4 +265,26 @@
     <string name="home_no_android_auto">No Android Auto app found on this unit</string>
     <string name="settings_fonts_credits">Fonts</string>
     <string name="settings_fonts_credits_summary" translatable="false">Manrope · Nunito, SIL Open Font License 1.1 (licenses in the app\'s assets)</string>
+
+    <!-- Phone setup page -->
+    <string name="settings_section_quick">Quick setup</string>
+    <string name="settings_phone_setup">Set up from your phone</string>
+    <string name="settings_phone_setup_summary">Scan a QR code and change these settings in your phone\'s browser</string>
+    <string name="phone_setup_qr_description">QR code with the address of the setup page</string>
+    <string name="phone_setup_instructions">Scan it with your phone\'s camera. The phone must be on the same Wi-Fi as the unit, or the unit on the phone\'s hotspot.</string>
+    <string name="phone_setup_no_network">The unit is not on a network. Connect it to Wi-Fi or to your phone\'s hotspot, then try again.</string>
+    <string name="phone_setup_waiting">Waiting for your phone…</string>
+    <string name="phone_setup_opened">The page is open on your phone</string>
+    <string name="phone_setup_saved">Settings saved from your phone at %1$s</string>
+    <string name="phone_setup_stopped">Stopped: the link no longer works.</string>
+    <string name="phone_setup_stop">Stop</string>
+    <string name="phone_setup_restart">Start again</string>
+    <string name="web_intro">Changes apply as soon as you save. This page works only while the setup screen is open on the unit.</string>
+    <string name="web_saved">Saved</string>
+    <string name="web_problems">Saved, but some fields need fixing: see below.</string>
+    <string name="web_link_expired">This link no longer works. On the unit, open Settings → Set up from your phone and scan the new code.</string>
+    <string name="web_key_set">A key is saved (ending in %1$s). Leave this empty to keep it.</string>
+    <string name="web_key_none">No key saved for this provider.</string>
+    <string name="web_key_remove">Remove the saved key</string>
+    <string name="web_favorite_n">Favourite %1$d</string>
 </resources>

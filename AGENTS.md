@@ -103,6 +103,7 @@ visible change has been looked at on the emulator in **both themes**.
 | New bundled font | `scripts/make_fonts.py`, a `ThemeOverlay.Launcher.Font.X`, a `FontChoice`, its licence in `licenses/` |
 | New status bar icon | `view_status_bar.xml` (other screens), the top bar in `activity_home.xml`, and `status/StatusBarController.kt` |
 | New home card | `activity_home.xml` and `activity_home_ambra.xml` (same ids and view types in both) plus a `setUp…`/`render…` pair in `HomeActivity` |
+| A setting the phone page should offer | `remote/SetupForm.kt` (field + test), `SetupPage.form`, `SetupServer.apply` |
 | Favourites or calling | `phone/Favorites.kt` (pure, unit tested), `phone/Calls.kt` |
 | Trip or GPS logic | `trip/TripStats.kt` (pure, unit tested), `trip/TripTracker.kt` |
 | New assistant tool | `assistant/tools/CarTools.kt` (spec + `run` + test); an action tool also needs an `AssistantAction` and `HomeActivity.perform` |

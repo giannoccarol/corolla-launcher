@@ -73,7 +73,7 @@
     <string name="qs_audio">Audio</string>
     <string name="qs_more">Plus</string>
     <string name="settings_driver_name">Votre nom</string>
-    <string name="settings_driver_name_hint">Affiché en haut à gauche</string>
+    <string name="settings_driver_name_hint">S\'affiche en bas à gauche</string>
     <string name="settings_location">Position</string>
     <string name="settings_location_on">Autorisée : la vitesse et le trajet sont mesurés</string>
     <string name="settings_location_off">Non autorisée. Touchez pour ouvrir les réglages de l\'appli.</string>
@@ -249,4 +249,26 @@
     <string name="home_open_android_auto">Ouvrir Android Auto</string>
     <string name="home_no_android_auto">Aucune appli Android Auto trouvée sur cet appareil</string>
     <string name="settings_fonts_credits">Polices</string>
+
+    <!-- Phone setup page -->
+    <string name="settings_section_quick">Configuration rapide</string>
+    <string name="settings_phone_setup">Configurer depuis le téléphone</string>
+    <string name="settings_phone_setup_summary">Scannez un code QR et modifiez ces réglages dans le navigateur du téléphone</string>
+    <string name="phone_setup_qr_description">Code QR avec l\'adresse de la page de configuration</string>
+    <string name="phone_setup_instructions">Scannez-le avec l\'appareil photo du téléphone. Le téléphone doit être sur le même Wi-Fi que l\'appareil, ou l\'appareil sur le partage de connexion du téléphone.</string>
+    <string name="phone_setup_no_network">L\'appareil n\'est connecté à aucun réseau. Connectez-le au Wi-Fi ou au partage de connexion du téléphone, puis réessayez.</string>
+    <string name="phone_setup_waiting">En attente du téléphone…</string>
+    <string name="phone_setup_opened">La page est ouverte sur le téléphone</string>
+    <string name="phone_setup_saved">Réglages enregistrés depuis le téléphone à %1$s</string>
+    <string name="phone_setup_stopped">Arrêté : le lien ne fonctionne plus.</string>
+    <string name="phone_setup_stop">Arrêter</string>
+    <string name="phone_setup_restart">Relancer</string>
+    <string name="web_intro">Les modifications s\'appliquent dès l\'enregistrement. Cette page ne fonctionne que tant que l\'écran de configuration est ouvert sur l\'appareil.</string>
+    <string name="web_saved">Enregistré</string>
+    <string name="web_problems">Enregistré, mais certains champs sont à corriger : voir ci-dessous.</string>
+    <string name="web_link_expired">Ce lien ne fonctionne plus. Sur l\'appareil, ouvrez Réglages → Configurer depuis le téléphone et scannez le nouveau code.</string>
+    <string name="web_key_set">Une clé est enregistrée (se termine par %1$s). Laissez vide pour la garder.</string>
+    <string name="web_key_none">Aucune clé enregistrée pour ce fournisseur.</string>
+    <string name="web_key_remove">Supprimer la clé enregistrée</string>
+    <string name="web_favorite_n">Favori %1$d</string>
 </resources>

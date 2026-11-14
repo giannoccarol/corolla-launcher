@@ -190,6 +190,25 @@ Lists (bottom bar, source chips) are rebuilt only when their content changes.
   window content; it only calls `performGlobalAction`. It is off until the user enables it,
   and `HomeActivity` explains how when Recents is tapped without it.
 
+### Phone setup
+
+- `remote/PhoneSetupActivity` (*Settings → Set up from your phone*) starts `SetupServer` and
+  shows its address as a QR code (Project Nayuki's `qrcodegen`, drawn at 10 px per module so
+  no scaling blurs it, always dark on light: `c_qr_*`). Leaving the screen stops the server;
+  a recreation (a theme or size saved from the phone) does not.
+- `SetupServer` is a `ServerSocket` on a daemon thread, one connection at a time, port 8642
+  or any free one, on the address `LocalAddress` picks (Wi-Fi first, then a hotspot; private
+  IPv4 only). Every request needs the session's `SetupToken` (128 random bits, constant-time
+  check); 20 wrong ones stop the server, and so do 10 minutes without a valid request.
+  Responses forbid caching, framing, referrers and scripts (`Content-Security-Policy`).
+- `HttpParser` (head and form parsing, size limits, HTML escaping), `SetupForm` (fields to
+  `SetupValues`, keeping saved values for anything unknown, invalid or not sent) and
+  `SetupToken` are pure and unit tested. `SetupPage` renders the form in the interface language
+  and the current theme's colours; it never writes an API key into the page.
+- Settings are written on the server thread (SharedPreferences and `KeyVault` are thread
+  safe); the night mode is applied on the main thread, icons are reloaded when their style or
+  the interface size changed, and screens pick up a new theme, font or size when they resume.
+
 ### Interface size
 
 - `ui/UiScale` replaces the density the firmware reports: the panel's real short side (from

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Settings → Set up from your phone: a QR code with the setup page's address. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/view_status_bar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="24dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_touch"
+            android:contentDescription="@string/back"
+            android:scaleType="center"
+            android:src="@drawable/ic_chevron_left"
+            app:tint="@color/text_primary" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:fontFamily="?attr/fontMedium"
+            android:text="@string/settings_phone_setup"
+            android:textColor="@color/text_primary"
+            android:textSize="28sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:baselineAligned="false"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp"
+        android:paddingBottom="16dp">
+
+        <ImageView
+            android:id="@+id/qrCode"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:background="@drawable/bg_qr"
+            android:contentDescription="@string/phone_setup_qr_description"
+            android:maxWidth="340dp"
+            android:padding="14dp"
+            android:scaleType="fitCenter" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_weight="1.4"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/instructions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/phone_setup_instructions"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="?attr/fontMedium"
+                android:textColor="@color/accent"
+                android:textIsSelectable="true"
+                android:textSize="17sp"
+                tools:text="http://192.168.43.12:8642/?t=…" />
+
+            <TextView
+                android:id="@+id/status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/text_secondary"
+                android:textSize="16sp"
+                tools:text="@string/phone_setup_waiting" />
+
+            <TextView
+                android:id="@+id/actionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="56dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/bg_pill_accent"
+                android:clickable="true"
+                android:focusable="true"
+                android:fontFamily="?attr/fontMedium"
+                android:gravity="center"
+                android:minWidth="160dp"
+                android:paddingStart="28dp"
+                android:paddingEnd="28dp"
+                android:textColor="@color/on_accent"
+                android:textSize="17sp"
+                tools:text="@string/phone_setup_stop" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

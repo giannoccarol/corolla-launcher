@@ -2,6 +2,8 @@
 <!-- Dark palettes of the themes in values/themes.xml (same names, same parents). -->
 <resources>
     <style name="Theme.Launcher" parent="Base.Theme.Launcher">
+        <item name="c_qr_dark">#FF000000</item>
+        <item name="c_qr_light">#FFFFFFFF</item>
         <item name="c_bg">#000000</item>
         <item name="c_surface">#131518</item>
         <item name="c_surface_2">#22262C</item>

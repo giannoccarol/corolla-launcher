@@ -26,6 +26,8 @@
 
     <!-- Classic: neutral greys and blue, the original look. -->
     <style name="Theme.Launcher" parent="Base.Theme.Launcher">
+        <item name="c_qr_dark">#FF000000</item>
+        <item name="c_qr_light">#FFFFFFFF</item>
         <item name="c_bg">#FFFFFF</item>
         <item name="c_surface">#F1F3F5</item>
         <item name="c_surface_2">#E3E6EA</item>

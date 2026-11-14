@@ -129,8 +129,16 @@
             android:screenOrientation="sensorLandscape"
             tools:ignore="DiscouragedApi,LockedOrientationActivity" />
 
-        <!-- Exists only so the system lets us read active media sessions once the user grants
-             notification access. It does not read or store notifications. -->
+        <!-- Settings → Set up from your phone: runs the local setup page while open. -->
+        <activity
+            android:name=".remote.PhoneSetupActivity"
+            android:exported="false"
+            android:screenOrientation="sensorLandscape"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity" />
+
+        <!-- Exists so the system lets us read active media sessions once the user grants
+             notification access. It reads notifications only for Settings → Device info,
+             on screen, and stores or sends nothing. -->
         <service
             android:name=".media.MediaListenerService"
             android:exported="true"

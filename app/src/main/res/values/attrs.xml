@@ -38,6 +38,10 @@
     <attr name="c_glass_bottom" format="color" />
     <attr name="c_ring" format="color" />
 
+    <!-- QR codes are dark on light in every theme: not all scanners read them inverted. -->
+    <attr name="c_qr_dark" format="color" />
+    <attr name="c_qr_light" format="color" />
+
     <!-- Typefaces: a font resource, or a system family name such as "sans-serif-medium". -->
     <attr name="fontRegular" format="reference|string" />
     <attr name="fontMedium" format="reference|string" />
