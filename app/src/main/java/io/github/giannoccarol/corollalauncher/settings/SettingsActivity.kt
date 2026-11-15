@@ -272,29 +272,12 @@ class SettingsActivity : LauncherActivity() {
         }
     }
 
+    /** The provider's own model list, fetched with the saved key; see [ModelPicker]. */
     private fun pickModel(provider: AiProvider) {
-        val models = provider.suggestedModels
-        val labels = (models + getString(R.string.settings_ai_model_other)).toTypedArray()
-        val current = models.indexOf(prefs.aiModel(provider.id) ?: provider.defaultModel)
-        AlertDialog.Builder(this)
-            .setTitle(R.string.settings_ai_model)
-            .setSingleChoiceItems(labels, current) { dialog, which ->
-                dialog.dismiss()
-                if (which < models.size) {
-                    prefs.setAiModel(provider.id, models[which])
-                    render()
-                } else {
-                    TextPrompt.show(
-                        this, getString(R.string.settings_ai_model), R.string.settings_ai_model_hint,
-                        prefs.aiModel(provider.id), R.string.save, password = false,
-                    ) {
-                        prefs.setAiModel(provider.id, it.ifEmpty { null })
-                        render()
-                    }
-                }
-            }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
+        ModelPicker(this, provider, vault.get(provider.id), prefs.aiModel(provider.id)) { model ->
+            prefs.setAiModel(provider.id, model)
+            render()
+        }.show()
     }
 
     private fun pickLanguage() {

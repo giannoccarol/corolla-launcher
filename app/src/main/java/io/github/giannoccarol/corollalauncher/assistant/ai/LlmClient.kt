@@ -40,6 +40,19 @@ class LlmClient {
         parse(request(url, headers, body))
     }
 
+    /**
+     * The provider's chat models, from `GET {base}/models` with the key ([ModelList] reads
+     * the reply). Blocking: call it off the main thread, as [ModelCatalog] does.
+     */
+    fun listModels(provider: AiProvider, apiKey: String): List<ModelInfo> {
+        val config = AiConfig(provider, apiKey, provider.defaultModel, sessionId = "models")
+        val text = when (provider.style) {
+            ApiStyle.ANTHROPIC -> request("${base(config)}/models?limit=1000", anthropicHeaders(config), null)
+            else -> request("${base(config)}/models", bearer(config), null)
+        }
+        return ModelList.parse(text) ?: throw LlmException(R.string.llm_invalid_response, detail = text.take(MAX_DETAIL))
+    }
+
     fun anthropicHeaders(config: AiConfig): Map<String, String> = buildMap {
         put("anthropic-version", "2023-06-01")
         put("x-api-key", config.apiKey)
@@ -200,20 +213,23 @@ class LlmClient {
         throw LlmException(R.string.llm_invalid_response, detail = text.take(MAX_DETAIL))
     }
 
-    private fun request(url: String, headers: Map<String, String>, body: JSONObject): String {
+    /** A POST with [body], or a GET when it is null. */
+    private fun request(url: String, headers: Map<String, String>, body: JSONObject?): String {
         // Every catalogued endpoint is HTTPS; refuse anything else rather than send a key in clear.
         if (!url.startsWith("https://")) throw LlmException(R.string.llm_invalid_response, detail = url)
         val connection = URL(url).openConnection() as HttpURLConnection
         try {
-            connection.requestMethod = "POST"
+            connection.requestMethod = if (body == null) "GET" else "POST"
             connection.connectTimeout = CONNECT_TIMEOUT_MS
             connection.readTimeout = READ_TIMEOUT_MS
             connection.setRequestProperty("Accept", "application/json")
-            connection.setRequestProperty("Content-Type", "application/json; charset=utf-8")
             connection.setRequestProperty("User-Agent", USER_AGENT)
             headers.forEach { (key, value) -> connection.setRequestProperty(key, value) }
-            connection.doOutput = true
-            connection.outputStream.use { it.write(body.toString().toByteArray(Charsets.UTF_8)) }
+            if (body != null) {
+                connection.setRequestProperty("Content-Type", "application/json; charset=utf-8")
+                connection.doOutput = true
+                connection.outputStream.use { it.write(body.toString().toByteArray(Charsets.UTF_8)) }
+            }
             val status = connection.responseCode
             val stream = if (status in 200..299) connection.inputStream else connection.errorStream
             val text = stream?.bufferedReader(Charsets.UTF_8)?.use { it.readText() }.orEmpty()

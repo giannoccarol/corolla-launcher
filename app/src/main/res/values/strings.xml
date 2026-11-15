@@ -287,4 +287,15 @@
     <string name="web_key_none">No key saved for this provider.</string>
     <string name="web_key_remove">Remove the saved key</string>
     <string name="web_favorite_n">Favourite %1$d</string>
+
+    <!-- Model picker -->
+    <string name="model_picker_title">%1$s models</string>
+    <string name="model_search_hint">Search models</string>
+    <string name="model_default">Default (%1$s)</string>
+    <string name="model_loading">Loading the models from the provider…</string>
+    <string name="model_needs_key">Save the API key to see every model of this provider.</string>
+    <string name="model_list_failed">Could not load the list (%1$s). Showing the suggested models.</string>
+    <string name="model_list_empty">The provider listed no chat models. Showing the suggested ones.</string>
+    <string name="web_models_hint">Change the provider and save to see its models.</string>
+    <string name="web_model_other">Or type a model name</string>
 </resources>

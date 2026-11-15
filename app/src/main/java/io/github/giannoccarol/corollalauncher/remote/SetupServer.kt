@@ -11,6 +11,9 @@ import io.github.giannoccarol.corollalauncher.apps.AppRepository
 import io.github.giannoccarol.corollalauncher.apps.IconPack
 import io.github.giannoccarol.corollalauncher.assistant.KeyVault
 import io.github.giannoccarol.corollalauncher.assistant.ai.AiProviders
+import io.github.giannoccarol.corollalauncher.assistant.ai.LlmException
+import io.github.giannoccarol.corollalauncher.assistant.ai.ModelCatalog
+import io.github.giannoccarol.corollalauncher.assistant.ai.ModelInfo
 import io.github.giannoccarol.corollalauncher.phone.Favorites
 import io.github.giannoccarol.corollalauncher.settings.Prefs
 import io.github.giannoccarol.corollalauncher.theme.ThemeManager
@@ -234,7 +237,19 @@ object SetupServer {
             ) + packs.map { SetupPage.Option(it.packageName, it.label) },
             providers = AiProviders.all.map { SetupPage.Provider(it.id, it.name, it.suggestedModels, it.defaultModel) },
             keyEndings = AiProviders.all.mapNotNull { provider -> vault.get(provider.id)?.let { provider.id to it.takeLast(4) } }.toMap(),
+            liveModels = liveModels(vault),
         )
+    }
+
+    /** The selected provider's model list (cached for a while), or null without key or network. */
+    private fun liveModels(vault: KeyVault): List<ModelInfo>? {
+        val provider = AiProviders.byId(Prefs(appContext).aiProviderId)
+        val key = vault.get(provider.id) ?: return null
+        return try {
+            ModelCatalog.load(provider, key)
+        } catch (e: LlmException) {
+            null
+        }
     }
 
     private fun iconStyleIds(): Set<String> =

@@ -271,4 +271,15 @@
     <string name="web_key_none">Aucune clé enregistrée pour ce fournisseur.</string>
     <string name="web_key_remove">Supprimer la clé enregistrée</string>
     <string name="web_favorite_n">Favori %1$d</string>
+
+    <!-- Model picker -->
+    <string name="model_picker_title">Modèles %1$s</string>
+    <string name="model_search_hint">Rechercher un modèle</string>
+    <string name="model_default">Par défaut (%1$s)</string>
+    <string name="model_loading">Chargement des modèles du fournisseur…</string>
+    <string name="model_needs_key">Enregistrez la clé API pour voir tous les modèles de ce fournisseur.</string>
+    <string name="model_list_failed">Impossible de charger la liste (%1$s). Modèles suggérés affichés.</string>
+    <string name="model_list_empty">Le fournisseur n\'a listé aucun modèle de chat. Modèles suggérés affichés.</string>
+    <string name="web_models_hint">Changez de fournisseur et enregistrez pour voir ses modèles.</string>
+    <string name="web_model_other">Ou saisissez un nom de modèle</string>
 </resources>

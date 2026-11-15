@@ -45,6 +45,8 @@ object SetupForm {
     const val ICONS = "icons"
     const val PROVIDER = "provider"
     const val MODEL = "model"
+    /** A typed model name; when filled in it wins over the list. */
+    const val MODEL_CUSTOM = "model_custom"
     const val KEY = "key"
     const val REMOVE_KEY = "remove_key"
     fun favoriteName(slot: Int) = "fav${slot}_name"
@@ -85,7 +87,7 @@ object SetupForm {
             uiSize = fields[SIZE]?.let { id -> UiScale.UiSize.entries.firstOrNull { it.id == id } } ?: current.uiSize,
             iconStyle = fields[ICONS]?.takeIf { it in iconStyles } ?: current.iconStyle,
             providerId = provider,
-            model = if (MODEL in fields) text(fields[MODEL]) else current.model,
+            model = text(fields[MODEL_CUSTOM]) ?: if (MODEL in fields) text(fields[MODEL]) else current.model,
             newApiKey = fields[KEY]?.trim()?.takeIf { it.isNotEmpty() }?.take(MAX_TEXT),
             removeApiKey = fields[REMOVE_KEY] == "on",
         )

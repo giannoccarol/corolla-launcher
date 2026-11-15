@@ -271,4 +271,15 @@
     <string name="web_key_none">No hay ninguna clave guardada para este proveedor.</string>
     <string name="web_key_remove">Quitar la clave guardada</string>
     <string name="web_favorite_n">Favorito %1$d</string>
+
+    <!-- Model picker -->
+    <string name="model_picker_title">Modelos de %1$s</string>
+    <string name="model_search_hint">Buscar un modelo</string>
+    <string name="model_default">Predeterminado (%1$s)</string>
+    <string name="model_loading">Cargando los modelos del proveedor…</string>
+    <string name="model_needs_key">Guarda la clave API para ver todos los modelos de este proveedor.</string>
+    <string name="model_list_failed">No se pudo cargar la lista (%1$s). Se muestran los modelos sugeridos.</string>
+    <string name="model_list_empty">El proveedor no ha listado modelos de chat. Se muestran los sugeridos.</string>
+    <string name="web_models_hint">Cambia de proveedor y guarda para ver sus modelos.</string>
+    <string name="web_model_other">O escribe el nombre de un modelo</string>
 </resources>

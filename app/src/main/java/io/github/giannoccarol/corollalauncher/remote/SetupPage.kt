@@ -3,6 +3,7 @@ package io.github.giannoccarol.corollalauncher.remote
 import android.content.Context
 import androidx.annotation.StringRes
 import io.github.giannoccarol.corollalauncher.R
+import io.github.giannoccarol.corollalauncher.assistant.ai.ModelInfo
 import io.github.giannoccarol.corollalauncher.phone.Favorites
 import io.github.giannoccarol.corollalauncher.remote.HttpParser.escapeHtml
 import io.github.giannoccarol.corollalauncher.theme.FontChoice
@@ -35,6 +36,8 @@ class SetupPage(private val context: Context, private val palette: Palette) {
         val providers: List<Provider>,
         /** Last four characters of the saved key per provider id; absent when none is saved. */
         val keyEndings: Map<String, String>,
+        /** The selected provider's own model list, when it could be fetched with its key. */
+        val liveModels: List<ModelInfo>? = null,
     )
 
     enum class Banner { NONE, SAVED, PROBLEMS }
@@ -86,12 +89,26 @@ class SetupPage(private val context: Context, private val palette: Palette) {
         section(R.string.settings_section_assistant) {
             select(SetupForm.PROVIDER, R.string.settings_ai_provider, choices.providers.map { Option(it.id, it.name) }, values.providerId)
             val provider = choices.providers.firstOrNull { it.id == values.providerId }
-            append("<label for=\"model\">").append(s(R.string.settings_ai_model)).append("</label>")
-            append("<input id=\"model\" name=\"model\" list=\"models\" value=\"").append(escapeHtml(values.model.orEmpty()))
-                .append("\" placeholder=\"").append(escapeHtml(provider?.defaultModel.orEmpty())).append("\">")
-            append("<datalist id=\"models\">")
-            provider?.models?.forEach { append("<option value=\"").append(escapeHtml(it)).append("\">") }
-            append("</datalist>")
+            append("<p class=\"hint\">").append(s(R.string.web_models_hint)).append("</p>")
+            val live = choices.liveModels
+            if (!live.isNullOrEmpty()) {
+                // The provider's own list, like Settings on the unit; a name can still be typed.
+                val current = values.model.orEmpty()
+                val rows = buildList {
+                    add(Option("", context.getString(R.string.model_default, provider?.defaultModel.orEmpty())))
+                    if (current.isNotEmpty() && live.none { it.id == current }) add(Option(current, current))
+                    live.forEach { add(Option(it.id, if (it.label == it.id) it.id else it.label + " (" + it.id + ")")) }
+                }
+                select(SetupForm.MODEL, R.string.settings_ai_model, rows, current)
+                text(SetupForm.MODEL_CUSTOM, R.string.web_model_other, null, R.string.settings_ai_model_hint)
+            } else {
+                append("<label for=\"model\">").append(s(R.string.settings_ai_model)).append("</label>")
+                append("<input id=\"model\" name=\"model\" list=\"models\" value=\"").append(escapeHtml(values.model.orEmpty()))
+                    .append("\" placeholder=\"").append(escapeHtml(provider?.defaultModel.orEmpty())).append("\">")
+                append("<datalist id=\"models\">")
+                provider?.models?.forEach { append("<option value=\"").append(escapeHtml(it)).append("\">") }
+                append("</datalist>")
+            }
             append("<label for=\"key\">").append(s(R.string.settings_ai_key)).append("</label>")
             append("<input id=\"key\" name=\"key\" type=\"password\" autocomplete=\"new-password\" spellcheck=\"false\">")
             val ending = choices.keyEndings[values.providerId]

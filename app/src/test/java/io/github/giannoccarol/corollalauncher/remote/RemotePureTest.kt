@@ -155,6 +155,14 @@ class SetupFormTest {
     }
 
     @Test
+    fun aTypedModelWinsOverTheList() {
+        assertEquals("my-model", parse(mapOf("model" to "gpt-5", "model_custom" to " my-model ")).values.model)
+        assertEquals("gpt-5", parse(mapOf("model" to "gpt-5", "model_custom" to "")).values.model)
+        // The list's "Default" row is an empty value: back to the provider's default.
+        assertNull(parse(mapOf("model" to "")).values.model)
+    }
+
+    @Test
     fun anEmptyKeyKeepsTheSavedOne() {
         assertNull(parse(mapOf("key" to "   ")).values.newApiKey)
         assertTrue(parse(mapOf("remove_key" to "on")).values.removeApiKey)

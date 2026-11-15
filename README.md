@@ -78,7 +78,9 @@ it should run on any landscape Android head unit.
 
   Works with the same providers as the Monetine app, with your own API key: Anthropic (default,
   `claude-opus-5-5`), OpenAI, Google Gemini, OpenRouter, xAI, DeepSeek, Mistral, Groq and
-  others. Providers without tool support fall back to the actions only.
+  others. Providers without tool support fall back to the actions only. *Settings → Model*
+  lists the provider's own models, fetched with your key and searchable (as in pi-desktop),
+  so no model id has to be typed; the phone setup page offers the same list.
 - **All apps** grid with search. Long press an app to pin it to the bottom bar or open its
   system info.
 - **Light and dark themes**, always uniform: all black or all white, never mixed. Dark by
@@ -254,6 +256,10 @@ adb -e install -r app/build/outputs/apk/debug/app-debug.apk
   The head unit's projection app apparently publishes no media session, so nothing tells the
   launcher what is playing. *Settings → Device info*, opened while Android Auto plays and with
   notification access on, shows what that app does publish; the fix depends on it.
+- **The model list was tried with OpenRouter (which lists its models without checking the key)
+  and with Anthropic's refusal of a fake key**; a successful list from a provider that needs a
+  valid key was not seen. Big catalogues (OpenRouter has hundreds of models) also include
+  models without tool support, for which the assistant falls back to actions only.
 - **Phone setup was tested only from the computer's browser through the emulator** (adb port
   forwarding), not from a phone on the unit's network. Hotspot set-ups that isolate clients
   from each other will block it; the page is plain HTTP on the local network, protected by the
@@ -353,7 +359,8 @@ two reviewers for head unit constraints and translations.
 - The assistant's provider catalogue, HTTP client, API key vault and speech controller are
   ported from the owner's [Monetine](https://github.com/giannoccarol/monetine) app
   (`ai/AiProviders.kt`, `ai/LlmClient.kt`, `ai/LlmBodies.kt`, `data/settings/KeyVault.kt`,
-  `voice/SpeechController.kt`), whose provider list follows pi-desktop. Rewritten to use
+  `voice/SpeechController.kt`, and the model list of `ai/LlmClient.kt`, now `ai/ModelList.kt`),
+  whose provider list follows pi-desktop. Rewritten to use
   Android's org.json and a worker thread instead of kotlinx.serialization and coroutines.
 - Weather data by [Open-Meteo](https://open-meteo.com), CC BY 4.0.
 - Places and addresses © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors,

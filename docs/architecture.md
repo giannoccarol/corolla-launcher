@@ -169,6 +169,12 @@ mic button / wheel key ─▶ AssistantPanel ─▶ SpeechController (system rec
 - **Speech out**: `Speaker` wraps `TextToSpeech` with the assistant audio usage, so the unit
   can duck the music as it does for navigation prompts.
 
+- Models: `LlmClient.listModels` asks `GET {base}/models` (Anthropic: `/models?limit=1000`)
+  with the saved key; `ModelList` (pure, unit tested) reads either reply shape, drops models
+  that cannot chat and sorts the rest; `ModelCatalog` keeps each list in memory for 30
+  minutes. `settings/ModelPicker` shows it with a search box, the default first and the model
+  in use highlighted, falling back to the provider's suggestions without a key or network.
+
 ### Refresh cost
 
 The home screen ticks once a second (media progress and trip). `TextView.update()` in
