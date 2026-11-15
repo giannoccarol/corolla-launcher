@@ -9,7 +9,7 @@ it should run on any landscape Android head unit.
 | ![Home screen, dark theme](docs/screenshots/home-dark.png) | ![Home screen, light theme](docs/screenshots/home-light.png) |
 | ![Home screen, Amber theme, dark](docs/screenshots/home-amber-dark.png) | ![Home screen, Amber theme, light](docs/screenshots/home-amber-light.png) |
 
-> **Status: 0.4.0, tested on an emulator; one drive on the real head unit so far.** The owner
+> **Status: 0.5.0, tested on an emulator; one drive on the real head unit so far.** The owner
 > tried 0.3.0 in the car (no adb): its feedback shaped this release. Everything else here was
 > verified on the emulator only. See [Known limits](#known-limits) and
 > [docs/head-unit.md](docs/head-unit.md).
